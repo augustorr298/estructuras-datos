@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código - Pila Estática</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .seccion {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .seccion h2 {
+            color: #11998e;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #11998e;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+        .nota {
+            background: #d4edda;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Pila Estática (Stack)</h1>
+        
+        <div class="nota">
+            <strong>💡 LIFO:</strong> Last In, First Out (Último en entrar, primero en salir).
+            Solo se puede acceder al elemento del tope.
+        </div>
+        
+        <div class="seccion">
+            <h2>📋 Variables</h2>
+            <pre><code><span class="comment">// Pila Estática</span>
+<span class="comment">// El tope indica la posición del último elemento insertado</span>
+<span class="comment">// tope = -1 significa pila vacía</span>
+
+<span class="keyword">int</span> <span class="variable">tope</span> = -<span class="number">1</span>;  <span class="comment">// Índice del tope</span>
+<span class="keyword">int</span> <span class="variable">dato</span>, <span class="variable">i</span>, <span class="variable">opcion</span>, <span class="variable">max</span> = <span class="number">10</span>;
+<span class="keyword">int</span>[] <span class="variable">pila</span> = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>⬆️ Push (Apilar)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">1</span>: <span class="comment">// Push - Apilar</span>
+    <span class="keyword">if</span> (<span class="variable">tope</span> == <span class="variable">max</span> - <span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Pila llena (Stack Overflow)"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.Write(<span class="string">"Ingrese dato: "</span>);
+        <span class="variable">dato</span> = <span class="keyword">int</span>.Parse(Console.ReadLine());
+        <span class="variable">tope</span>++;
+        <span class="variable">pila</span>[<span class="variable">tope</span>] = <span class="variable">dato</span>;
+        Console.WriteLine(<span class="string">"Dato apilado en posición "</span> + <span class="variable">tope</span>);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>⬇️ Pop (Desapilar)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">2</span>: <span class="comment">// Pop - Desapilar</span>
+    <span class="keyword">if</span> (<span class="variable">tope</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Pila vacía (Stack Underflow)"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.WriteLine(<span class="string">"Dato desapilado: "</span> + <span class="variable">pila</span>[<span class="variable">tope</span>]);
+        <span class="variable">pila</span>[<span class="variable">tope</span>] = <span class="number">0</span>;
+        <span class="variable">tope</span>--;
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>👁️ Peek (Consultar tope)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">3</span>: <span class="comment">// Peek - Consultar tope</span>
+    <span class="keyword">if</span> (<span class="variable">tope</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Pila vacía"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.WriteLine(<span class="string">"Tope de la pila: "</span> + <span class="variable">pila</span>[<span class="variable">tope</span>]);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>🔍 Buscar</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">4</span>: <span class="comment">// Buscar</span>
+    <span class="keyword">if</span> (<span class="variable">tope</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Pila vacía"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.Write(<span class="string">"Ingrese dato a buscar: "</span>);
+        <span class="variable">dato</span> = <span class="keyword">int</span>.Parse(Console.ReadLine());
+        <span class="keyword">int</span> <span class="variable">pos</span> = -<span class="number">1</span>;
+        <span class="keyword">for</span> (<span class="variable">i</span> = <span class="variable">tope</span>; <span class="variable">i</span> >= <span class="number">0</span>; <span class="variable">i</span>--)
+        {
+            <span class="keyword">if</span> (<span class="variable">pila</span>[<span class="variable">i</span>] == <span class="variable">dato</span>)
+            {
+                <span class="variable">pos</span> = <span class="variable">i</span>;
+                <span class="keyword">break</span>;
+            }
+        }
+        <span class="keyword">if</span> (<span class="variable">pos</span> != -<span class="number">1</span>)
+        {
+            Console.WriteLine(<span class="string">"Dato encontrado en posición "</span> + <span class="variable">pos</span>);
+        }
+        <span class="keyword">else</span>
+        {
+            Console.WriteLine(<span class="string">"Dato no encontrado"</span>);
+        }
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>🖨️ Imprimir</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">5</span>: <span class="comment">// Imprimir</span>
+    Console.WriteLine(<span class="string">"Estado de la pila (tope="</span> + <span class="variable">tope</span> + <span class="string">"):"</span>);
+    <span class="keyword">if</span> (<span class="variable">tope</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"[ Pila vacía ]"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.WriteLine(<span class="string">"--- Tope ---"</span>);
+        <span class="keyword">for</span> (<span class="variable">i</span> = <span class="variable">tope</span>; <span class="variable">i</span> >= <span class="number">0</span>; <span class="variable">i</span>--)
+        {
+            Console.WriteLine(<span class="string">"| "</span> + <span class="variable">pila</span>[<span class="variable">i</span>] + <span class="string">" | ["</span> + <span class="variable">i</span> + <span class="string">"]"</span>);
+        }
+        Console.WriteLine(<span class="string">"--- Base ---"</span>);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+    </div>
+</body>
+</html>

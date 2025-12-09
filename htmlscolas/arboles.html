@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizador de Árboles Binarios de Búsqueda</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .nodo-highlight {
+      animation: pulse 0.5s ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+    .nodo-encontrado {
+      animation: encontrado 0.8s ease-in-out;
+    }
+    @keyframes encontrado {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      50% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+    }
+    .linea-activa {
+      stroke: #f59e0b;
+      stroke-width: 3;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen">
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // Clase Nodo del árbol
+    class NodoArbol {
+      constructor(valor) {
+        this.valor = valor;
+        this.izquierdo = null;
+        this.derecho = null;
+        this.x = 0;
+        this.y = 0;
+      }
+    }
+
+    // Componente principal
+    function ArbolBinario() {
+      const [raiz, setRaiz] = useState(null);
+      const [valor, setValor] = useState('');
+      const [valorBusqueda, setValorBusqueda] = useState('');
+      const [mensaje, setMensaje] = useState('');
+      const [nodoActivo, setNodoActivo] = useState(null);
+      const [nodoEncontrado, setNodoEncontrado] = useState(null);
+      const [lineaActiva, setLineaActiva] = useState(null);
+      const [pasoAlgoritmo, setPasoAlgoritmo] = useState([]);
+      const [mostrarInfo, setMostrarInfo] = useState(true);
+      const [velocidad, setVelocidad] = useState(800);
+
+      // Calcular posiciones de los nodos para visualización
+      const calcularPosiciones = (nodo, x, y, espacioX, nivel = 0) => {
+        if (!nodo) return [];
+        
+        nodo.x = x;
+        nodo.y = y;
+        
+        const nodos = [{ ...nodo, nivel }];
+        const nuevoEspacioX = espacioX * 0.55;
+        
+        if (nodo.izquierdo) {
+          nodos.push(...calcularPosiciones(nodo.izquierdo, x - espacioX, y + 80, nuevoEspacioX, nivel + 1));
+        }
+        if (nodo.derecho) {
+          nodos.push(...calcularPosiciones(nodo.derecho, x + espacioX, y + 80, nuevoEspacioX, nivel + 1));
+        }
+        
+        return nodos;
+      };
+
+      // Obtener todas las líneas (conexiones)
+      const obtenerLineas = (nodo) => {
+        if (!nodo) return [];
+        
+        const lineas = [];
+        
+        if (nodo.izquierdo) {
+          lineas.push({
+            x1: nodo.x,
+            y1: nodo.y,
+            x2: nodo.izquierdo.x,
+            y2: nodo.izquierdo.y,
+            desde: nodo.valor,
+            hacia: nodo.izquierdo.valor
+          });
+          lineas.push(...obtenerLineas(nodo.izquierdo));
+        }
+        
+        if (nodo.derecho) {
+          lineas.push({
+            x1: nodo.x,
+            y1: nodo.y,
+            x2: nodo.derecho.x,
+            y2: nodo.derecho.y,
+            desde: nodo.valor,
+            hacia: nodo.derecho.valor
+          });
+          lineas.push(...obtenerLineas(nodo.derecho));
+        }
+        
+        return lineas;
+      };
+
+      // Clonar árbol para actualizar estado
+      const clonarArbol = (nodo) => {
+        if (!nodo) return null;
+        const nuevoNodo = new NodoArbol(nodo.valor);
+        nuevoNodo.izquierdo = clonarArbol(nodo.izquierdo);
+        nuevoNodo.derecho = clonarArbol(nodo.derecho);
+        return nuevoNodo;
+      };
+
+      // Insertar nodo
+      const insertar = () => {
+        const num = parseInt(valor);
+        if (isNaN(num)) {
+          setMensaje('⚠️ Ingresa un número válido');
+          return;
+        }
+
+        const pasos = [
+          { texto: 'INSERTAR en Árbol Binario de Búsqueda', tipo: 'titulo' },
+          { texto: `valor = ${num}`, tipo: 'info' }
+        ];
+
+        const insertarRecursivo = async (nodo, padre = null, esIzquierdo = false) => {
+          if (!nodo) {
+            pasos.push({ texto: 'Posición vacía encontrada', tipo: 'info' });
+            pasos.push({ texto: `Crear nuevo nodo con valor ${num}`, tipo: 'operacion' });
+            pasos.push({ texto: '✓ Nodo insertado exitosamente', tipo: 'exito' });
+            setPasoAlgoritmo([...pasos]);
+            return new NodoArbol(num);
+          }
+
+          setNodoActivo(nodo.valor);
+          pasos.push({ texto: `Visitando nodo ${nodo.valor}`, tipo: 'info' });
+          
+          await new Promise(r => setTimeout(r, velocidad));
+
+          if (num === nodo.valor) {
+            pasos.push({ texto: `¿${num} == ${nodo.valor}? SÍ`, tipo: 'condicion', cumple: true });
+            pasos.push({ texto: '❌ Valor duplicado, no se inserta', tipo: 'error' });
+            setPasoAlgoritmo([...pasos]);
+            setMensaje('❌ El valor ya existe en el árbol');
+            setNodoActivo(null);
+            return nodo;
+          }
+
+          if (num < nodo.valor) {
+            pasos.push({ texto: `¿${num} < ${nodo.valor}? SÍ`, tipo: 'condicion', cumple: true });
+            pasos.push({ texto: 'Ir al subárbol IZQUIERDO', tipo: 'operacion' });
+            setLineaActiva({ desde: nodo.valor, direccion: 'izq' });
+            setPasoAlgoritmo([...pasos]);
+            nodo.izquierdo = await insertarRecursivo(nodo.izquierdo, nodo, true);
+          } else {
+            pasos.push({ texto: `¿${num} < ${nodo.valor}? NO (${num} > ${nodo.valor})`, tipo: 'condicion', cumple: false });
+            pasos.push({ texto: 'Ir al subárbol DERECHO', tipo: 'operacion' });
+            setLineaActiva({ desde: nodo.valor, direccion: 'der' });
+            setPasoAlgoritmo([...pasos]);
+            nodo.derecho = await insertarRecursivo(nodo.derecho, nodo, false);
+          }
+
+          return nodo;
+        };
+
+        const ejecutarInsercion = async () => {
+          if (!raiz) {
+            pasos.push({ texto: 'Árbol vacío, crear raíz', tipo: 'info' });
+            pasos.push({ texto: `raíz = nuevo Nodo(${num})`, tipo: 'operacion' });
+            pasos.push({ texto: '✓ Raíz creada exitosamente', tipo: 'exito' });
+            setPasoAlgoritmo([...pasos]);
+            setRaiz(new NodoArbol(num));
+            setMensaje(`✅ ${num} insertado como raíz`);
+          } else {
+            const nuevoArbol = clonarArbol(raiz);
+            await insertarRecursivo(nuevoArbol);
+            setRaiz(nuevoArbol);
+            setMensaje(`✅ ${num} insertado en el árbol`);
+          }
+          setNodoActivo(null);
+          setLineaActiva(null);
+          setValor('');
+        };
+
+        ejecutarInsercion();
+      };
+
+      // Buscar nodo con visualización paso a paso
+      const buscar = async () => {
+        const num = parseInt(valorBusqueda);
+        if (isNaN(num)) {
+          setMensaje('⚠️ Ingresa un número válido para buscar');
+          return;
+        }
+
+        if (!raiz) {
+          setMensaje('❌ El árbol está vacío');
+          return;
+        }
+
+        const pasos = [
+          { texto: 'BÚSQUEDA en Árbol Binario de Búsqueda', tipo: 'titulo' },
+          { texto: `Buscando valor: ${num}`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo de Búsqueda:', tipo: 'titulo' },
+          { texto: '1. Comenzar en la raíz', tipo: 'info' },
+          { texto: '2. Si valor == nodo actual → ¡Encontrado!', tipo: 'info' },
+          { texto: '3. Si valor < nodo actual → Buscar izquierda', tipo: 'info' },
+          { texto: '4. Si valor > nodo actual → Buscar derecha', tipo: 'info' },
+          { texto: '5. Si nodo es null → No encontrado', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔍 Ejecución:', tipo: 'titulo' }
+        ];
+
+        setPasoAlgoritmo([...pasos]);
+        setNodoEncontrado(null);
+
+        let actual = raiz;
+        let comparaciones = 0;
+
+        while (actual) {
+          comparaciones++;
+          setNodoActivo(actual.valor);
+          pasos.push({ texto: `Paso ${comparaciones}: Visitar nodo ${actual.valor}`, tipo: 'info' });
+          setPasoAlgoritmo([...pasos]);
+          
+          await new Promise(r => setTimeout(r, velocidad));
+
+          if (num === actual.valor) {
+            pasos.push({ texto: `¿${num} == ${actual.valor}? SÍ`, tipo: 'condicion', cumple: true });
+            pasos.push({ texto: `✓ ¡Valor ${num} ENCONTRADO!`, tipo: 'exito' });
+            pasos.push({ texto: `Total de comparaciones: ${comparaciones}`, tipo: 'info' });
+            setPasoAlgoritmo([...pasos]);
+            setNodoEncontrado(actual.valor);
+            setNodoActivo(null);
+            setMensaje(`✅ Valor ${num} encontrado en ${comparaciones} comparaciones`);
+            return;
+          }
+
+          if (num < actual.valor) {
+            pasos.push({ texto: `¿${num} == ${actual.valor}? NO`, tipo: 'condicion', cumple: false });
+            pasos.push({ texto: `¿${num} < ${actual.valor}? SÍ`, tipo: 'condicion', cumple: true });
+            pasos.push({ texto: '→ Ir al subárbol IZQUIERDO', tipo: 'operacion' });
+            setLineaActiva({ desde: actual.valor, direccion: 'izq' });
+            setPasoAlgoritmo([...pasos]);
+            actual = actual.izquierdo;
+          } else {
+            pasos.push({ texto: `¿${num} == ${actual.valor}? NO`, tipo: 'condicion', cumple: false });
+            pasos.push({ texto: `¿${num} < ${actual.valor}? NO (${num} > ${actual.valor})`, tipo: 'condicion', cumple: false });
+            pasos.push({ texto: '→ Ir al subárbol DERECHO', tipo: 'operacion' });
+            setLineaActiva({ desde: actual.valor, direccion: 'der' });
+            setPasoAlgoritmo([...pasos]);
+            actual = actual.derecho;
+          }
+
+          await new Promise(r => setTimeout(r, velocidad / 2));
+        }
+
+        pasos.push({ texto: 'Llegamos a un nodo NULL', tipo: 'info' });
+        pasos.push({ texto: `❌ Valor ${num} NO encontrado`, tipo: 'error' });
+        pasos.push({ texto: `Total de comparaciones: ${comparaciones}`, tipo: 'info' });
+        setPasoAlgoritmo([...pasos]);
+        setNodoActivo(null);
+        setLineaActiva(null);
+        setMensaje(`❌ Valor ${num} no encontrado (${comparaciones} comparaciones)`);
+      };
+
+      // Eliminar nodo
+      const eliminar = () => {
+        const num = parseInt(valorBusqueda);
+        if (isNaN(num)) {
+          setMensaje('⚠️ Ingresa un número válido para eliminar');
+          return;
+        }
+
+        const pasos = [
+          { texto: 'ELIMINAR de Árbol Binario de Búsqueda', tipo: 'titulo' },
+          { texto: `Eliminar valor: ${num}`, tipo: 'info' }
+        ];
+
+        const encontrarMinimo = (nodo) => {
+          while (nodo.izquierdo) {
+            nodo = nodo.izquierdo;
+          }
+          return nodo;
+        };
+
+        const eliminarRecursivo = (nodo, valor) => {
+          if (!nodo) {
+            pasos.push({ texto: `Nodo NULL - valor ${valor} no existe`, tipo: 'error' });
+            return null;
+          }
+
+          pasos.push({ texto: `Visitando nodo ${nodo.valor}`, tipo: 'info' });
+
+          if (valor < nodo.valor) {
+            pasos.push({ texto: `${valor} < ${nodo.valor}: ir a la izquierda`, tipo: 'operacion' });
+            nodo.izquierdo = eliminarRecursivo(nodo.izquierdo, valor);
+          } else if (valor > nodo.valor) {
+            pasos.push({ texto: `${valor} > ${nodo.valor}: ir a la derecha`, tipo: 'operacion' });
+            nodo.derecho = eliminarRecursivo(nodo.derecho, valor);
+          } else {
+            pasos.push({ texto: `¡Nodo ${valor} encontrado!`, tipo: 'exito' });
+            
+            // Caso 1: Nodo sin hijos
+            if (!nodo.izquierdo && !nodo.derecho) {
+              pasos.push({ texto: 'Caso 1: Nodo hoja (sin hijos)', tipo: 'info' });
+              pasos.push({ texto: 'Simplemente eliminar el nodo', tipo: 'operacion' });
+              return null;
+            }
+            
+            // Caso 2: Nodo con un hijo
+            if (!nodo.izquierdo) {
+              pasos.push({ texto: 'Caso 2: Solo tiene hijo derecho', tipo: 'info' });
+              pasos.push({ texto: 'Reemplazar con el hijo derecho', tipo: 'operacion' });
+              return nodo.derecho;
+            }
+            if (!nodo.derecho) {
+              pasos.push({ texto: 'Caso 2: Solo tiene hijo izquierdo', tipo: 'info' });
+              pasos.push({ texto: 'Reemplazar con el hijo izquierdo', tipo: 'operacion' });
+              return nodo.izquierdo;
+            }
+            
+            // Caso 3: Nodo con dos hijos
+            pasos.push({ texto: 'Caso 3: Tiene dos hijos', tipo: 'info' });
+            const sucesor = encontrarMinimo(nodo.derecho);
+            pasos.push({ texto: `Sucesor inorden: ${sucesor.valor}`, tipo: 'info' });
+            pasos.push({ texto: `Reemplazar ${nodo.valor} con ${sucesor.valor}`, tipo: 'operacion' });
+            nodo.valor = sucesor.valor;
+            nodo.derecho = eliminarRecursivo(nodo.derecho, sucesor.valor);
+          }
+          
+          return nodo;
+        };
+
+        const nuevoArbol = eliminarRecursivo(clonarArbol(raiz), num);
+        pasos.push({ texto: '✓ Operación completada', tipo: 'exito' });
+        setPasoAlgoritmo(pasos);
+        setRaiz(nuevoArbol);
+        setMensaje(`✅ Nodo ${num} eliminado`);
+        setValorBusqueda('');
+      };
+
+      // Reiniciar árbol
+      const reiniciar = () => {
+        setRaiz(null);
+        setPasoAlgoritmo([]);
+        setMensaje('');
+        setNodoActivo(null);
+        setNodoEncontrado(null);
+        setLineaActiva(null);
+      };
+
+      // Crear árbol de ejemplo
+      const crearEjemplo = () => {
+        const valores = [50, 30, 70, 20, 40, 60, 80, 15, 25, 35, 45];
+        let arbol = null;
+        
+        const insertarValor = (nodo, valor) => {
+          if (!nodo) return new NodoArbol(valor);
+          if (valor < nodo.valor) {
+            nodo.izquierdo = insertarValor(nodo.izquierdo, valor);
+          } else if (valor > nodo.valor) {
+            nodo.derecho = insertarValor(nodo.derecho, valor);
+          }
+          return nodo;
+        };
+
+        valores.forEach(v => {
+          arbol = insertarValor(arbol, v);
+        });
+
+        setRaiz(arbol);
+        setPasoAlgoritmo([
+          { texto: 'Árbol de ejemplo creado', tipo: 'titulo' },
+          { texto: `Valores insertados: ${valores.join(', ')}`, tipo: 'info' },
+          { texto: 'Raíz: 50', tipo: 'info' },
+          { texto: '¡Prueba a buscar un valor!', tipo: 'exito' }
+        ]);
+        setMensaje('✅ Árbol de ejemplo creado');
+      };
+
+      // Calcular nodos para renderizar
+      const nodos = raiz ? calcularPosiciones(raiz, 400, 50, 150) : [];
+      const lineas = raiz ? obtenerLineas(raiz) : [];
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-gray-900 text-white p-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Título */}
+            <h1 className="text-3xl font-bold text-center mb-2 text-purple-300">
+              🌳 Árbol Binario de Búsqueda (ABB)
+            </h1>
+            <p className="text-center text-gray-400 mb-6">
+              Visualización interactiva de operaciones y algoritmo de búsqueda
+            </p>
+
+            {/* Panel informativo */}
+            {mostrarInfo && (
+              <div className="bg-gray-800/50 rounded-xl p-6 mb-6 border border-purple-500/30">
+                <div className="flex justify-between items-start">
+                  <h2 className="text-xl font-bold text-purple-300 mb-4">📚 ¿Qué es un Árbol Binario de Búsqueda?</h2>
+                  <button 
+                    onClick={() => setMostrarInfo(false)}
+                    className="text-gray-400 hover:text-white"
+                  >
+                    ✕
+                  </button>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-bold text-green-400 mb-2">Definición:</h3>
+                    <p className="text-gray-300 text-sm mb-4">
+                      Un <strong>Árbol Binario de Búsqueda</strong> es una estructura de datos jerárquica donde cada nodo tiene como máximo dos hijos (izquierdo y derecho), y cumple la propiedad:
+                    </p>
+                    <ul className="text-sm text-gray-300 space-y-1 ml-4">
+                      <li>• Todos los valores en el <span className="text-blue-400">subárbol izquierdo</span> son <strong>menores</strong> que el nodo</li>
+                      <li>• Todos los valores en el <span className="text-red-400">subárbol derecho</span> son <strong>mayores</strong> que el nodo</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-purple-900/30 rounded-lg">
+                  <h3 className="font-bold text-purple-300 mb-2">🔍 Algoritmo de Búsqueda (Pseudocódigo):</h3>
+                  <pre className="text-xs text-gray-300 font-mono">
+{`buscar(nodo, valor):
+    si nodo == NULL:
+        retornar "No encontrado"
+    
+    si valor == nodo.valor:
+        retornar "¡Encontrado!"
+    
+    si valor < nodo.valor:
+        retornar buscar(nodo.izquierdo, valor)
+    sino:
+        retornar buscar(nodo.derecho, valor)`}
+                  </pre>
+                </div>
+              </div>
+            )}
+
+            <div className="grid lg:grid-cols-4 gap-6">
+              {/* Panel de controles */}
+              <div className="space-y-4">
+                {/* Insertar */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-green-500/30">
+                  <h3 className="font-bold text-green-400 mb-3">➕ Insertar</h3>
+                  <div className="flex gap-2">
+                    <input
+                      type="number"
+                      value={valor}
+                      onChange={(e) => setValor(e.target.value)}
+                      placeholder="Valor"
+                      className="flex-1 bg-gray-700 rounded px-3 py-2 text-white"
+                      onKeyPress={(e) => e.key === 'Enter' && insertar()}
+                    />
+                    <button
+                      onClick={insertar}
+                      className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      Insertar
+                    </button>
+                  </div>
+                </div>
+
+                {/* Buscar y Eliminar */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-blue-500/30">
+                  <h3 className="font-bold text-blue-400 mb-3">🔍 Buscar / Eliminar</h3>
+                  <div className="flex gap-2 mb-2">
+                    <input
+                      type="number"
+                      value={valorBusqueda}
+                      onChange={(e) => setValorBusqueda(e.target.value)}
+                      placeholder="Valor"
+                      className="flex-1 bg-gray-700 rounded px-3 py-2 text-white"
+                      onKeyPress={(e) => e.key === 'Enter' && buscar()}
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={buscar}
+                      className="flex-1 bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      Buscar
+                    </button>
+                    <button
+                      onClick={eliminar}
+                      className="flex-1 bg-red-600 hover:bg-red-500 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
+                </div>
+
+                {/* Velocidad */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-yellow-500/30">
+                  <h3 className="font-bold text-yellow-400 mb-3">⚡ Velocidad</h3>
+                  <input
+                    type="range"
+                    min="200"
+                    max="1500"
+                    value={1700 - velocidad}
+                    onChange={(e) => setVelocidad(1700 - parseInt(e.target.value))}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-400">
+                    <span>Lento</span>
+                    <span>Rápido</span>
+                  </div>
+                </div>
+
+                {/* Acciones */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-purple-500/30">
+                  <h3 className="font-bold text-purple-400 mb-3">🎮 Acciones</h3>
+                  <div className="space-y-2">
+                    <button
+                      onClick={crearEjemplo}
+                      className="w-full bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      Crear Árbol Ejemplo
+                    </button>
+                    <button
+                      onClick={() => setMostrarInfo(!mostrarInfo)}
+                      className="w-full bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      {mostrarInfo ? 'Ocultar' : 'Mostrar'} Info
+                    </button>
+                    <button
+                      onClick={reiniciar}
+                      className="w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded font-bold transition-colors"
+                    >
+                      🔄 Reiniciar
+                    </button>
+                  </div>
+                </div>
+
+                {/* Mensaje */}
+                {mensaje && (
+                  <div className={`p-3 rounded-lg text-center font-bold ${
+                    mensaje.includes('✅') ? 'bg-green-900/50 text-green-300' :
+                    mensaje.includes('❌') ? 'bg-red-900/50 text-red-300' :
+                    'bg-yellow-900/50 text-yellow-300'
+                  }`}>
+                    {mensaje}
+                  </div>
+                )}
+              </div>
+
+              {/* Visualización del árbol */}
+              <div className="lg:col-span-2 bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                <h3 className="font-bold text-gray-300 mb-2 text-center">🌳 Visualización del Árbol</h3>
+                
+                {!raiz ? (
+                  <div className="flex items-center justify-center h-64 text-gray-500">
+                    <div className="text-center">
+                      <p className="text-4xl mb-2">🌱</p>
+                      <p>Árbol vacío</p>
+                      <p className="text-sm">Inserta un valor o crea un ejemplo</p>
+                    </div>
+                  </div>
+                ) : (
+                  <svg width="100%" height="550" viewBox="0 0 800 550" className="mx-auto">
+                    {/* Líneas */}
+                    {lineas.map((linea, i) => (
+                      <line
+                        key={i}
+                        x1={linea.x1}
+                        y1={linea.y1 + 20}
+                        x2={linea.x2}
+                        y2={linea.y2 - 20}
+                        stroke={
+                          lineaActiva && lineaActiva.desde === linea.desde
+                            ? '#f59e0b'
+                            : '#4b5563'
+                        }
+                        strokeWidth={lineaActiva && lineaActiva.desde === linea.desde ? 3 : 2}
+                      />
+                    ))}
+                    
+                    {/* Nodos */}
+                    {nodos.map((nodo, i) => (
+                      <g key={i}>
+                        <circle
+                          cx={nodo.x}
+                          cy={nodo.y}
+                          r={22}
+                          fill={
+                            nodoEncontrado === nodo.valor ? '#22c55e' :
+                            nodoActivo === nodo.valor ? '#f59e0b' :
+                            '#6366f1'
+                          }
+                          stroke={
+                            nodoEncontrado === nodo.valor ? '#4ade80' :
+                            nodoActivo === nodo.valor ? '#fbbf24' :
+                            '#818cf8'
+                          }
+                          strokeWidth={3}
+                          className={
+                            nodoActivo === nodo.valor ? 'nodo-highlight' :
+                            nodoEncontrado === nodo.valor ? 'nodo-encontrado' : ''
+                          }
+                        />
+                        <text
+                          x={nodo.x}
+                          y={nodo.y + 5}
+                          textAnchor="middle"
+                          fill="white"
+                          fontWeight="bold"
+                          fontSize={nodo.valor >= 100 ? 12 : 14}
+                        >
+                          {nodo.valor}
+                        </text>
+                      </g>
+                    ))}
+                  </svg>
+                )}
+
+                {/* Leyenda */}
+                <div className="flex justify-center gap-4 mt-2 text-xs">
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded-full bg-indigo-500"></div>
+                    <span className="text-gray-400">Normal</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded-full bg-amber-500"></div>
+                    <span className="text-gray-400">Visitando</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded-full bg-green-500"></div>
+                    <span className="text-gray-400">Encontrado</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel de algoritmo */}
+              <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                <h3 className="font-bold text-gray-300 mb-3">📊 Algoritmo en Ejecución</h3>
+                
+                <div className="bg-gray-900/50 rounded-lg p-3 h-96 overflow-y-auto font-mono text-sm">
+                  {pasoAlgoritmo.length === 0 ? (
+                    <div className="text-gray-500 text-center">
+                      <p>Realiza una operación para ver</p>
+                      <p>el algoritmo paso a paso</p>
+                    </div>
+                  ) : (
+                    pasoAlgoritmo.map((paso, i) => (
+                      <div
+                        key={i}
+                        className={`mb-1 p-1 rounded ${
+                          paso.tipo === 'titulo' ? 'font-bold text-purple-400 mt-2' :
+                          paso.tipo === 'info' ? 'text-gray-300' :
+                          paso.tipo === 'operacion' ? 'text-blue-400 pl-4' :
+                          paso.tipo === 'condicion' ? (paso.cumple ? 'text-green-400 pl-4' : 'text-yellow-400 pl-4') :
+                          paso.tipo === 'exito' ? 'text-green-400 bg-green-900/30 font-bold' :
+                          paso.tipo === 'error' ? 'text-red-400 bg-red-900/30' :
+                          paso.tipo === 'separador' ? 'border-t border-gray-700 my-2' :
+                          'text-gray-400'
+                        }`}
+                      >
+                        {paso.texto}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const { createRoot } = ReactDOM;
+    const root = createRoot(document.getElementById("root"));
+    root.render(<ArbolBinario />);
+  </script>
+</body>
+</html>

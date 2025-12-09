@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructuras de Datos - Menú Principal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #4ECDC4, #44B09E);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        header p { color: #aaa; font-size: 1.1em; }
+        
+        .categoria {
+            margin-bottom: 30px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+        .categoria-header {
+            padding: 20px 25px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+        }
+        .categoria-header:hover { background: rgba(255,255,255,0.1); }
+        .categoria-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 1.5em;
+        }
+        .categoria-header .icon { font-size: 1.8em; }
+        .categoria-header .toggle { font-size: 1.5em; transition: transform 0.3s; }
+        .categoria.open .toggle { transform: rotate(180deg); }
+        
+        .categoria-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease;
+        }
+        .categoria.open .categoria-content { max-height: 2000px; }
+        
+        .subcategoria {
+            padding: 15px 25px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        .subcategoria h3 {
+            color: #4ECDC4;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+        .links-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        .link-card {
+            display: block;
+            padding: 15px;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+        .link-card:hover {
+            background: rgba(78,205,196,0.2);
+            border-color: #4ECDC4;
+            transform: translateY(-2px);
+        }
+        .link-card .tipo {
+            font-size: 0.75em;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+        .link-card .nombre { font-weight: 600; }
+        
+        /* Colores por tipo */
+        .pila { border-left: 4px solid #11998e; }
+        .cola-simple { border-left: 4px solid #667eea; }
+        .cola-circular { border-left: 4px solid #f093fb; }
+        .cola-doble-lineal { border-left: 4px solid #ff6b6b; }
+        .cola-doble-circular { border-left: 4px solid #ffd93d; }
+        .listas { border-left: 4px solid #6c5ce7; }
+        .arboles { border-left: 4px solid #00b894; }
+        
+        footer {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+            margin-top: 40px;
+        }
+        footer a { color: #4ECDC4; text-decoration: none; }
+        
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.7em;
+            margin-left: 10px;
+        }
+        .badge-codigo { background: #667eea; }
+        .badge-diagrama { background: #f093fb; }
+        .badge-mapa { background: #00b894; }
+        .badge-corrida { background: #ff6b6b; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 Estructuras de Datos</h1>
+            <p>Material didáctico interactivo - Uriel Romero Rodríguez</p>
+        </header>
+
+        <!-- PILAS -->
+        <div class="categoria open" id="cat-pilas">
+            <div class="categoria-header" onclick="toggleCategoria('cat-pilas')">
+                <h2><span class="icon">📦</span> Pilas (Stack)</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Material Disponible</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/codigo_pila.html" class="link-card pila">
+                            <div class="tipo">💻 Código</div>
+                            <div class="nombre">Código C#</div>
+                        </a>
+                        <a href="htmlscolas/diagrama_flujo_pila.html" class="link-card pila">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Diagrama de Flujo</div>
+                        </a>
+                        <a href="htmlscolas/corrida_pila.html" class="link-card pila">
+                            <div class="tipo">▶️ Corrida</div>
+                            <div class="nombre">Ejecución Paso a Paso</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLA SIMPLE -->
+        <div class="categoria" id="cat-cola-simple">
+            <div class="categoria-header" onclick="toggleCategoria('cat-cola-simple')">
+                <h2><span class="icon">➡️</span> Cola Simple</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Material Disponible</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/codigo_cola_simple.html" class="link-card cola-simple">
+                            <div class="tipo">💻 Código</div>
+                            <div class="nombre">Código C#</div>
+                        </a>
+                        <a href="htmlscolas/corrida_cola_simple.html" class="link-card cola-simple">
+                            <div class="tipo">▶️ Corrida</div>
+                            <div class="nombre">Ejecución Paso a Paso</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLA CIRCULAR -->
+        <div class="categoria" id="cat-cola-circular">
+            <div class="categoria-header" onclick="toggleCategoria('cat-cola-circular')">
+                <h2><span class="icon">🔄</span> Cola Circular</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Material Disponible</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/codigo_cola_circular.html" class="link-card cola-circular">
+                            <div class="tipo">💻 Código</div>
+                            <div class="nombre">Código C#</div>
+                        </a>
+                        <a href="htmlscolas/corrida_cola_circular.html" class="link-card cola-circular">
+                            <div class="tipo">▶️ Corrida</div>
+                            <div class="nombre">Ejecución Paso a Paso</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLA DOBLE LINEAL -->
+        <div class="categoria" id="cat-cola-doble-lineal">
+            <div class="categoria-header" onclick="toggleCategoria('cat-cola-doble-lineal')">
+                <h2><span class="icon">↔️</span> Cola Doble Lineal</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Material Disponible</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/codigo_cola_doble_lineal.html" class="link-card cola-doble-lineal">
+                            <div class="tipo">💻 Código</div>
+                            <div class="nombre">Código C#</div>
+                        </a>
+                        <a href="htmlscolas/corrida_cola_doble_lineal.html" class="link-card cola-doble-lineal">
+                            <div class="tipo">▶️ Corrida</div>
+                            <div class="nombre">Ejecución Paso a Paso</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- COLA DOBLE CIRCULAR -->
+        <div class="categoria" id="cat-cola-doble-circular">
+            <div class="categoria-header" onclick="toggleCategoria('cat-cola-doble-circular')">
+                <h2><span class="icon">🔁</span> Cola Doble Circular</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Código y Corridas</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/codigo_cola_doble_circular.html" class="link-card cola-doble-circular">
+                            <div class="tipo">💻 Código</div>
+                            <div class="nombre">Código C#</div>
+                        </a>
+                        <a href="htmlscolas/corrida_cola_doble_circular.html" class="link-card cola-doble-circular">
+                            <div class="tipo">▶️ Corrida</div>
+                            <div class="nombre">Ejecución Paso a Paso</div>
+                        </a>
+                    </div>
+                </div>
+                <div class="subcategoria">
+                    <h3>Diagramas de Flujo (SVG Interactivo)</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/diagrama_flujo_cola_doble_circular_encolar1.html" class="link-card cola-doble-circular">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Encolar Cola 1</div>
+                        </a>
+                        <a href="htmlscolas/diagrama_flujo_cola_doble_circular_desencolar1.html" class="link-card cola-doble-circular">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Desencolar Cola 1</div>
+                        </a>
+                        <a href="htmlscolas/diagrama_flujo_cola_doble_circular_encolar2.html" class="link-card cola-doble-circular">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Encolar Cola 2</div>
+                        </a>
+                        <a href="htmlscolas/diagrama_flujo_cola_doble_circular_desencolar2.html" class="link-card cola-doble-circular">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Desencolar Cola 2</div>
+                        </a>
+                        <a href="htmlscolas/diagrama_flujo_cola_doble_circular_buscar.html" class="link-card cola-doble-circular">
+                            <div class="tipo">📊 Diagrama</div>
+                            <div class="nombre">Buscar Dato</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LISTAS -->
+        <div class="categoria" id="cat-listas">
+            <div class="categoria-header" onclick="toggleCategoria('cat-listas')">
+                <h2><span class="icon">🔗</span> Listas Enlazadas</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Explicaciones</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/lista_simple.html" class="link-card listas">
+                            <div class="tipo">📖 Explicación</div>
+                            <div class="nombre">Lista Simple</div>
+                        </a>
+                        <a href="htmlscolas/lista_circular.html" class="link-card listas">
+                            <div class="tipo">📖 Explicación</div>
+                            <div class="nombre">Lista Circular</div>
+                        </a>
+                        <a href="htmlscolas/lista_doble_lineal.html" class="link-card listas">
+                            <div class="tipo">📖 Explicación</div>
+                            <div class="nombre">Lista Doble Lineal</div>
+                        </a>
+                        <a href="htmlscolas/lista_doble_circular.html" class="link-card listas">
+                            <div class="tipo">📖 Explicación</div>
+                            <div class="nombre">Lista Doble Circular</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÁRBOLES -->
+        <div class="categoria" id="cat-arboles">
+            <div class="categoria-header" onclick="toggleCategoria('cat-arboles')">
+                <h2><span class="icon">🌳</span> Árboles</h2>
+                <span class="toggle">▼</span>
+            </div>
+            <div class="categoria-content">
+                <div class="subcategoria">
+                    <h3>Material Disponible</h3>
+                    <div class="links-grid">
+                        <a href="htmlscolas/arboles.html" class="link-card arboles">
+                            <div class="tipo">📖 Explicación</div>
+                            <div class="nombre">Árboles Binarios</div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Desarrollado para el curso de Estructuras de Datos</p>
+            <p>2025 - <a href="https://github.com" target="_blank">Ver en GitHub</a></p>
+        </footer>
+    </div>
+
+    <script>
+        function toggleCategoria(id) {
+            const cat = document.getElementById(id);
+            cat.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>

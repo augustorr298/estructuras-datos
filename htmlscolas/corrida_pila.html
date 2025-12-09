@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida Consola - Menú Interactivo</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 15px;
+            padding: 30px;
+            margin: 0;
+            line-height: 1.3;
+        }
+        .terminal {
+            max-width: 800px;
+            margin: 0 auto;
+            border-left: 3px solid #333;
+            padding-left: 20px;
+        }
+        /* Estilos de texto */
+        .header { color: #ffd700; font-weight: bold; margin-bottom: 20px; display: block;}
+        .menu-block { color: #a9b7c6; margin-top: 20px; margin-bottom: 10px; }
+        .menu-opt { color: #fff; }
+        .prompt { color: #00ff00; } /* El cursor/prompt del sistema */
+        .input { color: #00ffff; font-weight: bold; } /* Lo que escribe el usuario */
+        .msg-ok { color: #4af626; } /* Mensajes de éxito */
+        .msg-err { color: #ff5555; } /* Errores */
+        .stack-vis { color: #dcdcaa; } /* Visualización de la pila */
+        .separator { color: #333; margin: 15px 0; border-bottom: 1px dashed #333; }
+        
+        .cursor-blink {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background-color: #00ff00;
+            animation: blink 1s step-end infinite;
+            vertical-align: text-bottom;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+    </style>
+</head>
+<body>
+    <div class="terminal">
+        <span class="header">>>> SISTEMA DE PILA ESTÁTICA (Max: 5) <<<</span>
+        <span class="header">>>> Iniciando ejecución...</span>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">1</span></div>
+        <div><span class="prompt">>> Ingrese dato:</span> <span class="input">10</span></div>
+        <br>
+        <div><span class="msg-ok">[OK] Dato '10' apilado exitosamente.</span></div>
+        <div class="stack-vis">Estado: [ 10 ]  (Tope: 0)</div>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">1</span></div>
+        <div><span class="prompt">>> Ingrese dato:</span> <span class="input">20</span></div>
+        <br>
+        <div><span class="msg-ok">[OK] Dato '20' apilado exitosamente.</span></div>
+        <div class="stack-vis">Estado: [ 10, 20 ]  (Tope: 1)</div>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">3</span></div>
+        <br>
+        <div><span class="msg-ok">>>> El dato en el tope es: 20</span></div>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">2</span></div>
+        <br>
+        <div><span class="msg-ok">[INFO] Se eliminó el dato: 20</span></div>
+        <div class="stack-vis">Estado: [ 10, 0 ]  (Tope: 0)</div>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">9</span></div>
+        <br>
+        <div><span class="msg-err">[ERROR] Opción inválida. Intente de nuevo.</span></div>
+
+        <div class="separator"></div>
+        <div class="menu-block">
+            === MENÚ ===<br>
+            1. Insertar (Push)<br>
+            2. Eliminar (Pop)<br>
+            3. Mostrar Tope (Peek)<br>
+            4. Salir
+        </div>
+        <div><span class="prompt">>> Seleccione opción:</span> <span class="input">4</span></div>
+        <br>
+        <span class="header">>>> Finalizando programa...</span>
+        <div><span class="prompt">>> Presione una tecla para cerrar</span><span class="cursor-blink"></span></div>
+    </div>
+</body>
+</html>

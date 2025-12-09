@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida - Cola Simple Lineal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .consola {
+            background: #1e1e1e;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .linea { color: #d4d4d4; }
+        .entrada { color: #4ec9b0; }
+        .salida { color: #dcdcaa; }
+        .menu { color: #ce9178; }
+        .estado { color: #6a9955; }
+        .error { color: #f44747; }
+        .arreglo { color: #b5cea8; font-weight: bold; }
+        .separador { border-top: 1px dashed #444; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📟 Corrida: Cola Simple Lineal</h1>
+        
+        <div class="consola">
+<div class="estado">// Estado inicial: frente=-1, final=-1, max=5</div>
+<div class="estado">// Arreglo: |0||0||0||0||0|</div>
+<div class="separador"></div>
+<div class="menu">--- COLA SIMPLE ---</div>
+<div class="menu">1. Encolar</div>
+<div class="menu">2. Desencolar</div>
+<div class="menu">3. Consultar</div>
+<div class="menu">4. Imprimir</div>
+<div class="menu">5. Salir</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 10</div>
+<div class="salida">Dato encolado</div>
+<div class="estado">// frente=0, final=0</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 20</div>
+<div class="salida">Dato encolado</div>
+<div class="estado">// frente=0, final=1</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 30</div>
+<div class="salida">Dato encolado</div>
+<div class="estado">// frente=0, final=2</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 4</div>
+<div class="arreglo">Frente=0    |10||20||30||0||0|    Final=2</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="salida">Dato desencolado: 10</div>
+<div class="estado">// frente=1, final=2 (FIFO: primero en entrar, primero en salir)</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 4</div>
+<div class="arreglo">Frente=1    |0||20||30||0||0|    Final=2</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 40</div>
+<div class="salida">Dato encolado</div>
+<div class="estado">// frente=1, final=3</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 50</div>
+<div class="salida">Dato encolado</div>
+<div class="estado">// frente=1, final=4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 4</div>
+<div class="arreglo">Frente=1    |0||20||30||40||50|    Final=4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 60</div>
+<div class="error">Cola llena, no se puede encolar</div>
+<div class="estado">// final == max-1, ya no hay espacio</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 3</div>
+<div class="entrada">Ingrese dato a buscar: 30</div>
+<div class="salida">Dato encontrado en posición 2</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 3</div>
+<div class="entrada">Ingrese dato a buscar: 99</div>
+<div class="salida">Dato no encontrado</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="salida">Dato desencolado: 20</div>
+<div class="estado">// frente=2, final=4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="salida">Dato desencolado: 30</div>
+<div class="estado">// frente=3, final=4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="salida">Dato desencolado: 40</div>
+<div class="estado">// frente=4, final=4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="salida">Dato desencolado: 50</div>
+<div class="estado">// frente=-1, final=-1 (cola vacía)</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="error">Cola vacía, no se puede eliminar</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 4</div>
+<div class="arreglo">Frente=-1    |0||0||0||0||0|    Final=-1</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 5</div>
+<div class="salida">Saliendo...</div>
+        </div>
+    </div>
+</body>
+</html>

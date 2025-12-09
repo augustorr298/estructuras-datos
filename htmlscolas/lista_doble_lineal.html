@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visualizador de Lista Doblemente Enlazada</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .nodo-highlight {
+      animation: pulse 0.5s ease-in-out;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
+    .nodo-encontrado {
+      animation: encontrado 0.8s ease-in-out;
+    }
+    @keyframes encontrado {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+      50% { box-shadow: 0 0 0 15px rgba(34, 197, 94, 0); }
+    }
+    .flecha-activa {
+      stroke: #f59e0b;
+      stroke-width: 3;
+    }
+  </style>
+</head>
+<body class="bg-gray-900 min-h-screen">
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    // Clase Nodo para lista doble
+    class Nodo {
+      constructor(dato) {
+        this.dato = dato;
+        this.sig = null;
+        this.ant = null;
+        this.id = Math.random().toString(36).substr(2, 9);
+      }
+    }
+
+    function ListaDobleVisualizer() {
+      const [cabecera, setCabecera] = useState(() => {
+        const p = new Nodo('P');
+        p.esCabecera = true;
+        return p;
+      });
+      const [valor, setValor] = useState('');
+      const [valorRef, setValorRef] = useState('');
+      const [valorBusqueda, setValorBusqueda] = useState('');
+      const [mensaje, setMensaje] = useState('');
+      const [nodoActivo, setNodoActivo] = useState(null);
+      const [nodoEncontrado, setNodoEncontrado] = useState(null);
+      const [pasoAlgoritmo, setPasoAlgoritmo] = useState([]);
+      const [mostrarInfo, setMostrarInfo] = useState(true);
+      const [velocidad, setVelocidad] = useState(600);
+      const [metodoActual, setMetodoActual] = useState(null);
+
+      // Convertir lista a array para renderizar
+      const obtenerNodos = () => {
+        const nodos = [cabecera];
+        let actual = cabecera.sig;
+        while (actual) {
+          nodos.push(actual);
+          actual = actual.sig;
+        }
+        return nodos;
+      };
+
+      // Clonar lista
+      const clonarLista = () => {
+        const nuevaCabecera = new Nodo('P');
+        nuevaCabecera.esCabecera = true;
+        
+        let actualOriginal = cabecera.sig;
+        let actualNuevo = nuevaCabecera;
+        
+        while (actualOriginal) {
+          const nuevoNodo = new Nodo(actualOriginal.dato);
+          nuevoNodo.ant = actualNuevo;
+          actualNuevo.sig = nuevoNodo;
+          actualNuevo = nuevoNodo;
+          actualOriginal = actualOriginal.sig;
+        }
+        
+        return nuevaCabecera;
+      };
+
+      // ==================== MÉTODOS DE INSERCIÓN ====================
+
+      const insertarAlInicio = async () => {
+        if (!valor.trim()) {
+          setMensaje('⚠️ Ingresa un valor');
+          return;
+        }
+
+        setMetodoActual('insertarInicio');
+        const pasos = [
+          { texto: 'INSERTAR AL INICIO', tipo: 'titulo' },
+          { texto: `Nuevo dato: "${valor}"`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Crear nuevo nodo Q', tipo: 'info' },
+          { texto: '2. Q.sig = P.sig (apuntar al primer nodo actual)', tipo: 'info' },
+          { texto: '3. Q.ant = P (apuntar hacia atrás a cabecera)', tipo: 'info' },
+          { texto: '4. Si P.sig != null: P.sig.ant = Q', tipo: 'info' },
+          { texto: '5. P.sig = Q (cabecera apunta al nuevo)', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        await new Promise(r => setTimeout(r, velocidad));
+
+        const nuevaCabecera = clonarLista();
+        const nuevoNodo = new Nodo(valor);
+        
+        pasos.push({ texto: `Crear nodo Q con dato "${valor}"`, tipo: 'operacion' });
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        nuevoNodo.sig = nuevaCabecera.sig;
+        nuevoNodo.ant = nuevaCabecera;
+        
+        pasos.push({ texto: `Q.sig = P.sig ${nuevaCabecera.sig ? `(apunta a "${nuevaCabecera.sig.dato}")` : '(null)'}`, tipo: 'operacion' });
+        pasos.push({ texto: 'Q.ant = P (apunta a cabecera)', tipo: 'operacion' });
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        if (nuevaCabecera.sig) {
+          pasos.push({ texto: `P.sig.ant = Q (${nuevaCabecera.sig.dato}.ant ahora es Q)`, tipo: 'operacion' });
+          nuevaCabecera.sig.ant = nuevoNodo;
+        } else {
+          pasos.push({ texto: 'P.sig es null, no hay nodo siguiente', tipo: 'info' });
+        }
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        nuevaCabecera.sig = nuevoNodo;
+        pasos.push({ texto: 'P.sig = Q (cabecera apunta al nuevo nodo)', tipo: 'operacion' });
+        pasos.push({ texto: `✓ Nodo "${valor}" insertado al inicio`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+
+        setCabecera(nuevaCabecera);
+        setNodoActivo(nuevoNodo.id);
+        setTimeout(() => setNodoActivo(null), 1000);
+        setMensaje(`✅ "${valor}" insertado al inicio`);
+        setValor('');
+        setMetodoActual(null);
+      };
+
+      const insertarAlFinal = async () => {
+        if (!valor.trim()) {
+          setMensaje('⚠️ Ingresa un valor');
+          return;
+        }
+
+        setMetodoActual('insertarFinal');
+        const pasos = [
+          { texto: 'INSERTAR AL FINAL', tipo: 'titulo' },
+          { texto: `Nuevo dato: "${valor}"`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P (comenzar en cabecera)', tipo: 'info' },
+          { texto: '2. Mientras Q.sig != null: Q = Q.sig', tipo: 'info' },
+          { texto: '3. Crear nuevo nodo', tipo: 'info' },
+          { texto: '4. NuevoNodo.ant = Q', tipo: 'info' },
+          { texto: '5. Q.sig = NuevoNodo', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        const nuevaCabecera = clonarLista();
+        let Q = nuevaCabecera;
+
+        pasos.push({ texto: 'Q = P (comenzar en cabecera)', tipo: 'operacion' });
+        setPasoAlgoritmo([...pasos]);
+        setNodoActivo(nuevaCabecera.id);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        while (Q.sig) {
+          pasos.push({ texto: `Q.sig != null → Q = Q.sig (avanzar a "${Q.sig.dato}")`, tipo: 'operacion' });
+          Q = Q.sig;
+          setPasoAlgoritmo([...pasos]);
+          setNodoActivo(Q.id);
+          await new Promise(r => setTimeout(r, velocidad));
+        }
+
+        pasos.push({ texto: 'Q.sig == null → Encontramos el final', tipo: 'info' });
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        const nuevoNodo = new Nodo(valor);
+        nuevoNodo.ant = Q;
+        Q.sig = nuevoNodo;
+
+        pasos.push({ texto: `Crear nodo con dato "${valor}"`, tipo: 'operacion' });
+        pasos.push({ texto: `NuevoNodo.ant = Q (apunta a "${Q.dato}")`, tipo: 'operacion' });
+        pasos.push({ texto: 'Q.sig = NuevoNodo', tipo: 'operacion' });
+        pasos.push({ texto: `✓ Nodo "${valor}" insertado al final`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+
+        setCabecera(nuevaCabecera);
+        setNodoActivo(nuevoNodo.id);
+        setTimeout(() => setNodoActivo(null), 1000);
+        setMensaje(`✅ "${valor}" insertado al final`);
+        setValor('');
+        setMetodoActual(null);
+      };
+
+      const insertarDespuesDe = async () => {
+        if (!valor.trim() || !valorRef.trim()) {
+          setMensaje('⚠️ Ingresa el valor y la referencia');
+          return;
+        }
+
+        setMetodoActual('insertarDespues');
+        const pasos = [
+          { texto: 'INSERTAR DESPUÉS DE', tipo: 'titulo' },
+          { texto: `Nuevo dato: "${valor}", Referencia: "${valorRef}"`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P.sig (primer nodo)', tipo: 'info' },
+          { texto: '2. Mientras Q != null Y Q.dato != ref: Q = Q.sig', tipo: 'info' },
+          { texto: '3. Si Q != null: insertar después de Q', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        const nuevaCabecera = clonarLista();
+        let Q = nuevaCabecera.sig;
+
+        if (!Q) {
+          pasos.push({ texto: 'Lista vacía, no se puede insertar', tipo: 'error' });
+          setPasoAlgoritmo([...pasos]);
+          setMensaje('❌ Lista vacía');
+          setMetodoActual(null);
+          return;
+        }
+
+        pasos.push({ texto: `Q = P.sig (comenzar en "${Q.dato}")`, tipo: 'operacion' });
+        setNodoActivo(Q.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        while (Q && Q.dato !== valorRef) {
+          pasos.push({ texto: `"${Q.dato}" != "${valorRef}" → Q = Q.sig`, tipo: 'operacion' });
+          Q = Q.sig;
+          if (Q) {
+            setNodoActivo(Q.id);
+            pasos.push({ texto: `Ahora Q apunta a "${Q.dato}"`, tipo: 'info' });
+          }
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+        }
+
+        if (Q) {
+          pasos.push({ texto: `¡Encontrado! Q.dato == "${valorRef}"`, tipo: 'exito' });
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+
+          const nuevoNodo = new Nodo(valor);
+          nuevoNodo.sig = Q.sig;
+          nuevoNodo.ant = Q;
+
+          if (Q.sig) {
+            Q.sig.ant = nuevoNodo;
+          }
+          Q.sig = nuevoNodo;
+
+          pasos.push({ texto: `NuevoNodo.sig = Q.sig`, tipo: 'operacion' });
+          pasos.push({ texto: `NuevoNodo.ant = Q`, tipo: 'operacion' });
+          pasos.push({ texto: `Q.sig = NuevoNodo`, tipo: 'operacion' });
+          pasos.push({ texto: `✓ "${valor}" insertado después de "${valorRef}"`, tipo: 'exito' });
+          setPasoAlgoritmo([...pasos]);
+
+          setCabecera(nuevaCabecera);
+          setNodoActivo(nuevoNodo.id);
+          setTimeout(() => setNodoActivo(null), 1000);
+          setMensaje(`✅ "${valor}" insertado después de "${valorRef}"`);
+        } else {
+          pasos.push({ texto: `❌ No se encontró "${valorRef}"`, tipo: 'error' });
+          setPasoAlgoritmo([...pasos]);
+          setMensaje(`❌ No se encontró "${valorRef}"`);
+        }
+
+        setValor('');
+        setValorRef('');
+        setMetodoActual(null);
+      };
+
+      // ==================== MÉTODOS DE ELIMINACIÓN ====================
+
+      const eliminarPrimero = async () => {
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('eliminarPrimero');
+        const pasos = [
+          { texto: 'ELIMINAR PRIMER NODO', tipo: 'titulo' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P.sig (primer nodo a eliminar)', tipo: 'info' },
+          { texto: '2. P.sig = Q.sig (saltar el nodo)', tipo: 'info' },
+          { texto: '3. Si Q.sig != null: Q.sig.ant = P', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        const nuevaCabecera = clonarLista();
+        const Q = nuevaCabecera.sig;
+
+        pasos.push({ texto: `Q = P.sig → Q apunta a "${Q.dato}"`, tipo: 'operacion' });
+        setNodoActivo(Q.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        const datoEliminado = Q.dato;
+        nuevaCabecera.sig = Q.sig;
+
+        if (Q.sig) {
+          Q.sig.ant = nuevaCabecera;
+          pasos.push({ texto: `P.sig = Q.sig (apunta a "${Q.sig.dato}")`, tipo: 'operacion' });
+          pasos.push({ texto: `Q.sig.ant = P`, tipo: 'operacion' });
+        } else {
+          pasos.push({ texto: 'P.sig = null (lista queda vacía)', tipo: 'operacion' });
+        }
+
+        pasos.push({ texto: `✓ Nodo "${datoEliminado}" eliminado del inicio`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+
+        setCabecera(nuevaCabecera);
+        setNodoActivo(null);
+        setMensaje(`✅ "${datoEliminado}" eliminado del inicio`);
+        setMetodoActual(null);
+      };
+
+      const eliminarUltimo = async () => {
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('eliminarUltimo');
+        const pasos = [
+          { texto: 'ELIMINAR ÚLTIMO NODO', tipo: 'titulo' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P (comenzar en cabecera)', tipo: 'info' },
+          { texto: '2. Mientras Q.sig.sig != null: Q = Q.sig', tipo: 'info' },
+          { texto: '3. Q.sig = null (eliminar último)', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        const nuevaCabecera = clonarLista();
+        let Q = nuevaCabecera;
+
+        pasos.push({ texto: 'Q = P (comenzar en cabecera)', tipo: 'operacion' });
+        setNodoActivo(nuevaCabecera.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        // Caso especial: solo hay un nodo
+        if (!Q.sig.sig) {
+          const datoEliminado = Q.sig.dato;
+          pasos.push({ texto: `Solo hay un nodo: "${datoEliminado}"`, tipo: 'info' });
+          setNodoActivo(Q.sig.id);
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+
+          nuevaCabecera.sig = null;
+          pasos.push({ texto: 'P.sig = null', tipo: 'operacion' });
+          pasos.push({ texto: `✓ Nodo "${datoEliminado}" eliminado`, tipo: 'exito' });
+          setPasoAlgoritmo([...pasos]);
+
+          setCabecera(nuevaCabecera);
+          setNodoActivo(null);
+          setMensaje(`✅ "${datoEliminado}" eliminado del final`);
+          setMetodoActual(null);
+          return;
+        }
+
+        while (Q.sig && Q.sig.sig) {
+          pasos.push({ texto: `Q.sig.sig != null → Q = Q.sig (avanzar a "${Q.sig.dato}")`, tipo: 'operacion' });
+          Q = Q.sig;
+          setNodoActivo(Q.id);
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+        }
+
+        const datoEliminado = Q.sig.dato;
+        pasos.push({ texto: `Q.sig.sig == null → "${Q.sig.dato}" es el último`, tipo: 'info' });
+        setNodoActivo(Q.sig.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        Q.sig = null;
+        pasos.push({ texto: 'Q.sig = null', tipo: 'operacion' });
+        pasos.push({ texto: `✓ Nodo "${datoEliminado}" eliminado del final`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+
+        setCabecera(nuevaCabecera);
+        setNodoActivo(null);
+        setMensaje(`✅ "${datoEliminado}" eliminado del final`);
+        setMetodoActual(null);
+      };
+
+      const eliminarPorDato = async () => {
+        if (!valorBusqueda.trim()) {
+          setMensaje('⚠️ Ingresa el dato a eliminar');
+          return;
+        }
+
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('eliminarPorDato');
+        const pasos = [
+          { texto: 'ELIMINAR NODO POR DATO', tipo: 'titulo' },
+          { texto: `Dato a eliminar: "${valorBusqueda}"`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P.sig (primer nodo)', tipo: 'info' },
+          { texto: '2. Mientras Q != null Y Q.dato != dato: Q = Q.sig', tipo: 'info' },
+          { texto: '3. Si Q != null:', tipo: 'info' },
+          { texto: '   - F = Q.ant', tipo: 'info' },
+          { texto: '   - F.sig = Q.sig', tipo: 'info' },
+          { texto: '   - Si Q.sig != null: Q.sig.ant = F', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        const nuevaCabecera = clonarLista();
+        let Q = nuevaCabecera.sig;
+
+        pasos.push({ texto: `Q = P.sig → Q apunta a "${Q.dato}"`, tipo: 'operacion' });
+        setNodoActivo(Q.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        while (Q && Q.dato !== valorBusqueda) {
+          pasos.push({ texto: `"${Q.dato}" != "${valorBusqueda}" → Q = Q.sig`, tipo: 'operacion' });
+          Q = Q.sig;
+          if (Q) {
+            setNodoActivo(Q.id);
+            pasos.push({ texto: `Ahora Q apunta a "${Q.dato}"`, tipo: 'info' });
+          }
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+        }
+
+        if (Q) {
+          pasos.push({ texto: `¡Encontrado! Q.dato == "${valorBusqueda}"`, tipo: 'exito' });
+          setNodoEncontrado(Q.id);
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+
+          const F = Q.ant;
+          F.sig = Q.sig;
+          if (Q.sig) {
+            Q.sig.ant = F;
+            pasos.push({ texto: `F.sig = Q.sig (F ahora apunta a "${Q.sig.dato}")`, tipo: 'operacion' });
+            pasos.push({ texto: `Q.sig.ant = F`, tipo: 'operacion' });
+          } else {
+            pasos.push({ texto: 'F.sig = null (era el último nodo)', tipo: 'operacion' });
+          }
+
+          pasos.push({ texto: `✓ Nodo "${valorBusqueda}" eliminado`, tipo: 'exito' });
+          setPasoAlgoritmo([...pasos]);
+
+          setCabecera(nuevaCabecera);
+          setMensaje(`✅ "${valorBusqueda}" eliminado`);
+        } else {
+          pasos.push({ texto: `❌ No se encontró "${valorBusqueda}"`, tipo: 'error' });
+          setPasoAlgoritmo([...pasos]);
+          setMensaje(`❌ No se encontró "${valorBusqueda}"`);
+        }
+
+        setNodoActivo(null);
+        setNodoEncontrado(null);
+        setValorBusqueda('');
+        setMetodoActual(null);
+      };
+
+      // ==================== MÉTODO DE BÚSQUEDA ====================
+
+      const buscarNodo = async () => {
+        if (!valorBusqueda.trim()) {
+          setMensaje('⚠️ Ingresa el dato a buscar');
+          return;
+        }
+
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('buscar');
+        const pasos = [
+          { texto: 'BÚSQUEDA EN LISTA DOBLEMENTE ENLAZADA', tipo: 'titulo' },
+          { texto: `Dato a buscar: "${valorBusqueda}"`, tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '📖 Algoritmo:', tipo: 'titulo' },
+          { texto: '1. Q = P.sig (primer nodo)', tipo: 'info' },
+          { texto: '2. posición = 1', tipo: 'info' },
+          { texto: '3. Mientras Q != null:', tipo: 'info' },
+          { texto: '   - Si Q.dato == buscado: ¡Encontrado!', tipo: 'info' },
+          { texto: '   - Q = Q.sig, posición++', tipo: 'info' },
+          { texto: '4. Si Q == null: No encontrado', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: '🔄 Ejecución:', tipo: 'titulo' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+        setNodoEncontrado(null);
+
+        let Q = cabecera.sig;
+        let posicion = 1;
+
+        pasos.push({ texto: 'Q = P.sig, posición = 1', tipo: 'operacion' });
+        setNodoActivo(Q.id);
+        setPasoAlgoritmo([...pasos]);
+        await new Promise(r => setTimeout(r, velocidad));
+
+        while (Q) {
+          pasos.push({ texto: `Paso ${posicion}: Comparar "${Q.dato}" con "${valorBusqueda}"`, tipo: 'info' });
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+
+          if (Q.dato === valorBusqueda) {
+            pasos.push({ texto: `¿"${Q.dato}" == "${valorBusqueda}"? ¡SÍ!`, tipo: 'condicion', cumple: true });
+            pasos.push({ texto: `✓ Encontrado en posición ${posicion}`, tipo: 'exito' });
+            setPasoAlgoritmo([...pasos]);
+            setNodoEncontrado(Q.id);
+            setNodoActivo(null);
+            setMensaje(`✅ "${valorBusqueda}" encontrado en posición ${posicion}`);
+            setMetodoActual(null);
+            return;
+          }
+
+          pasos.push({ texto: `¿"${Q.dato}" == "${valorBusqueda}"? NO`, tipo: 'condicion', cumple: false });
+          pasos.push({ texto: 'Q = Q.sig, posición++', tipo: 'operacion' });
+          setPasoAlgoritmo([...pasos]);
+
+          Q = Q.sig;
+          posicion++;
+
+          if (Q) {
+            setNodoActivo(Q.id);
+            await new Promise(r => setTimeout(r, velocidad));
+          }
+        }
+
+        pasos.push({ texto: 'Q == null (fin de la lista)', tipo: 'info' });
+        pasos.push({ texto: `❌ "${valorBusqueda}" no se encontró en la lista`, tipo: 'error' });
+        setPasoAlgoritmo([...pasos]);
+        setNodoActivo(null);
+        setMensaje(`❌ "${valorBusqueda}" no encontrado`);
+        setMetodoActual(null);
+      };
+
+      // ==================== RECORRIDOS ====================
+
+      const recorridoFrenteAFinal = async () => {
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('recorridoFrente');
+        const pasos = [
+          { texto: 'RECORRIDO FRENTE → FINAL', tipo: 'titulo' },
+          { texto: 'Usando puntero sig (siguiente)', tipo: 'info' },
+          { texto: '', tipo: 'separador' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        let Q = cabecera.sig;
+        let posicion = 1;
+
+        while (Q) {
+          pasos.push({ texto: `Posición ${posicion}: "${Q.dato}"`, tipo: 'exito' });
+          setNodoActivo(Q.id);
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+          Q = Q.sig;
+          posicion++;
+        }
+
+        pasos.push({ texto: '→ NULL (fin)', tipo: 'info' });
+        pasos.push({ texto: `✓ Recorrido completado (${posicion - 1} nodos)`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+        setNodoActivo(null);
+        setMensaje(`✅ Recorrido completado`);
+        setMetodoActual(null);
+      };
+
+      const recorridoFinalAFrente = async () => {
+        if (!cabecera.sig) {
+          setMensaje('❌ Lista vacía');
+          return;
+        }
+
+        setMetodoActual('recorridoFinal');
+        const pasos = [
+          { texto: 'RECORRIDO FINAL → FRENTE', tipo: 'titulo' },
+          { texto: 'Usando puntero ant (anterior)', tipo: 'info' },
+          { texto: '', tipo: 'separador' },
+          { texto: 'Primero ir al final...', tipo: 'info' }
+        ];
+        setPasoAlgoritmo([...pasos]);
+
+        // Ir al final
+        let Q = cabecera.sig;
+        while (Q.sig) {
+          Q = Q.sig;
+        }
+
+        pasos.push({ texto: `Último nodo: "${Q.dato}"`, tipo: 'info' });
+        pasos.push({ texto: '', tipo: 'separador' });
+        pasos.push({ texto: 'Recorriendo hacia atrás:', tipo: 'titulo' });
+        setPasoAlgoritmo([...pasos]);
+
+        let posicion = 1;
+        while (Q && !Q.esCabecera) {
+          pasos.push({ texto: `Posición ${posicion} (desde final): "${Q.dato}"`, tipo: 'exito' });
+          setNodoActivo(Q.id);
+          setPasoAlgoritmo([...pasos]);
+          await new Promise(r => setTimeout(r, velocidad));
+          Q = Q.ant;
+          posicion++;
+        }
+
+        pasos.push({ texto: '→ P (cabecera)', tipo: 'info' });
+        pasos.push({ texto: `✓ Recorrido inverso completado`, tipo: 'exito' });
+        setPasoAlgoritmo([...pasos]);
+        setNodoActivo(null);
+        setMensaje(`✅ Recorrido inverso completado`);
+        setMetodoActual(null);
+      };
+
+      // Reiniciar
+      const reiniciar = () => {
+        const nuevaCabecera = new Nodo('P');
+        nuevaCabecera.esCabecera = true;
+        setCabecera(nuevaCabecera);
+        setPasoAlgoritmo([]);
+        setMensaje('');
+        setNodoActivo(null);
+        setNodoEncontrado(null);
+      };
+
+      // Crear ejemplo
+      const crearEjemplo = () => {
+        const nuevaCabecera = new Nodo('P');
+        nuevaCabecera.esCabecera = true;
+        
+        const valores = ['A', 'B', 'C', 'D', 'E'];
+        let actual = nuevaCabecera;
+        
+        valores.forEach(v => {
+          const nuevoNodo = new Nodo(v);
+          nuevoNodo.ant = actual;
+          actual.sig = nuevoNodo;
+          actual = nuevoNodo;
+        });
+
+        setCabecera(nuevaCabecera);
+        setPasoAlgoritmo([
+          { texto: 'Lista de ejemplo creada', tipo: 'titulo' },
+          { texto: 'Nodos: A ↔ B ↔ C ↔ D ↔ E', tipo: 'info' },
+          { texto: '¡Prueba las operaciones!', tipo: 'exito' }
+        ]);
+        setMensaje('✅ Lista de ejemplo creada');
+      };
+
+      const nodos = obtenerNodos();
+
+      return (
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 via-blue-900 to-gray-900 text-white p-4">
+          <div className="max-w-7xl mx-auto">
+            {/* Título */}
+            <h1 className="text-3xl font-bold text-center mb-2 text-blue-300">
+              🔗 Lista Doblemente Enlazada
+            </h1>
+            <p className="text-center text-gray-400 mb-6">
+              Visualización interactiva con explicación de cada método
+            </p>
+
+            {/* Panel informativo */}
+            {mostrarInfo && (
+              <div className="bg-gray-800/50 rounded-xl p-6 mb-6 border border-blue-500/30">
+                <div className="flex justify-between items-start">
+                  <h2 className="text-xl font-bold text-blue-300 mb-4">📚 ¿Qué es una Lista Doblemente Enlazada?</h2>
+                  <button onClick={() => setMostrarInfo(false)} className="text-gray-400 hover:text-white">✕</button>
+                </div>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-bold text-green-400 mb-2">Definición:</h3>
+                    <p className="text-gray-300 text-sm mb-4">
+                      Una <strong>Lista Doblemente Enlazada</strong> es una estructura de datos lineal donde cada nodo contiene:
+                    </p>
+                    <ul className="text-sm text-gray-300 space-y-1 ml-4">
+                      <li>• <span className="text-yellow-400">dato</span>: El valor almacenado</li>
+                      <li>• <span className="text-blue-400">sig</span>: Puntero al nodo siguiente</li>
+                      <li>• <span className="text-purple-400">ant</span>: Puntero al nodo anterior</li>
+                    </ul>
+                    <p className="text-gray-300 text-sm mt-3">
+                      Usa un <strong>nodo cabecera (P)</strong> que facilita las operaciones de inserción y eliminación.
+                    </p>
+                  </div>
+                  
+                  <div>
+                    <h3 className="font-bold text-yellow-400 mb-2">Ventajas:</h3>
+                    <ul className="text-sm text-gray-300 space-y-1 ml-4">
+                      <li>✅ Recorrido en ambas direcciones</li>
+                      <li>✅ Eliminación más eficiente (no necesita nodo anterior)</li>
+                      <li>✅ Inserción antes de un nodo es O(1)</li>
+                    </ul>
+                    
+                    <h3 className="font-bold text-red-400 mb-2 mt-4">Desventajas:</h3>
+                    <ul className="text-sm text-gray-300 space-y-1 ml-4">
+                      <li>❌ Mayor uso de memoria (puntero extra)</li>
+                      <li>❌ Más compleja de implementar</li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="mt-4 p-3 bg-blue-900/30 rounded-lg">
+                  <h3 className="font-bold text-blue-300 mb-2">🔗 Estructura de un Nodo:</h3>
+                  <div className="flex justify-center items-center gap-2 text-sm">
+                    <div className="bg-purple-700 px-3 py-2 rounded">ant</div>
+                    <div className="text-gray-400">←</div>
+                    <div className="bg-gray-700 px-4 py-2 rounded border-2 border-blue-500">
+                      <span className="text-yellow-400">dato</span>
+                    </div>
+                    <div className="text-gray-400">→</div>
+                    <div className="bg-blue-700 px-3 py-2 rounded">sig</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Panel de controles */}
+              <div className="space-y-4">
+                {/* Insertar */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-green-500/30">
+                  <h3 className="font-bold text-green-400 mb-3">➕ Insertar</h3>
+                  <input
+                    type="text"
+                    value={valor}
+                    onChange={(e) => setValor(e.target.value)}
+                    placeholder="Valor"
+                    className="w-full bg-gray-700 rounded px-3 py-2 text-white mb-2"
+                  />
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <button onClick={insertarAlInicio} disabled={metodoActual}
+                      className="bg-green-600 hover:bg-green-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-sm transition-colors">
+                      Al Inicio
+                    </button>
+                    <button onClick={insertarAlFinal} disabled={metodoActual}
+                      className="bg-green-600 hover:bg-green-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-sm transition-colors">
+                      Al Final
+                    </button>
+                  </div>
+                  <input
+                    type="text"
+                    value={valorRef}
+                    onChange={(e) => setValorRef(e.target.value)}
+                    placeholder="Después de..."
+                    className="w-full bg-gray-700 rounded px-3 py-2 text-white mb-2"
+                  />
+                  <button onClick={insertarDespuesDe} disabled={metodoActual}
+                    className="w-full bg-green-700 hover:bg-green-600 disabled:opacity-50 px-3 py-2 rounded font-bold text-sm transition-colors">
+                    Insertar Después De
+                  </button>
+                </div>
+
+                {/* Buscar y Eliminar */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-blue-500/30">
+                  <h3 className="font-bold text-blue-400 mb-3">🔍 Buscar / Eliminar</h3>
+                  <input
+                    type="text"
+                    value={valorBusqueda}
+                    onChange={(e) => setValorBusqueda(e.target.value)}
+                    placeholder="Dato"
+                    className="w-full bg-gray-700 rounded px-3 py-2 text-white mb-2"
+                  />
+                  <div className="grid grid-cols-2 gap-2 mb-2">
+                    <button onClick={buscarNodo} disabled={metodoActual}
+                      className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-sm transition-colors">
+                      Buscar
+                    </button>
+                    <button onClick={eliminarPorDato} disabled={metodoActual}
+                      className="bg-red-600 hover:bg-red-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-sm transition-colors">
+                      Eliminar
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={eliminarPrimero} disabled={metodoActual}
+                      className="bg-red-700 hover:bg-red-600 disabled:opacity-50 px-3 py-2 rounded font-bold text-xs transition-colors">
+                      Eliminar 1°
+                    </button>
+                    <button onClick={eliminarUltimo} disabled={metodoActual}
+                      className="bg-red-700 hover:bg-red-600 disabled:opacity-50 px-3 py-2 rounded font-bold text-xs transition-colors">
+                      Eliminar Último
+                    </button>
+                  </div>
+                </div>
+
+                {/* Recorridos */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-purple-500/30">
+                  <h3 className="font-bold text-purple-400 mb-3">🔄 Recorridos</h3>
+                  <div className="grid grid-cols-2 gap-2">
+                    <button onClick={recorridoFrenteAFinal} disabled={metodoActual}
+                      className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-xs transition-colors">
+                      Frente → Final
+                    </button>
+                    <button onClick={recorridoFinalAFrente} disabled={metodoActual}
+                      className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 px-3 py-2 rounded font-bold text-xs transition-colors">
+                      Final → Frente
+                    </button>
+                  </div>
+                </div>
+
+                {/* Acciones */}
+                <div className="bg-gray-800/50 rounded-xl p-4 border border-yellow-500/30">
+                  <h3 className="font-bold text-yellow-400 mb-3">🎮 Acciones</h3>
+                  <div className="space-y-2">
+                    <button onClick={crearEjemplo} disabled={metodoActual}
+                      className="w-full bg-yellow-600 hover:bg-yellow-500 disabled:opacity-50 px-4 py-2 rounded font-bold transition-colors">
+                      Crear Ejemplo
+                    </button>
+                    <button onClick={() => setMostrarInfo(!mostrarInfo)}
+                      className="w-full bg-gray-600 hover:bg-gray-500 px-4 py-2 rounded font-bold transition-colors">
+                      {mostrarInfo ? 'Ocultar' : 'Mostrar'} Info
+                    </button>
+                    <button onClick={reiniciar} disabled={metodoActual}
+                      className="w-full bg-gray-700 hover:bg-gray-600 disabled:opacity-50 px-4 py-2 rounded font-bold transition-colors">
+                      🔄 Reiniciar
+                    </button>
+                  </div>
+                  
+                  {/* Velocidad */}
+                  <div className="mt-3">
+                    <label className="text-xs text-gray-400">Velocidad:</label>
+                    <input
+                      type="range" min="200" max="1200"
+                      value={1400 - velocidad}
+                      onChange={(e) => setVelocidad(1400 - parseInt(e.target.value))}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                {/* Mensaje */}
+                {mensaje && (
+                  <div className={`p-3 rounded-lg text-center font-bold ${
+                    mensaje.includes('✅') ? 'bg-green-900/50 text-green-300' :
+                    mensaje.includes('❌') ? 'bg-red-900/50 text-red-300' :
+                    'bg-yellow-900/50 text-yellow-300'
+                  }`}>
+                    {mensaje}
+                  </div>
+                )}
+              </div>
+
+              {/* Visualización de la lista */}
+              <div className="lg:col-span-1 bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                <h3 className="font-bold text-gray-300 mb-4 text-center">🔗 Visualización de la Lista</h3>
+                
+                <div className="flex flex-wrap items-center justify-center gap-1 min-h-32">
+                  {nodos.map((nodo, i) => (
+                    <React.Fragment key={nodo.id}>
+                      {/* Nodo */}
+                      <div className={`
+                        flex flex-col items-center p-2 rounded-lg border-2 transition-all duration-300
+                        ${nodo.esCabecera ? 'bg-gray-700 border-gray-500' : 
+                          nodoEncontrado === nodo.id ? 'bg-green-600 border-green-400 nodo-encontrado' :
+                          nodoActivo === nodo.id ? 'bg-amber-600 border-amber-400 nodo-highlight' :
+                          'bg-blue-600 border-blue-400'}
+                      `}>
+                        {/* Punteros */}
+                        {!nodo.esCabecera && (
+                          <div className="flex gap-1 text-xs mb-1">
+                            <span className="bg-purple-700 px-1 rounded">ant</span>
+                            <span className="bg-blue-700 px-1 rounded">sig</span>
+                          </div>
+                        )}
+                        {/* Dato */}
+                        <div className="font-bold text-lg">
+                          {nodo.esCabecera ? 'P' : nodo.dato}
+                        </div>
+                        {nodo.esCabecera && (
+                          <div className="text-xs text-gray-400">cabecera</div>
+                        )}
+                      </div>
+                      
+                      {/* Flecha doble */}
+                      {i < nodos.length - 1 && (
+                        <div className="flex flex-col items-center text-gray-400 px-1">
+                          <span className="text-xs">→</span>
+                          <span className="text-xs">←</span>
+                        </div>
+                      )}
+                    </React.Fragment>
+                  ))}
+                  
+                  {/* NULL al final */}
+                  <div className="flex items-center text-gray-400 px-1">
+                    <span>→</span>
+                  </div>
+                  <div className="bg-gray-800 border border-gray-600 px-2 py-1 rounded text-gray-500 text-sm">
+                    NULL
+                  </div>
+                </div>
+
+                {/* Leyenda */}
+                <div className="flex justify-center gap-4 mt-4 text-xs">
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded bg-gray-700 border border-gray-500"></div>
+                    <span className="text-gray-400">Cabecera</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded bg-blue-600"></div>
+                    <span className="text-gray-400">Nodo</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded bg-amber-600"></div>
+                    <span className="text-gray-400">Visitando</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <div className="w-4 h-4 rounded bg-green-600"></div>
+                    <span className="text-gray-400">Encontrado</span>
+                  </div>
+                </div>
+
+                {/* Estadísticas */}
+                <div className="mt-4 grid grid-cols-2 gap-2 text-center">
+                  <div className="bg-gray-900/50 rounded p-2">
+                    <p className="text-xl font-bold text-blue-400">{nodos.length - 1}</p>
+                    <p className="text-xs text-gray-400">Nodos (sin cabecera)</p>
+                  </div>
+                  <div className="bg-gray-900/50 rounded p-2">
+                    <p className="text-xl font-bold text-purple-400">
+                      {cabecera.sig ? cabecera.sig.dato : '-'}
+                    </p>
+                    <p className="text-xs text-gray-400">Primer nodo</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Panel de algoritmo */}
+              <div className="bg-gray-800/30 rounded-xl p-4 border border-gray-700">
+                <h3 className="font-bold text-gray-300 mb-3">📊 Algoritmo en Ejecución</h3>
+                
+                <div className="bg-gray-900/50 rounded-lg p-3 h-96 overflow-y-auto font-mono text-sm">
+                  {pasoAlgoritmo.length === 0 ? (
+                    <div className="text-gray-500 text-center">
+                      <p>Realiza una operación para ver</p>
+                      <p>el algoritmo paso a paso</p>
+                    </div>
+                  ) : (
+                    pasoAlgoritmo.map((paso, i) => (
+                      <div
+                        key={i}
+                        className={`mb-1 p-1 rounded ${
+                          paso.tipo === 'titulo' ? 'font-bold text-blue-400 mt-2' :
+                          paso.tipo === 'info' ? 'text-gray-300' :
+                          paso.tipo === 'operacion' ? 'text-yellow-400 pl-4' :
+                          paso.tipo === 'condicion' ? (paso.cumple ? 'text-green-400 pl-4' : 'text-orange-400 pl-4') :
+                          paso.tipo === 'exito' ? 'text-green-400 bg-green-900/30 font-bold' :
+                          paso.tipo === 'error' ? 'text-red-400 bg-red-900/30' :
+                          paso.tipo === 'separador' ? 'border-t border-gray-700 my-2' :
+                          'text-gray-400'
+                        }`}
+                      >
+                        {paso.texto}
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    const { createRoot } = ReactDOM;
+    const root = createRoot(document.getElementById("root"));
+    root.render(<ListaDobleVisualizer />);
+  </script>
+</body>
+</html>

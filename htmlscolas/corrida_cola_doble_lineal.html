@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida - Cola Doble Lineal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .consola {
+            background: #1e1e1e;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .linea { color: #d4d4d4; }
+        .entrada { color: #4ec9b0; }
+        .salida { color: #dcdcaa; }
+        .menu { color: #ce9178; }
+        .estado { color: #6a9955; }
+        .error { color: #f44747; }
+        .arreglo { color: #b5cea8; font-weight: bold; }
+        .cola-1 { color: #ff9999; }
+        .cola-2 { color: #7ee8e0; }
+        .separador { border-top: 1px dashed #444; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📟 Corrida: Cola Doble Lineal</h1>
+        
+        <div class="consola">
+<div class="estado">// Estado inicial: frente1=-1, final1=-1, frente2=-1, final2=-1, max=10</div>
+<div class="estado">// Cola 1: crece → desde posición 0</div>
+<div class="estado">// Cola 2: crece ← desde posición 9</div>
+<div class="estado">// Arreglo: |0||0||0||0||0||0||0||0||0||0|</div>
+<div class="separador"></div>
+<div class="menu">--- COLA DOBLE LINEAL ---</div>
+<div class="menu">1. Encolar desde el Frente (Cola 1)</div>
+<div class="menu">2. Encolar desde Atrás (Cola 2)</div>
+<div class="menu">3. Desencolar Cola 1 (izquierda)</div>
+<div class="menu">4. Desencolar Cola 2 (derecha)</div>
+<div class="menu">5. Consultar Cola 1</div>
+<div class="menu">6. Consultar Cola 2</div>
+<div class="menu">7. Imprimir</div>
+<div class="menu">8. Salir</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1 (Encolar desde el Frente - Cola 1)</div>
+<div class="entrada">Ingrese dato: 10</div>
+<div class="salida">Dato encolado en posición 0</div>
+<div class="cola-1">// frente1=0, final1=0</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 20</div>
+<div class="salida">Dato encolado en posición 1</div>
+<div class="cola-1">// frente1=0, final1=1</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 30</div>
+<div class="salida">Dato encolado en posición 2</div>
+<div class="cola-1">// frente1=0, final1=2</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 7</div>
+<div class="arreglo">f1=0 fi1=2  |10||20||30||0||0||0||0||0||0||0|  f2=-1 fi2=-1</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2 (Encolar desde Atrás - Cola 2)</div>
+<div class="entrada">Ingrese dato: 100</div>
+<div class="salida">Dato encolado en posición 9</div>
+<div class="cola-2">// frente2=9, final2=9</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="entrada">Ingrese dato: 200</div>
+<div class="salida">Dato encolado en posición 8</div>
+<div class="cola-2">// frente2=9, final2=8</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 2</div>
+<div class="entrada">Ingrese dato: 300</div>
+<div class="salida">Dato encolado en posición 7</div>
+<div class="cola-2">// frente2=9, final2=7</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 7</div>
+<div class="arreglo">f1=0 fi1=2  |10||20||30||0||0||0||0||300||200||100|  f2=9 fi2=7</div>
+<div class="estado">// Cola 1: 10→20→30 | Cola 2: 100→200→300</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 40</div>
+<div class="salida">Dato encolado en posición 3</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 50</div>
+<div class="salida">Dato encolado en posición 4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 60</div>
+<div class="salida">Dato encolado en posición 5</div>
+<div class="cola-1">// frente1=0, final1=5</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 7</div>
+<div class="arreglo">f1=0 fi1=5  |10||20||30||40||50||60||0||300||200||100|  f2=9 fi2=7</div>
+<div class="estado">// Solo queda posición 6 libre entre ambas colas</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 70</div>
+<div class="error">No hay espacio para encolar en Cola 1</div>
+<div class="estado">// final1+1 == final2, colisión (5+1=6, pero final2=7... verifiquemos)</div>
+<div class="estado">// Corrección: final1=5, final2=7, entonces final1+1=6 != final2=7</div>
+<div class="salida">Dato encolado en posición 6</div>
+<div class="cola-1">// frente1=0, final1=6</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 1</div>
+<div class="entrada">Ingrese dato: 80</div>
+<div class="error">No hay espacio para encolar en Cola 1</div>
+<div class="estado">// final1+1=7 == final2=7, ¡colisión!</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 7</div>
+<div class="arreglo">f1=0 fi1=6  |10||20||30||40||50||60||70||300||200||100|  f2=9 fi2=7</div>
+<div class="estado">// ¡Arreglo completamente lleno!</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 3 (Desencolar Cola 1)</div>
+<div class="salida">Dato desencolado: 10</div>
+<div class="cola-1">// frente1=1, final1=6</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 3</div>
+<div class="salida">Dato desencolado: 20</div>
+<div class="cola-1">// frente1=2, final1=6</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 4 (Desencolar Cola 2)</div>
+<div class="salida">Dato desencolado: 100</div>
+<div class="cola-2">// frente2=8, final2=7</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 7</div>
+<div class="arreglo">f1=2 fi1=6  |0||0||30||40||50||60||70||300||200||0|  f2=8 fi2=7</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 5 (Buscar)</div>
+<div class="entrada">Ingrese dato a buscar: 50</div>
+<div class="estado">// Buscar en Cola 1: recorrer de frente1=2 a final1=6</div>
+<div class="estado">// i=2: cola[2]=30 ≠ 50</div>
+<div class="estado">// i=3: cola[3]=40 ≠ 50</div>
+<div class="estado">// i=4: cola[4]=50 == 50 ¡Encontrado!</div>
+<div class="salida">Encontrado en Cola 1, posición 4</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 5 (Buscar)</div>
+<div class="entrada">Ingrese dato a buscar: 300</div>
+<div class="estado">// Buscar en Cola 1: recorrer de frente1=2 a final1=6</div>
+<div class="estado">// No encontrado en Cola 1</div>
+<div class="estado">// Buscar en Cola 2: recorrer de frente2=8 a final2=7</div>
+<div class="estado">// i=8: cola[8]=200 ≠ 300</div>
+<div class="estado">// i=7: cola[7]=300 == 300 ¡Encontrado!</div>
+<div class="salida">Encontrado en Cola 2, posición 7</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 5 (Buscar)</div>
+<div class="entrada">Ingrese dato a buscar: 999</div>
+<div class="estado">// Buscar en Cola 1: No encontrado</div>
+<div class="estado">// Buscar en Cola 2: No encontrado</div>
+<div class="salida">Dato no encontrado en ninguna cola</div>
+<div class="separador"></div>
+<div class="entrada">Opción: 8</div>
+<div class="salida">Saliendo...</div>
+        </div>
+    </div>
+</body>
+</html>

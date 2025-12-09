@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código - Cola Doble Lineal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .seccion {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .seccion h2 {
+            color: #f5576c;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f5576c;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .keyword { color: #569cd6; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .number { color: #b5cea8; }
+        .variable { color: #9cdcfe; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>↔️ Cola Doble Lineal</h1>
+        
+        <div class="seccion">
+            <h2>📋 Variables</h2>
+            <pre><code><span class="comment">// Cola Doble Lineal Estática</span>
+<span class="comment">// Cola 1: crece hacia la derecha (→) desde posición 0</span>
+<span class="comment">// Cola 2: crece hacia la izquierda (←) desde posición max-1</span>
+
+<span class="keyword">int</span> <span class="variable">frente1</span> = -<span class="number">1</span>, <span class="variable">final1</span> = -<span class="number">1</span>;  <span class="comment">// Cola 1 (→)</span>
+<span class="keyword">int</span> <span class="variable">frente2</span> = -<span class="number">1</span>, <span class="variable">final2</span> = -<span class="number">1</span>;  <span class="comment">// Cola 2 (←)</span>
+<span class="keyword">int</span> <span class="variable">dato</span>, <span class="variable">i</span>, <span class="variable">opcion</span>, <span class="variable">max</span> = <span class="number">10</span>;
+<span class="keyword">int</span>[] <span class="variable">cola</span> = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">10</span>];</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>➡️ Encolar desde el Frente (Cola 1)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">1</span>: <span class="comment">// Encolar desde el frente - Cola 1 (crece →)</span>
+    <span class="keyword">if</span> (<span class="variable">final1</span> + <span class="number">1</span> == <span class="variable">final2</span> || (<span class="variable">final2</span> == -<span class="number">1</span> && <span class="variable">final1</span> == <span class="variable">max</span> - <span class="number">1</span>))
+    {
+        Console.WriteLine(<span class="string">"No hay espacio para encolar a la derecha"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.Write(<span class="string">"Ingrese dato: "</span>);
+        <span class="variable">dato</span> = <span class="keyword">int</span>.Parse(Console.ReadLine());
+        <span class="variable">final1</span>++;
+        <span class="variable">cola</span>[<span class="variable">final1</span>] = <span class="variable">dato</span>;
+        
+        <span class="keyword">if</span> (<span class="variable">frente1</span> == -<span class="number">1</span>)
+        {
+            <span class="variable">frente1</span> = <span class="number">0</span>;
+        }
+        Console.WriteLine(<span class="string">"Dato encolado en posición "</span> + <span class="variable">final1</span>);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>⬅️ Encolar desde Atrás (Cola 2)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">2</span>: <span class="comment">// Encolar desde atrás - Cola 2 (crece ←)</span>
+    <span class="keyword">if</span> (<span class="variable">final2</span> - <span class="number">1</span> == <span class="variable">final1</span> || (<span class="variable">final1</span> == -<span class="number">1</span> && <span class="variable">final2</span> == <span class="number">0</span>))
+    {
+        Console.WriteLine(<span class="string">"No hay espacio para encolar a la izquierda"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.Write(<span class="string">"Ingrese dato: "</span>);
+        <span class="variable">dato</span> = <span class="keyword">int</span>.Parse(Console.ReadLine());
+        
+        <span class="keyword">if</span> (<span class="variable">final2</span> == -<span class="number">1</span>)
+        {
+            <span class="variable">final2</span> = <span class="variable">max</span> - <span class="number">1</span>;
+            <span class="variable">frente2</span> = <span class="variable">max</span> - <span class="number">1</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="variable">final2</span>--;
+        }
+        <span class="variable">cola</span>[<span class="variable">final2</span>] = <span class="variable">dato</span>;
+        Console.WriteLine(<span class="string">"Dato encolado en posición "</span> + <span class="variable">final2</span>);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>➖ Desencolar Cola 1 (izquierda)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">3</span>: <span class="comment">// Desencolar Cola 1</span>
+    <span class="keyword">if</span> (<span class="variable">frente1</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Cola 1 vacía"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.WriteLine(<span class="string">"Dato desencolado: "</span> + <span class="variable">cola</span>[<span class="variable">frente1</span>]);
+        <span class="variable">cola</span>[<span class="variable">frente1</span>] = <span class="number">0</span>;
+        
+        <span class="keyword">if</span> (<span class="variable">frente1</span> == <span class="variable">final1</span>)
+        {
+            <span class="variable">frente1</span> = -<span class="number">1</span>;
+            <span class="variable">final1</span> = -<span class="number">1</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="variable">frente1</span>++;
+        }
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>➖ Desencolar Cola 2 (derecha)</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">4</span>: <span class="comment">// Desencolar Cola 2</span>
+    <span class="keyword">if</span> (<span class="variable">frente2</span> == -<span class="number">1</span>)
+    {
+        Console.WriteLine(<span class="string">"Cola 2 vacía"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.WriteLine(<span class="string">"Dato desencolado: "</span> + <span class="variable">cola</span>[<span class="variable">frente2</span>]);
+        <span class="variable">cola</span>[<span class="variable">frente2</span>] = <span class="number">0</span>;
+        
+        <span class="keyword">if</span> (<span class="variable">frente2</span> == <span class="variable">final2</span>)
+        {
+            <span class="variable">frente2</span> = -<span class="number">1</span>;
+            <span class="variable">final2</span> = -<span class="number">1</span>;
+        }
+        <span class="keyword">else</span>
+        {
+            <span class="variable">frente2</span>--;
+        }
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>🖨️ Imprimir</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">7</span>: <span class="comment">// Imprimir cola</span>
+    Console.WriteLine(<span class="string">"Estado del arreglo:"</span>);
+    Console.Write(<span class="string">"f1="</span> + <span class="variable">frente1</span> + <span class="string">" fi1="</span> + <span class="variable">final1</span> + <span class="string">"\t"</span>);
+    <span class="keyword">for</span> (<span class="keyword">int</span> <span class="variable">j</span> = <span class="number">0</span>; <span class="variable">j</span> < <span class="variable">max</span>; <span class="variable">j</span>++)
+    {
+        Console.Write(<span class="string">"|"</span> + <span class="variable">cola</span>[<span class="variable">j</span>] + <span class="string">"|"</span>);
+    }
+    Console.WriteLine(<span class="string">"\tf2="</span> + <span class="variable">frente2</span> + <span class="string">" fi2="</span> + <span class="variable">final2</span>);
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+
+        <div class="seccion">
+            <h2>🔍 Buscar</h2>
+            <pre><code><span class="keyword">case</span> <span class="number">5</span>: <span class="comment">// Buscar en ambas colas</span>
+    Console.Write(<span class="string">"Ingrese dato a buscar: "</span>);
+    <span class="variable">dato</span> = <span class="keyword">int</span>.Parse(Console.ReadLine());
+    <span class="keyword">bool</span> <span class="variable">encontrado</span> = <span class="keyword">false</span>;
+    
+    <span class="comment">// Buscar en Cola 1 (frente1 a final1)</span>
+    <span class="keyword">if</span> (<span class="variable">frente1</span> != -<span class="number">1</span>)
+    {
+        <span class="keyword">for</span> (<span class="variable">i</span> = <span class="variable">frente1</span>; <span class="variable">i</span> <= <span class="variable">final1</span>; <span class="variable">i</span>++)
+        {
+            <span class="keyword">if</span> (<span class="variable">cola</span>[<span class="variable">i</span>] == <span class="variable">dato</span>)
+            {
+                Console.WriteLine(<span class="string">"Encontrado en Cola 1, posición "</span> + <span class="variable">i</span>);
+                <span class="variable">encontrado</span> = <span class="keyword">true</span>;
+                <span class="keyword">break</span>;
+            }
+        }
+    }
+    
+    <span class="comment">// Buscar en Cola 2 (frente2 a final2, decreciente)</span>
+    <span class="keyword">if</span> (!<span class="variable">encontrado</span> && <span class="variable">frente2</span> != -<span class="number">1</span>)
+    {
+        <span class="keyword">for</span> (<span class="variable">i</span> = <span class="variable">frente2</span>; <span class="variable">i</span> >= <span class="variable">final2</span>; <span class="variable">i</span>--)
+        {
+            <span class="keyword">if</span> (<span class="variable">cola</span>[<span class="variable">i</span>] == <span class="variable">dato</span>)
+            {
+                Console.WriteLine(<span class="string">"Encontrado en Cola 2, posición "</span> + <span class="variable">i</span>);
+                <span class="variable">encontrado</span> = <span class="keyword">true</span>;
+                <span class="keyword">break</span>;
+            }
+        }
+    }
+    
+    <span class="keyword">if</span> (!<span class="variable">encontrado</span>)
+    {
+        Console.WriteLine(<span class="string">"Dato no encontrado en ninguna cola"</span>);
+    }
+    <span class="keyword">break</span>;</code></pre>
+        </div>
+    </div>
+</body>
+</html>

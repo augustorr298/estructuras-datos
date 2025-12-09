@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Flujo - Cola Doble Circular</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+        .subtitulo {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .operaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .operacion {
+            border: 2px solid #1e3c72;
+            border-radius: 10px;
+            padding: 25px;
+            background: #f8f9ff;
+        }
+        .operacion h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            border-bottom: 2px solid #1e3c72;
+            padding-bottom: 10px;
+        }
+        .flujo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .paso {
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+        .paso::after {
+            content: '↓';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #666;
+        }
+        .paso:last-child::after {
+            display: none;
+        }
+        .inicio {
+            background: #4ECDC4;
+            color: white;
+            font-weight: bold;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .decision {
+            background: #FFD93D;
+            color: #333;
+            border-radius: 0;
+            transform: rotate(0deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 20px 40px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .proceso {
+            background: #95E1D3;
+            color: #333;
+        }
+        .salida {
+            background: #F38181;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        .fin {
+            background: #AA96DA;
+            color: white;
+            font-weight: bold;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .nota {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        .codigo {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .buscar-section {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        .buscar-section h2 {
+            color: #2e7d32;
+            border-bottom-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagrama de Flujo: Cola Doble Circular</h1>
+        <div class="subtitulo">Dos colas que comparten el mismo arreglo con comportamiento circular</div>
+        
+        <div class="operaciones-grid">
+            <!-- ENCOLAR COLA 1 (DESDE EL FRENTE) -->
+            <div class="operacion">
+                <h2>1. Encolar Cola 1 (desde el Frente)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso proceso">Leer <span class="codigo">dato</span></div>
+                    
+                    <div class="paso decision">¿frente1 == -1?<br>(Primera inserción)</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente1 = 0</span><br>
+                    <span class="codigo">final1 = 0</span><br>
+                    <span class="codigo">cola[final1] = dato</span></div>
+                    
+                    <div class="paso decision">NO → ¿Colisión?<br>Si final1==max-1: ¿0 == final2?<br>Si no: ¿final1+1 == final2?</div>
+                    
+                    <div class="paso salida">SÍ → "Colisión con Cola 2"</div>
+                    
+                    <div class="paso proceso">NO → Avanzar final1:<br>
+                    Si <span class="codigo">final1 == max-1</span> → final1 = 0<br>
+                    Si no → final1++</div>
+                    
+                    <div class="paso proceso"><span class="codigo">cola[final1] = dato</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Cola 1 inicia en 0, crece →, regresa de max-1 a 0.
+                </div>
+            </div>
+
+            <!-- DESENCOLAR COLA 1 -->
+            <div class="operacion">
+                <h2>2. Desencolar Cola 1 (izquierda)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿frente1 == -1?</div>
+                    
+                    <div class="paso salida">SÍ → "Cola 1 vacía"</div>
+                    
+                    <div class="paso salida">NO → Mostrar <span class="codigo">cola[frente1]</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">cola[frente1] = 0</span></div>
+                    
+                    <div class="paso decision">¿frente1 == final1?<br>(Último elemento)</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente1 = -1</span><br>
+                    <span class="codigo">final1 = -1</span></div>
+                    
+                    <div class="paso decision">NO → ¿frente1 == max-1?</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente1 = 0</span> (regresar)</div>
+                    
+                    <div class="paso proceso">NO → <span class="codigo">frente1++</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> El frente avanza → circularmente.
+                </div>
+            </div>
+
+            <!-- ENCOLAR COLA 2 (DESDE ATRÁS) -->
+            <div class="operacion">
+                <h2>3. Encolar Cola 2 (desde Atrás)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso proceso">Leer <span class="codigo">dato</span></div>
+                    
+                    <div class="paso decision">¿frente2 == -1?<br>(Primera inserción)</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente2 = max-1</span><br>
+                    <span class="codigo">final2 = max-1</span><br>
+                    <span class="codigo">cola[final2] = dato</span></div>
+                    
+                    <div class="paso decision">NO → ¿Colisión?<br>Si final2==0: ¿max-1 == final1?<br>Si no: ¿final2-1 == final1?</div>
+                    
+                    <div class="paso salida">SÍ → "Colisión con Cola 1"</div>
+                    
+                    <div class="paso proceso">NO → Retroceder final2:<br>
+                    Si <span class="codigo">final2 == 0</span> → final2 = max-1<br>
+                    Si no → final2--</div>
+                    
+                    <div class="paso proceso"><span class="codigo">cola[final2] = dato</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Cola 2 inicia en max-1, crece ←, regresa de 0 a max-1.
+                </div>
+            </div>
+
+            <!-- DESENCOLAR COLA 2 -->
+            <div class="operacion">
+                <h2>4. Desencolar Cola 2 (derecha)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿frente2 == -1?</div>
+                    
+                    <div class="paso salida">SÍ → "Cola 2 vacía"</div>
+                    
+                    <div class="paso salida">NO → Mostrar <span class="codigo">cola[frente2]</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">cola[frente2] = 0</span></div>
+                    
+                    <div class="paso decision">¿frente2 == final2?<br>(Último elemento)</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente2 = -1</span><br>
+                    <span class="codigo">final2 = -1</span></div>
+                    
+                    <div class="paso decision">NO → ¿frente2 == 0?</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">frente2 = max-1</span> (regresar)</div>
+                    
+                    <div class="paso proceso">NO → <span class="codigo">frente2--</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> El frente avanza ← circularmente.
+                </div>
+            </div>
+
+            <!-- CONSULTAR (buscar dato) -->
+            <div class="operacion buscar-section full-width">
+                <h2>5. Buscar Dato</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso proceso">Leer <span class="codigo">dato</span> a buscar<br>
+                    <span class="codigo">encontrado = false</span></div>
+                    
+                    <div class="paso decision">¿frente1 ≠ -1?</div>
+                    
+                    <div class="paso proceso">SÍ → Buscar en Cola 1 (circular →):<br>
+                    <span class="codigo">i = frente1</span>, recorrer hasta <span class="codigo">final1</span><br>
+                    regresa de max-1 → 0</div>
+                    
+                    <div class="paso decision">¿Dato encontrado?</div>
+                    
+                    <div class="paso salida">SÍ → Mostrar "Cola 1, posición [i]"</div>
+                    
+                    <div class="paso decision">NO → ¿frente2 ≠ -1?</div>
+                    
+                    <div class="paso proceso">SÍ → Buscar en Cola 2 (circular ←):<br>
+                    <span class="codigo">i = frente2</span>, recorrer hasta <span class="codigo">final2</span><br>
+                    regresa de 0 → max-1</div>
+                    
+                    <div class="paso decision">¿Dato encontrado?</div>
+                    
+                    <div class="paso salida">SÍ → Mostrar "Cola 2, posición [i]"</div>
+                    
+                    <div class="paso salida">NO → "Dato no encontrado"</div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Busca primero en Cola 1 (crece →) y luego en Cola 2 (crece ←). Muestra en qué cola y posición del arreglo se encuentra.
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de variables -->
+        <div style="background: #e3f2fd; padding: 25px; border-radius: 10px; border-left: 5px solid #1e3c72;">
+            <h3 style="color: #1e3c72; margin-bottom: 15px;">📋 Variables del Sistema</h3>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; font-size: 14px;">
+                <div>
+                    <strong>Cola 1 (inicia en 0, crece →):</strong><br>
+                    • <span class="codigo">frente1</span>: índice del primer elemento<br>
+                    • <span class="codigo">final1</span>: índice del último elemento<br>
+                    • Regresa: max-1 → 0
+                </div>
+                <div>
+                    <strong>Cola 2 (inicia en max-1, crece ←):</strong><br>
+                    • <span class="codigo">frente2</span>: índice del primer elemento<br>
+                    • <span class="codigo">final2</span>: índice del último elemento<br>
+                    • Regresa: 0 → max-1
+                </div>
+            </div>
+            <div style="margin-top: 15px;">
+                <strong>Compartidas:</strong><br>
+                • <span class="codigo">int[] cola = new int[max]</span>: arreglo único compartido<br>
+                • <span class="codigo">max</span>: tamaño del arreglo (ej: 10)<br>
+                • <span class="codigo">dato</span>: valor a insertar o buscar<br>
+                • <strong>Colisión Cola 1:</strong> si final1==max-1: ¿0==final2? si no: ¿final1+1==final2?<br>
+                • <strong>Colisión Cola 2:</strong> si final2==0: ¿max-1==final1? si no: ¿final2-1==final1?
+            </div>
+        </div>
+    </div>
+</body>
+</html>

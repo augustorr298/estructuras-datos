@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Flujo - Pila</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 15px;
+            font-size: 2.5em;
+        }
+        .subtitulo {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .operaciones-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+        .operacion {
+            border: 2px solid #1e3c72;
+            border-radius: 10px;
+            padding: 25px;
+            background: #f8f9ff;
+        }
+        .operacion h2 {
+            color: #1e3c72;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5em;
+            border-bottom: 2px solid #1e3c72;
+            padding-bottom: 10px;
+        }
+        .flujo {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .paso {
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+        .paso::after {
+            content: '↓';
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 20px;
+            color: #666;
+        }
+        .paso:last-child::after {
+            display: none;
+        }
+        .inicio {
+            background: #4ECDC4;
+            color: white;
+            font-weight: bold;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .decision {
+            background: #FFD93D;
+            color: #333;
+            border-radius: 0;
+            transform: rotate(0deg);
+            clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+            padding: 20px 40px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .proceso {
+            background: #95E1D3;
+            color: #333;
+        }
+        .salida {
+            background: #F38181;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+        }
+        .fin {
+            background: #AA96DA;
+            color: white;
+            font-weight: bold;
+            border-radius: 20px;
+            text-align: center;
+        }
+        .nota {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-size: 13px;
+        }
+        .codigo {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+        .buscar-section {
+            background: #e8f5e9;
+            border: 2px solid #4caf50;
+        }
+        .buscar-section h2 {
+            color: #2e7d32;
+            border-bottom-color: #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Diagrama de Flujo: Pila (Stack)</h1>
+        <div class="subtitulo">Estructura de datos LIFO (Last In, First Out)</div>
+        
+        <div class="operaciones-grid">
+            <!-- PUSH (APILAR) -->
+            <div class="operacion">
+                <h2>1. Push (Apilar)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿tope == max-1?<br>(Pila llena)</div>
+                    
+                    <div class="paso salida">SÍ → "Stack Overflow"</div>
+                    
+                    <div class="paso proceso">NO → Leer <span class="codigo">dato</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">tope++</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">pila[tope] = dato</span></div>
+                    
+                    <div class="paso salida">Mostrar "Dato apilado en posición [tope]"</div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> La pila crece hacia arriba. El tope siempre apunta al último elemento insertado.
+                </div>
+            </div>
+
+            <!-- POP (DESAPILAR) -->
+            <div class="operacion">
+                <h2>2. Pop (Desapilar)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿tope == -1?<br>(Pila vacía)</div>
+                    
+                    <div class="paso salida">SÍ → "Stack Underflow"</div>
+                    
+                    <div class="paso salida">NO → Mostrar <span class="codigo">pila[tope]</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">pila[tope] = 0</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">tope--</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Siempre se desapila el elemento que está en el tope (LIFO).
+                </div>
+            </div>
+
+            <!-- PEEK (CONSULTAR TOPE) -->
+            <div class="operacion">
+                <h2>3. Peek (Consultar Tope)</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿tope == -1?<br>(Pila vacía)</div>
+                    
+                    <div class="paso salida">SÍ → "Pila vacía"</div>
+                    
+                    <div class="paso salida">NO → Mostrar <span class="codigo">pila[tope]</span></div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Peek consulta el tope sin modificar la pila.
+                </div>
+            </div>
+
+            <!-- IMPRIMIR -->
+            <div class="operacion">
+                <h2>4. Imprimir Pila</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿tope == -1?</div>
+                    
+                    <div class="paso salida">SÍ → "[ Pila vacía ]"</div>
+                    
+                    <div class="paso proceso">NO → <span class="codigo">i = tope</span></div>
+                    
+                    <div class="paso decision">¿i >= 0?</div>
+                    
+                    <div class="paso salida">SÍ → Mostrar <span class="codigo">pila[i]</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">i--</span></div>
+                    
+                    <div class="paso decision">Repetir hasta i < 0</div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> Se imprime desde el tope hacia la base (de arriba hacia abajo).
+                </div>
+            </div>
+
+            <!-- BUSCAR -->
+            <div class="operacion buscar-section full-width">
+                <h2>5. Buscar Dato</h2>
+                <div class="flujo">
+                    <div class="paso inicio">INICIO</div>
+                    
+                    <div class="paso decision">¿tope == -1?</div>
+                    
+                    <div class="paso salida">SÍ → "Pila vacía"</div>
+                    
+                    <div class="paso proceso">NO → Leer <span class="codigo">dato</span> a buscar<br>
+                    <span class="codigo">pos = -1</span></div>
+                    
+                    <div class="paso proceso"><span class="codigo">i = tope</span></div>
+                    
+                    <div class="paso decision">¿i >= 0?</div>
+                    
+                    <div class="paso decision">SÍ → ¿pila[i] == dato?</div>
+                    
+                    <div class="paso proceso">SÍ → <span class="codigo">pos = i</span>, salir del ciclo</div>
+                    
+                    <div class="paso proceso">NO → <span class="codigo">i--</span>, repetir</div>
+                    
+                    <div class="paso decision">¿pos != -1?</div>
+                    
+                    <div class="paso salida">SÍ → "Dato encontrado en posición [pos]"</div>
+                    
+                    <div class="paso salida">NO → "Dato no encontrado"</div>
+                    
+                    <div class="paso fin">FIN</div>
+                </div>
+                <div class="nota">
+                    <strong>Nota:</strong> La búsqueda recorre la pila desde el tope hacia la base. Muestra la posición del arreglo donde se encuentra el dato.
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen de variables -->
+        <div style="background: #e3f2fd; padding: 25px; border-radius: 10px; border-left: 5px solid #1e3c72;">
+            <h3 style="color: #1e3c72; margin-bottom: 15px;">📋 Variables del Sistema</h3>
+            <div style="font-size: 14px;">
+                <strong>Variables principales:</strong><br>
+                • <span class="codigo">int[] pila = new int[max]</span>: arreglo estático<br>
+                • <span class="codigo">tope</span>: índice del último elemento insertado (inicializado en -1)<br>
+                • <span class="codigo">max</span>: tamaño máximo de la pila (ej: 10)<br>
+                • <span class="codigo">dato</span>: valor a apilar o buscar<br><br>
+                
+                <strong>Estados:</strong><br>
+                • <strong>Pila vacía:</strong> <span class="codigo">tope == -1</span><br>
+                • <strong>Pila llena:</strong> <span class="codigo">tope == max-1</span> (Stack Overflow)<br><br>
+                
+                <strong>Principio LIFO:</strong><br>
+                • Last In, First Out (Último en entrar, primero en salir)<br>
+                • Se apila con <span class="codigo">tope++</span> y se desapila con <span class="codigo">tope--</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

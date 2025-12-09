@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagrama de Flujo - Encolar Cola 1</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #1e3c72;
+            margin-bottom: 10px;
+        }
+        .subtitulo {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .nav-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .nav-links a {
+            padding: 8px 15px;
+            background: #1e3c72;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .nav-links a:hover { background: #2a5298; }
+        .nav-links a.active { background: #4ECDC4; }
+        svg { display: block; margin: 0 auto; }
+        .inicio { fill: #4ECDC4; }
+        .fin { fill: #AA96DA; }
+        .proceso { fill: #95E1D3; }
+        .decision { fill: #FFD93D; }
+        .salida { fill: #F38181; }
+        text { font-family: 'Segoe UI', sans-serif; font-size: 12px; }
+        .texto-blanco { fill: white; }
+        .texto-negro { fill: #333; }
+        .flecha { stroke: #333; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+        .linea { stroke: #333; stroke-width: 2; fill: none; }
+        .label-si { fill: #2e7d32; font-weight: bold; font-size: 11px; }
+        .label-no { fill: #c62828; font-weight: bold; font-size: 11px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Encolar Cola 1</h1>
+        <div class="subtitulo">Cola Doble Circular - Inserción desde el frente (crece →)</div>
+        
+        <div class="nav-links">
+            <a href="diagrama_flujo_cola_doble_circular_encolar1.html" class="active">Encolar C1</a>
+            <a href="diagrama_flujo_cola_doble_circular_desencolar1.html">Desencolar C1</a>
+            <a href="diagrama_flujo_cola_doble_circular_encolar2.html">Encolar C2</a>
+            <a href="diagrama_flujo_cola_doble_circular_desencolar2.html">Desencolar C2</a>
+            <a href="diagrama_flujo_cola_doble_circular_buscar.html">Buscar</a>
+        </div>
+
+        <svg width="800" height="1100" viewBox="0 0 800 1100">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+                </marker>
+            </defs>
+
+            <!-- INICIO -->
+            <ellipse cx="400" cy="40" rx="60" ry="25" class="inicio"/>
+            <text x="400" y="45" text-anchor="middle" class="texto-blanco" font-weight="bold">INICIO</text>
+            
+            <!-- Flecha -->
+            <line x1="400" y1="65" x2="400" y2="95" class="flecha"/>
+
+            <!-- Leer dato -->
+            <rect x="300" y="100" width="200" height="50" rx="5" class="proceso"/>
+            <text x="400" y="130" text-anchor="middle" class="texto-negro">Leer dato</text>
+            
+            <!-- Flecha -->
+            <line x1="400" y1="150" x2="400" y2="180" class="flecha"/>
+
+            <!-- Decision: frente1 == -1? -->
+            <polygon points="400,185 520,245 400,305 280,245" class="decision"/>
+            <text x="400" y="240" text-anchor="middle" class="texto-negro" font-weight="bold">¿frente1 == -1?</text>
+            <text x="400" y="255" text-anchor="middle" class="texto-negro" font-size="10">(Primera inserción)</text>
+
+            <!-- Rama SÍ (izquierda) - Primera inserción -->
+            <line x1="280" y1="245" x2="150" y2="245" class="linea"/>
+            <text x="220" y="235" class="label-si">SÍ</text>
+            <line x1="150" y1="245" x2="150" y2="280" class="flecha"/>
+            
+            <!-- Proceso: inicializar -->
+            <rect x="50" y="285" width="200" height="80" rx="5" class="proceso"/>
+            <text x="150" y="310" text-anchor="middle" class="texto-negro">frente1 = 0</text>
+            <text x="150" y="330" text-anchor="middle" class="texto-negro">final1 = 0</text>
+            <text x="150" y="350" text-anchor="middle" class="texto-negro">cola[final1] = dato</text>
+            
+            <!-- Flecha hacia FIN -->
+            <line x1="150" y1="365" x2="150" y2="1020" class="linea"/>
+            <line x1="150" y1="1020" x2="380" y2="1020" class="flecha"/>
+
+            <!-- Rama NO (derecha) -->
+            <line x1="520" y1="245" x2="600" y2="245" class="linea"/>
+            <text x="550" y="235" class="label-no">NO</text>
+            <line x1="600" y1="245" x2="600" y2="330" class="flecha"/>
+
+            <!-- Decision: final1 == max-1? -->
+            <polygon points="600,335 720,395 600,455 480,395" class="decision"/>
+            <text x="600" y="390" text-anchor="middle" class="texto-negro" font-weight="bold">¿final1 == max-1?</text>
+            <text x="600" y="405" text-anchor="middle" class="texto-negro" font-size="10">(En el borde)</text>
+
+            <!-- Rama SÍ - Está en el borde -->
+            <line x1="480" y1="395" x2="350" y2="395" class="linea"/>
+            <text x="420" y="385" class="label-si">SÍ</text>
+            <line x1="350" y1="395" x2="350" y2="450" class="flecha"/>
+
+            <!-- Decision: 0 == final2? (colisión al regresar) -->
+            <polygon points="350,455 470,515 350,575 230,515" class="decision"/>
+            <text x="350" y="505" text-anchor="middle" class="texto-negro" font-weight="bold">¿0 == final2?</text>
+            <text x="350" y="525" text-anchor="middle" class="texto-negro" font-size="10">(Colisión al regresar)</text>
+
+            <!-- Colisión SÍ -->
+            <line x1="230" y1="515" x2="130" y2="515" class="linea"/>
+            <text x="185" y="505" class="label-si">SÍ</text>
+            <line x1="130" y1="515" x2="130" y2="550" class="flecha"/>
+            
+            <rect x="30" y="555" width="200" height="40" rx="5" class="salida"/>
+            <text x="130" y="580" text-anchor="middle" class="texto-blanco" font-weight="bold">"Colisión con Cola 2"</text>
+            
+            <line x1="130" y1="595" x2="130" y2="1020" class="linea"/>
+            <line x1="130" y1="1020" x2="150" y2="1020" class="linea"/>
+
+            <!-- No colisión - avanzar con regreso -->
+            <line x1="470" y1="515" x2="540" y2="515" class="linea"/>
+            <text x="500" y="505" class="label-no">NO</text>
+            <line x1="540" y1="515" x2="540" y2="600" class="flecha"/>
+
+            <rect x="440" y="605" width="200" height="50" rx="5" class="proceso"/>
+            <text x="540" y="625" text-anchor="middle" class="texto-negro">final1 = 0</text>
+            <text x="540" y="645" text-anchor="middle" class="texto-negro" font-size="10">(Regresa al inicio)</text>
+
+            <line x1="540" y1="655" x2="540" y2="740" class="linea"/>
+            <line x1="540" y1="740" x2="400" y2="740" class="linea"/>
+            <line x1="400" y1="740" x2="400" y2="800" class="flecha"/>
+
+            <!-- Rama NO - No está en el borde -->
+            <line x1="720" y1="395" x2="750" y2="395" class="linea"/>
+            <text x="730" y="385" class="label-no">NO</text>
+            <line x1="750" y1="395" x2="750" y2="450" class="flecha"/>
+
+            <!-- Decision: final1+1 == final2? (colisión normal) -->
+            <polygon points="750,455 870,515 750,575 630,515" class="decision"/>
+            <text x="750" y="505" text-anchor="middle" class="texto-negro" font-weight="bold">¿final1+1 == final2?</text>
+            <text x="750" y="525" text-anchor="middle" class="texto-negro" font-size="10">(Colisión normal)</text>
+
+            <!-- Colisión SÍ -->
+            <line x1="750" y1="575" x2="750" y2="610" class="flecha"/>
+            <text x="760" y="595" class="label-si">SÍ</text>
+            
+            <rect x="650" y="615" width="200" height="40" rx="5" class="salida"/>
+            <text x="750" y="640" text-anchor="middle" class="texto-blanco" font-weight="bold">"Colisión con Cola 2"</text>
+            
+            <line x1="750" y1="655" x2="750" y2="1050" class="linea"/>
+            <line x1="750" y1="1050" x2="420" y2="1050" class="linea"/>
+            <line x1="420" y1="1050" x2="420" y2="1020" class="flecha"/>
+
+            <!-- No colisión - avanzar normal -->
+            <line x1="630" y1="515" x2="580" y2="515" class="linea"/>
+            <text x="600" y="505" class="label-no">NO</text>
+            <line x1="580" y1="515" x2="580" y2="700" class="linea"/>
+            
+            <rect x="480" y="705" width="200" height="50" rx="5" class="proceso"/>
+            <text x="580" y="725" text-anchor="middle" class="texto-negro">final1++</text>
+            <text x="580" y="745" text-anchor="middle" class="texto-negro" font-size="10">(Avanza normal)</text>
+
+            <line x1="580" y1="755" x2="580" y2="780" class="linea"/>
+            <line x1="580" y1="780" x2="400" y2="780" class="linea"/>
+            <line x1="400" y1="780" x2="400" y2="800" class="flecha"/>
+
+            <!-- Guardar dato - punto de convergencia -->
+            <rect x="300" y="805" width="200" height="50" rx="5" class="proceso"/>
+            <text x="400" y="835" text-anchor="middle" class="texto-negro">cola[final1] = dato</text>
+
+            <!-- Flecha hacia FIN -->
+            <line x1="400" y1="855" x2="400" y2="980" class="flecha"/>
+
+            <!-- FIN -->
+            <ellipse cx="400" cy="1020" rx="60" ry="25" class="fin"/>
+            <text x="400" y="1025" text-anchor="middle" class="texto-blanco" font-weight="bold">FIN</text>
+        </svg>
+
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 10px; margin-top: 20px;">
+            <h3 style="color: #1e3c72; margin-bottom: 10px;">📋 Resumen - Cola 1</h3>
+            <p><strong>Dirección:</strong> Inicia en 0, crece hacia → (índices mayores)</p>
+            <p><strong>Regreso circular:</strong> De max-1 regresa a 0</p>
+            <p><strong>Colisión:</strong> Cuando alcanzaría la posición de final2</p>
+        </div>
+    </div>
+</body>
+</html>

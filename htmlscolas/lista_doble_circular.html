@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista Doblemente Enlazada Circular - Visualizador</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes nodeHighlight {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.3); }
+        }
+        .node-highlight {
+            animation: nodeHighlight 0.5s ease-in-out;
+        }
+        @keyframes pointerMove {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+        .pointer-animate {
+            animation: pointerMove 1s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 min-h-screen">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useCallback } = React;
+
+        // Iconos SVG
+        const PlayIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+        );
+
+        const PlusIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+        );
+
+        const TrashIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+        );
+
+        const SearchIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        );
+
+        const RotateCcwIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="1 4 1 10 7 10"></polyline>
+                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+        );
+
+        const ArrowRightIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+        );
+
+        const ArrowLeftIcon = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+        );
+
+        // Clase Nodo para lista doblemente enlazada circular
+        class NodoDobleCircular {
+            constructor(dato) {
+                this.dato = dato;
+                this.sig = null;  // siguiente
+                this.ant = null;  // anterior
+            }
+        }
+
+        function ListaDobleCircularVisualizer() {
+            const [cabecera, setCabecera] = useState(null);
+            const [nodeCount, setNodeCount] = useState(0);
+            const [inputValue, setInputValue] = useState('');
+            const [searchValue, setSearchValue] = useState('');
+            const [afterValue, setAfterValue] = useState('');
+            const [highlightedNode, setHighlightedNode] = useState(null);
+            const [foundNode, setFoundNode] = useState(null);
+            const [algorithm, setAlgorithm] = useState([]);
+            const [currentStep, setCurrentStep] = useState(-1);
+            const [traversalDirection, setTraversalDirection] = useState('forward');
+            const [message, setMessage] = useState('');
+            const [version, setVersion] = useState(0);
+
+            // Forzar re-render sin clonar objetos circulares
+            const forceUpdate = () => setVersion(v => v + 1);
+
+            // Convertir lista a array para visualización
+            const getNodesArray = useCallback(() => {
+                if (!cabecera) return [];
+                const nodes = [];
+                let current = cabecera;
+                do {
+                    nodes.push(current);
+                    current = current.sig;
+                } while (current && current !== cabecera);
+                return nodes;
+            }, [cabecera, version]);
+
+            // Mostrar mensaje temporal
+            const showMessage = (msg, duration = 3000) => {
+                setMessage(msg);
+                setTimeout(() => setMessage(''), duration);
+            };
+
+            // Insertar al inicio
+            const insertarInicio = () => {
+                const valor = parseInt(inputValue);
+                if (isNaN(valor)) {
+                    showMessage('Por favor ingrese un número válido');
+                    return;
+                }
+
+                const nodes = getNodesArray();
+                const steps = [
+                    { code: `NodoDoble nuevo = new NodoDoble(${valor});`, desc: `Crear nuevo nodo con dato = ${valor}` },
+                    { code: `if (cabecera == null) { // ${!cabecera ? 'true' : 'false'}`, desc: `Verificar si la lista está vacía → ${!cabecera ? 'SÍ está vacía' : 'NO está vacía, tiene ' + nodes.length + ' nodos'}` },
+                ];
+
+                if (!cabecera) {
+                    steps.push({ code: `  cabecera = nuevo; // cabecera = [${valor}]`, desc: `El nodo [${valor}] se convierte en la cabecera` });
+                    steps.push({ code: `  cabecera.sig = cabecera; // [${valor}].sig → [${valor}]`, desc: `Siguiente apunta a sí mismo (circular)` });
+                    steps.push({ code: `  cabecera.ant = cabecera; // [${valor}].ant → [${valor}]`, desc: `Anterior apunta a sí mismo (circular)` });
+                    
+                    const nuevoNodo = new NodoDobleCircular(valor);
+                    nuevoNodo.sig = nuevoNodo;
+                    nuevoNodo.ant = nuevoNodo;
+                    setCabecera(nuevoNodo);
+                    steps.push({ code: `}`, desc: `Lista: [${valor}] ↔ (circular a sí mismo)` });
+                } else {
+                    const ultimo = cabecera.ant;
+                    steps.push({ code: `} else {`, desc: `Lista no vacía, insertar al inicio` });
+                    steps.push({ code: `  NodoDoble ultimo = cabecera.ant; // ultimo = [${ultimo.dato}]`, desc: `Obtener último nodo (anterior a cabecera): [${ultimo.dato}]` });
+                    steps.push({ code: `  nuevo.sig = cabecera; // [${valor}].sig → [${cabecera.dato}]`, desc: `Nuevo [${valor}] apunta hacia adelante a [${cabecera.dato}]` });
+                    steps.push({ code: `  nuevo.ant = ultimo; // [${valor}].ant → [${ultimo.dato}]`, desc: `Nuevo [${valor}] apunta hacia atrás a [${ultimo.dato}]` });
+                    steps.push({ code: `  cabecera.ant = nuevo; // [${cabecera.dato}].ant → [${valor}]`, desc: `Cabecera [${cabecera.dato}] ahora apunta atrás a [${valor}]` });
+                    steps.push({ code: `  ultimo.sig = nuevo; // [${ultimo.dato}].sig → [${valor}]`, desc: `Último [${ultimo.dato}] ahora apunta adelante a [${valor}]` });
+                    steps.push({ code: `  cabecera = nuevo; // cabecera = [${valor}]`, desc: `Actualizar cabecera: ahora es [${valor}]` });
+                    
+                    const nuevoNodo = new NodoDobleCircular(valor);
+                    nuevoNodo.sig = cabecera;
+                    nuevoNodo.ant = ultimo;
+                    cabecera.ant = nuevoNodo;
+                    ultimo.sig = nuevoNodo;
+                    setCabecera(nuevoNodo);
+                    steps.push({ code: `}`, desc: `Lista actualizada: [${valor}] es la nueva cabecera` });
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => prev + 1);
+                setInputValue('');
+                setHighlightedNode(valor);
+                setTimeout(() => setHighlightedNode(null), 1000);
+                showMessage(`Nodo ${valor} insertado al inicio`);
+            };
+
+            // Insertar al final
+            const insertarFinal = () => {
+                const valor = parseInt(inputValue);
+                if (isNaN(valor)) {
+                    showMessage('Por favor ingrese un número válido');
+                    return;
+                }
+
+                const nodes = getNodesArray();
+                const steps = [
+                    { code: `NodoDoble nuevo = new NodoDoble(${valor});`, desc: `Crear nuevo nodo con dato = ${valor}` },
+                    { code: `if (cabecera == null) { // ${!cabecera ? 'true' : 'false'}`, desc: `Verificar si la lista está vacía → ${!cabecera ? 'SÍ está vacía' : 'NO está vacía, tiene ' + nodes.length + ' nodos'}` },
+                ];
+
+                if (!cabecera) {
+                    steps.push({ code: `  cabecera = nuevo; // cabecera = [${valor}]`, desc: `El nodo [${valor}] se convierte en la cabecera` });
+                    steps.push({ code: `  cabecera.sig = cabecera; // [${valor}].sig → [${valor}]`, desc: `Siguiente apunta a sí mismo (circular)` });
+                    steps.push({ code: `  cabecera.ant = cabecera; // [${valor}].ant → [${valor}]`, desc: `Anterior apunta a sí mismo (circular)` });
+                    
+                    const nuevoNodo = new NodoDobleCircular(valor);
+                    nuevoNodo.sig = nuevoNodo;
+                    nuevoNodo.ant = nuevoNodo;
+                    setCabecera(nuevoNodo);
+                    steps.push({ code: `}`, desc: `Lista: [${valor}] ↔ (circular a sí mismo)` });
+                } else {
+                    const ultimo = cabecera.ant;
+                    steps.push({ code: `} else {`, desc: `Lista no vacía, insertar al final` });
+                    steps.push({ code: `  NodoDoble ultimo = cabecera.ant; // ultimo = [${ultimo.dato}]`, desc: `El último nodo es [${ultimo.dato}] (anterior a cabecera [${cabecera.dato}])` });
+                    steps.push({ code: `  nuevo.sig = cabecera; // [${valor}].sig → [${cabecera.dato}]`, desc: `Nuevo [${valor}] apunta hacia adelante a cabecera [${cabecera.dato}]` });
+                    steps.push({ code: `  nuevo.ant = ultimo; // [${valor}].ant → [${ultimo.dato}]`, desc: `Nuevo [${valor}] apunta hacia atrás a [${ultimo.dato}]` });
+                    steps.push({ code: `  ultimo.sig = nuevo; // [${ultimo.dato}].sig → [${valor}]`, desc: `Antiguo último [${ultimo.dato}] ahora apunta a [${valor}]` });
+                    steps.push({ code: `  cabecera.ant = nuevo; // [${cabecera.dato}].ant → [${valor}]`, desc: `Cabecera [${cabecera.dato}] ahora apunta atrás al nuevo último [${valor}]` });
+                    
+                    const nuevoNodo = new NodoDobleCircular(valor);
+                    nuevoNodo.sig = cabecera;
+                    nuevoNodo.ant = ultimo;
+                    ultimo.sig = nuevoNodo;
+                    cabecera.ant = nuevoNodo;
+                    forceUpdate();
+                    steps.push({ code: `}`, desc: `[${valor}] es el nuevo último nodo` });
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => prev + 1);
+                setInputValue('');
+                setHighlightedNode(valor);
+                setTimeout(() => setHighlightedNode(null), 1000);
+                showMessage(`Nodo ${valor} insertado al final`);
+            };
+
+            // Insertar después de un nodo específico
+            const insertarDespues = () => {
+                const valor = parseInt(inputValue);
+                const despuesDe = parseInt(afterValue);
+                if (isNaN(valor) || isNaN(despuesDe)) {
+                    showMessage('Por favor ingrese valores válidos');
+                    return;
+                }
+
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                const steps = [
+                    { code: `NodoDoble actual = cabecera; // actual = [${cabecera.dato}]`, desc: `Comenzar desde la cabecera [${cabecera.dato}]` },
+                    { code: `do { // Buscar nodo [${despuesDe}]`, desc: `Iniciar búsqueda circular del nodo [${despuesDe}]` },
+                ];
+
+                let current = cabecera;
+                let found = false;
+                let visitados = [];
+                do {
+                    visitados.push(current.dato);
+                    if (current.dato === despuesDe) {
+                        found = true;
+                        break;
+                    }
+                    current = current.sig;
+                } while (current !== cabecera);
+
+                steps.push({ code: `  // Nodos visitados: [${visitados.join('] → [')}]`, desc: `Recorrido: ${visitados.map(v => '[' + v + ']').join(' → ')}` });
+
+                if (!found) {
+                    steps.push({ code: `  if (actual.dato == ${despuesDe}) { // false en todos`, desc: `No se encontró [${despuesDe}] en la lista` });
+                    steps.push({ code: `} while (actual != cabecera);`, desc: `Búsqueda completada sin éxito` });
+                    steps.push({ code: `// Error: Nodo ${despuesDe} no existe`, desc: `El valor [${despuesDe}] no existe en la lista` });
+                    setAlgorithm(steps);
+                    setCurrentStep(steps.length - 1);
+                    showMessage(`Nodo ${despuesDe} no encontrado`);
+                    return;
+                }
+
+                const siguiente = current.sig;
+                steps.push({ code: `  if (actual.dato == ${despuesDe}) { // ¡ENCONTRADO!`, desc: `¡Nodo [${despuesDe}] encontrado!` });
+                steps.push({ code: `    NodoDoble nuevo = new NodoDoble(${valor});`, desc: `Crear nuevo nodo [${valor}]` });
+                steps.push({ code: `    NodoDoble siguiente = actual.sig; // siguiente = [${siguiente.dato}]`, desc: `Guardar referencia al siguiente: [${siguiente.dato}]` });
+                steps.push({ code: `    nuevo.sig = siguiente; // [${valor}].sig → [${siguiente.dato}]`, desc: `Nuevo [${valor}] apunta hacia adelante a [${siguiente.dato}]` });
+                steps.push({ code: `    nuevo.ant = actual; // [${valor}].ant → [${despuesDe}]`, desc: `Nuevo [${valor}] apunta hacia atrás a [${despuesDe}]` });
+                steps.push({ code: `    actual.sig = nuevo; // [${despuesDe}].sig → [${valor}]`, desc: `Nodo [${despuesDe}] ahora apunta a [${valor}]` });
+                steps.push({ code: `    siguiente.ant = nuevo; // [${siguiente.dato}].ant → [${valor}]`, desc: `Nodo [${siguiente.dato}] ahora apunta atrás a [${valor}]` });
+                steps.push({ code: `  }`, desc: `Inserción completada: [${despuesDe}] ↔ [${valor}] ↔ [${siguiente.dato}]` });
+
+                const nuevoNodo = new NodoDobleCircular(valor);
+                nuevoNodo.sig = siguiente;
+                nuevoNodo.ant = current;
+                current.sig = nuevoNodo;
+                siguiente.ant = nuevoNodo;
+                
+                forceUpdate();
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => prev + 1);
+                setInputValue('');
+                setAfterValue('');
+                setHighlightedNode(valor);
+                setTimeout(() => setHighlightedNode(null), 1000);
+                showMessage(`Nodo ${valor} insertado después de ${despuesDe}`);
+            };
+
+            // Eliminar primero
+            const eliminarPrimero = () => {
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                const valorEliminado = cabecera.dato;
+                const nodes = getNodesArray();
+                const esUnico = cabecera.sig === cabecera;
+                
+                const steps = [
+                    { code: `if (cabecera == null) { // false`, desc: `La lista tiene ${nodes.length} nodo(s), no está vacía` },
+                    { code: `int eliminado = cabecera.dato; // eliminado = ${valorEliminado}`, desc: `Guardar dato a eliminar: [${valorEliminado}]` },
+                    { code: `if (cabecera.sig == cabecera) { // ${esUnico ? 'true' : 'false'}`, desc: `¿Es el único nodo? → ${esUnico ? 'SÍ, solo hay [' + valorEliminado + ']' : 'NO, hay ' + nodes.length + ' nodos'}` },
+                ];
+
+                if (esUnico) {
+                    steps.push({ code: `  cabecera = null;`, desc: `Lista queda completamente vacía` });
+                    steps.push({ code: `}`, desc: `Nodo [${valorEliminado}] eliminado, lista vacía` });
+                    setCabecera(null);
+                } else {
+                    const ultimo = cabecera.ant;
+                    const segundo = cabecera.sig;
+                    steps.push({ code: `} else {`, desc: `Hay más nodos, reconectar enlaces` });
+                    steps.push({ code: `  NodoDoble ultimo = cabecera.ant; // ultimo = [${ultimo.dato}]`, desc: `Último nodo: [${ultimo.dato}]` });
+                    steps.push({ code: `  NodoDoble segundo = cabecera.sig; // segundo = [${segundo.dato}]`, desc: `Segundo nodo (nueva cabecera): [${segundo.dato}]` });
+                    steps.push({ code: `  ultimo.sig = segundo; // [${ultimo.dato}].sig → [${segundo.dato}]`, desc: `Último [${ultimo.dato}] ahora apunta a [${segundo.dato}]` });
+                    steps.push({ code: `  segundo.ant = ultimo; // [${segundo.dato}].ant → [${ultimo.dato}]`, desc: `Nuevo primero [${segundo.dato}] apunta atrás a [${ultimo.dato}]` });
+                    steps.push({ code: `  cabecera = segundo; // cabecera = [${segundo.dato}]`, desc: `Nueva cabecera: [${segundo.dato}]` });
+                    steps.push({ code: `}`, desc: `[${valorEliminado}] eliminado, nueva cabecera: [${segundo.dato}]` });
+                    
+                    ultimo.sig = segundo;
+                    segundo.ant = ultimo;
+                    setCabecera(segundo);
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => Math.max(0, prev - 1));
+                showMessage(`Nodo ${valorEliminado} eliminado del inicio`);
+            };
+
+            // Eliminar último
+            const eliminarUltimo = () => {
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                const valorEliminado = cabecera.ant.dato;
+                const nodes = getNodesArray();
+                const esUnico = cabecera.sig === cabecera;
+                
+                const steps = [
+                    { code: `if (cabecera == null) { // false`, desc: `La lista tiene ${nodes.length} nodo(s), no está vacía` },
+                    { code: `NodoDoble ultimo = cabecera.ant; // ultimo = [${valorEliminado}]`, desc: `Obtener último nodo: [${valorEliminado}]` },
+                    { code: `int eliminado = ultimo.dato; // eliminado = ${valorEliminado}`, desc: `Guardar dato a eliminar: [${valorEliminado}]` },
+                    { code: `if (cabecera.sig == cabecera) { // ${esUnico ? 'true' : 'false'}`, desc: `¿Es el único nodo? → ${esUnico ? 'SÍ' : 'NO, hay ' + nodes.length + ' nodos'}` },
+                ];
+
+                if (esUnico) {
+                    steps.push({ code: `  cabecera = null;`, desc: `Lista queda completamente vacía` });
+                    steps.push({ code: `}`, desc: `Nodo [${valorEliminado}] eliminado, lista vacía` });
+                    setCabecera(null);
+                } else {
+                    const penultimo = cabecera.ant.ant;
+                    steps.push({ code: `} else {`, desc: `Hay más nodos, reconectar enlaces` });
+                    steps.push({ code: `  NodoDoble penultimo = ultimo.ant; // penultimo = [${penultimo.dato}]`, desc: `Penúltimo nodo (nuevo último): [${penultimo.dato}]` });
+                    steps.push({ code: `  penultimo.sig = cabecera; // [${penultimo.dato}].sig → [${cabecera.dato}]`, desc: `Penúltimo [${penultimo.dato}] ahora apunta a cabecera [${cabecera.dato}]` });
+                    steps.push({ code: `  cabecera.ant = penultimo; // [${cabecera.dato}].ant → [${penultimo.dato}]`, desc: `Cabecera [${cabecera.dato}] ahora apunta atrás a [${penultimo.dato}]` });
+                    steps.push({ code: `}`, desc: `[${valorEliminado}] eliminado, nuevo último: [${penultimo.dato}]` });
+                    
+                    penultimo.sig = cabecera;
+                    cabecera.ant = penultimo;
+                    forceUpdate();
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => Math.max(0, prev - 1));
+                showMessage(`Nodo ${valorEliminado} eliminado del final`);
+            };
+
+            // Eliminar por dato
+            const eliminarPorDato = () => {
+                const valor = parseInt(searchValue);
+                if (isNaN(valor)) {
+                    showMessage('Por favor ingrese un valor válido');
+                    return;
+                }
+
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                const nodes = getNodesArray();
+                const steps = [
+                    { code: `if (cabecera == null) { // false`, desc: `La lista tiene ${nodes.length} nodo(s)` },
+                    { code: `NodoDoble actual = cabecera; // actual = [${cabecera.dato}]`, desc: `Comenzar desde cabecera [${cabecera.dato}]` },
+                    { code: `do { // Buscar [${valor}]`, desc: `Iniciar búsqueda circular del nodo [${valor}]` },
+                ];
+
+                let current = cabecera;
+                let found = false;
+                let visitados = [];
+                do {
+                    visitados.push(current.dato);
+                    if (current.dato === valor) {
+                        found = true;
+                        break;
+                    }
+                    current = current.sig;
+                } while (current !== cabecera);
+
+                steps.push({ code: `  // Nodos visitados: [${visitados.join('] → [')}]`, desc: `Recorrido: ${visitados.map(v => '[' + v + ']').join(' → ')}` });
+
+                if (!found) {
+                    steps.push({ code: `  if (actual.dato == ${valor}) { // false en todos`, desc: `No se encontró [${valor}] en la lista` });
+                    steps.push({ code: `} while (actual != cabecera);`, desc: `Búsqueda completada sin éxito` });
+                    steps.push({ code: `// Error: Nodo ${valor} no existe`, desc: `El valor [${valor}] no existe en la lista` });
+                    setAlgorithm(steps);
+                    setCurrentStep(steps.length - 1);
+                    showMessage(`Nodo ${valor} no encontrado`);
+                    return;
+                }
+
+                steps.push({ code: `  if (actual.dato == ${valor}) { // ¡ENCONTRADO!`, desc: `¡Nodo [${valor}] encontrado!` });
+
+                // Si es el único nodo
+                if (cabecera.sig === cabecera && cabecera.dato === valor) {
+                    steps.push({ code: `    // Único nodo en la lista`, desc: `[${valor}] es el único nodo` });
+                    steps.push({ code: `    cabecera = null;`, desc: `Lista queda completamente vacía` });
+                    steps.push({ code: `  }`, desc: `Nodo [${valor}] eliminado, lista vacía` });
+                    setCabecera(null);
+                } else if (current === cabecera) {
+                    // Es la cabecera pero hay más nodos
+                    const ultimo = cabecera.ant;
+                    const segundo = cabecera.sig;
+                    steps.push({ code: `    // Es la cabecera, hay ${nodes.length} nodos`, desc: `[${valor}] es la cabecera, reconectar` });
+                    steps.push({ code: `    NodoDoble ultimo = cabecera.ant; // [${ultimo.dato}]`, desc: `Último nodo: [${ultimo.dato}]` });
+                    steps.push({ code: `    NodoDoble segundo = cabecera.sig; // [${segundo.dato}]`, desc: `Segundo nodo (nueva cabecera): [${segundo.dato}]` });
+                    steps.push({ code: `    ultimo.sig = segundo; // [${ultimo.dato}].sig → [${segundo.dato}]`, desc: `Último [${ultimo.dato}] apunta a [${segundo.dato}]` });
+                    steps.push({ code: `    segundo.ant = ultimo; // [${segundo.dato}].ant → [${ultimo.dato}]`, desc: `Nuevo primero [${segundo.dato}] apunta atrás a [${ultimo.dato}]` });
+                    steps.push({ code: `    cabecera = segundo; // cabecera = [${segundo.dato}]`, desc: `Nueva cabecera: [${segundo.dato}]` });
+                    steps.push({ code: `  }`, desc: `[${valor}] eliminado, nueva cabecera: [${segundo.dato}]` });
+                    
+                    ultimo.sig = segundo;
+                    segundo.ant = ultimo;
+                    setCabecera(segundo);
+                } else {
+                    // Nodo intermedio o final
+                    const anterior = current.ant;
+                    const siguiente = current.sig;
+                    steps.push({ code: `    // Nodo intermedio o final`, desc: `[${valor}] está entre [${anterior.dato}] y [${siguiente.dato}]` });
+                    steps.push({ code: `    NodoDoble anterior = actual.ant; // [${anterior.dato}]`, desc: `Nodo anterior: [${anterior.dato}]` });
+                    steps.push({ code: `    NodoDoble siguiente = actual.sig; // [${siguiente.dato}]`, desc: `Nodo siguiente: [${siguiente.dato}]` });
+                    steps.push({ code: `    anterior.sig = siguiente; // [${anterior.dato}].sig → [${siguiente.dato}]`, desc: `[${anterior.dato}] ahora apunta a [${siguiente.dato}]` });
+                    steps.push({ code: `    siguiente.ant = anterior; // [${siguiente.dato}].ant → [${anterior.dato}]`, desc: `[${siguiente.dato}] ahora apunta atrás a [${anterior.dato}]` });
+                    steps.push({ code: `  }`, desc: `[${valor}] eliminado, [${anterior.dato}] ↔ [${siguiente.dato}]` });
+                    
+                    anterior.sig = siguiente;
+                    siguiente.ant = anterior;
+                    forceUpdate();
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setNodeCount(prev => Math.max(0, prev - 1));
+                setSearchValue('');
+                showMessage(`Nodo ${valor} eliminado`);
+            };
+
+            // Buscar nodo
+            const buscar = () => {
+                const valor = parseInt(searchValue);
+                if (isNaN(valor)) {
+                    showMessage('Por favor ingrese un valor válido');
+                    return;
+                }
+
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                const nodes = getNodesArray();
+                const steps = [
+                    { code: `NodoDoble actual = cabecera; // actual = [${cabecera.dato}]`, desc: `Comenzar desde cabecera [${cabecera.dato}]` },
+                    { code: `int posicion = 0;`, desc: `Inicializar contador de posición` },
+                    { code: `do { // Buscar [${valor}] en ${nodes.length} nodos`, desc: `Iniciar búsqueda circular del nodo [${valor}]` },
+                ];
+
+                let current = cabecera;
+                let position = 0;
+                let found = false;
+                let visitados = [];
+                do {
+                    visitados.push({ dato: current.dato, pos: position });
+                    if (current.dato === valor) {
+                        found = true;
+                        break;
+                    }
+                    position++;
+                    current = current.sig;
+                } while (current !== cabecera);
+
+                steps.push({ code: `  // Recorrido: ${visitados.map(v => '[' + v.dato + ']').join(' → ')}`, desc: `Nodos visitados: ${visitados.map(v => '[' + v.dato + '] pos ' + v.pos).join(', ')}` });
+
+                if (found) {
+                    steps.push({ code: `  if (actual.dato == ${valor}) { // ¡ENCONTRADO!`, desc: `¡Coincidencia! actual.dato = ${valor}` });
+                    steps.push({ code: `    return posicion; // return ${position}`, desc: `Retornar posición ${position}` });
+                    steps.push({ code: `  }`, desc: `Nodo [${valor}] está en posición ${position}` });
+                    setFoundNode(valor);
+                    setTimeout(() => setFoundNode(null), 2000);
+                    showMessage(`Nodo ${valor} encontrado en posición ${position}`);
+                } else {
+                    steps.push({ code: `  if (actual.dato == ${valor}) { // false en todos`, desc: `No se encontró [${valor}]` });
+                    steps.push({ code: `} while (actual != cabecera);`, desc: `Recorrido completo, volvimos a cabecera` });
+                    steps.push({ code: `return -1; // No encontrado`, desc: `[${valor}] no existe en la lista` });
+                    showMessage(`Nodo ${valor} no encontrado`);
+                }
+
+                setAlgorithm(steps);
+                setCurrentStep(steps.length - 1);
+                setSearchValue('');
+            };
+
+            // Recorrer lista
+            const recorrer = (direction) => {
+                if (!cabecera) {
+                    showMessage('La lista está vacía');
+                    return;
+                }
+
+                setTraversalDirection(direction);
+                const nodes = getNodesArray();
+                const orderedNodes = direction === 'forward' ? nodes : [...nodes].reverse();
+                const listaStr = nodes.map(n => '[' + n.dato + ']').join(' ↔ ');
+
+                const steps = [
+                    { code: `NodoDoble actual = cabecera; // actual = [${cabecera.dato}]`, desc: `Comenzar desde cabecera [${cabecera.dato}]` },
+                    { code: `// Lista: ${listaStr} (circular)`, desc: `Lista con ${nodes.length} nodos: ${listaStr}` },
+                    { code: `do { // Recorrer ${direction === 'forward' ? 'hacia adelante' : 'hacia atrás'}`, desc: `Iniciar recorrido ${direction === 'forward' ? 'usando .sig' : 'usando .ant'}` },
+                ];
+
+                orderedNodes.forEach((node, index) => {
+                    const siguiente = direction === 'forward' ? node.sig : node.ant;
+                    steps.push({ 
+                        code: `  Console.WriteLine(actual.dato); // Imprime: ${node.dato}`, 
+                        desc: `Paso ${index + 1}: Visitar nodo [${node.dato}]` 
+                    });
+                    steps.push({ 
+                        code: `  actual = actual.${direction === 'forward' ? 'sig' : 'ant'}; // actual → [${siguiente.dato}]`, 
+                        desc: `Avanzar: actual ahora es [${siguiente.dato}]` 
+                    });
+                });
+
+                steps.push({ code: `} while (actual != cabecera); // [${cabecera.dato}] == [${cabecera.dato}] → FIN`, desc: `Volvimos a cabecera [${cabecera.dato}], recorrido completo` });
+                steps.push({ code: `// Recorrido: ${orderedNodes.map(n => '[' + n.dato + ']').join(' → ')}`, desc: `Orden visitado: ${orderedNodes.map(n => '[' + n.dato + ']').join(' → ')}` });
+
+                setAlgorithm(steps);
+                setCurrentStep(0);
+
+                // Animar recorrido
+                let i = 0;
+                const interval = setInterval(() => {
+                    if (i < orderedNodes.length) {
+                        setHighlightedNode(orderedNodes[i].dato);
+                        setCurrentStep(3 + i * 2);
+                        i++;
+                    } else {
+                        clearInterval(interval);
+                        setHighlightedNode(null);
+                        setCurrentStep(steps.length - 1);
+                    }
+                }, 800);
+
+                showMessage(`Recorriendo ${direction === 'forward' ? 'hacia adelante (sig)' : 'hacia atrás (ant)'}`);
+            };
+
+            // Limpiar lista
+            const limpiar = () => {
+                setCabecera(null);
+                setNodeCount(0);
+                setAlgorithm([]);
+                setCurrentStep(-1);
+                setHighlightedNode(null);
+                setFoundNode(null);
+                showMessage('Lista reiniciada');
+            };
+
+            const nodes = getNodesArray();
+
+            // Calcular posiciones en círculo
+            const getCircularPosition = (index, total) => {
+                const centerX = 350;
+                const centerY = 200;
+                const radius = Math.min(150, 50 + total * 20);
+                const angle = (2 * Math.PI * index / total) - Math.PI / 2;
+                return {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle)
+                };
+            };
+
+            return (
+                <div className="min-h-screen bg-gray-900 text-white p-6">
+                    <div className="max-w-7xl mx-auto">
+                        {/* Header */}
+                        <div className="text-center mb-8">
+                            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
+                                Lista Doblemente Enlazada Circular
+                            </h1>
+                            <p className="text-gray-400 mt-2">
+                                Visualización interactiva con enlaces bidireccionales y estructura circular
+                            </p>
+                        </div>
+
+                        {/* Mensaje */}
+                        {message && (
+                            <div className="mb-4 p-3 bg-blue-500/20 border border-blue-500 rounded-lg text-center">
+                                {message}
+                            </div>
+                        )}
+
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            {/* Panel de visualización */}
+                            <div className="lg:col-span-2 bg-gray-800 rounded-xl p-6 border border-gray-700">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h2 className="text-xl font-semibold text-purple-400">
+                                        Visualización de la Lista
+                                    </h2>
+                                    <span className="text-sm text-gray-400">
+                                        Nodos: {nodeCount}
+                                    </span>
+                                </div>
+
+                                {/* Área de visualización circular */}
+                                <div className="bg-gray-900 rounded-lg p-4 min-h-[400px] flex items-center justify-center">
+                                    {nodes.length === 0 ? (
+                                        <div className="text-gray-500 text-center">
+                                            <div className="text-6xl mb-4">🔄</div>
+                                            <p>Lista vacía</p>
+                                            <p className="text-sm">Inserte elementos para comenzar</p>
+                                        </div>
+                                    ) : (
+                                        <svg width="700" height="400" className="overflow-visible">
+                                            {/* Dibujar conexiones circulares */}
+                                            {nodes.map((node, index) => {
+                                                const pos = getCircularPosition(index, nodes.length);
+                                                const nextIndex = (index + 1) % nodes.length;
+                                                const nextPos = getCircularPosition(nextIndex, nodes.length);
+                                                
+                                                // Ángulo para las flechas
+                                                const angle = Math.atan2(nextPos.y - pos.y, nextPos.x - pos.x);
+                                                const startX = pos.x + 35 * Math.cos(angle);
+                                                const startY = pos.y + 35 * Math.sin(angle);
+                                                const endX = nextPos.x - 35 * Math.cos(angle);
+                                                const endY = nextPos.y - 35 * Math.sin(angle);
+
+                                                // Control point para curva
+                                                const midX = (startX + endX) / 2;
+                                                const midY = (startY + endY) / 2;
+                                                const perpX = -(endY - startY) * 0.2;
+                                                const perpY = (endX - startX) * 0.2;
+
+                                                return (
+                                                    <g key={`arrows-${index}`}>
+                                                        {/* Flecha sig (exterior) */}
+                                                        <path
+                                                            d={`M ${startX} ${startY} Q ${midX + perpX} ${midY + perpY} ${endX} ${endY}`}
+                                                            fill="none"
+                                                            stroke="#10b981"
+                                                            strokeWidth="2"
+                                                            markerEnd="url(#arrowGreen)"
+                                                        />
+                                                        {/* Flecha ant (interior) */}
+                                                        <path
+                                                            d={`M ${endX} ${endY} Q ${midX - perpX} ${midY - perpY} ${startX} ${startY}`}
+                                                            fill="none"
+                                                            stroke="#f59e0b"
+                                                            strokeWidth="2"
+                                                            markerEnd="url(#arrowOrange)"
+                                                        />
+                                                    </g>
+                                                );
+                                            })}
+
+                                            {/* Marcadores de flecha */}
+                                            <defs>
+                                                <marker
+                                                    id="arrowGreen"
+                                                    viewBox="0 0 10 10"
+                                                    refX="9"
+                                                    refY="5"
+                                                    markerWidth="6"
+                                                    markerHeight="6"
+                                                    orient="auto-start-reverse"
+                                                >
+                                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#10b981" />
+                                                </marker>
+                                                <marker
+                                                    id="arrowOrange"
+                                                    viewBox="0 0 10 10"
+                                                    refX="9"
+                                                    refY="5"
+                                                    markerWidth="6"
+                                                    markerHeight="6"
+                                                    orient="auto-start-reverse"
+                                                >
+                                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#f59e0b" />
+                                                </marker>
+                                            </defs>
+
+                                            {/* Dibujar nodos */}
+                                            {nodes.map((node, index) => {
+                                                const pos = getCircularPosition(index, nodes.length);
+                                                const isHighlighted = highlightedNode === node.dato;
+                                                const isFound = foundNode === node.dato;
+                                                const isHead = index === 0;
+
+                                                return (
+                                                    <g key={`node-${index}`} className={isHighlighted ? 'node-highlight' : ''}>
+                                                        {/* Indicador de cabecera */}
+                                                        {isHead && (
+                                                            <g>
+                                                                <text
+                                                                    x={pos.x}
+                                                                    y={pos.y - 45}
+                                                                    textAnchor="middle"
+                                                                    fill="#a855f7"
+                                                                    fontSize="12"
+                                                                    fontWeight="bold"
+                                                                >
+                                                                    CABECERA
+                                                                </text>
+                                                                <path
+                                                                    d={`M ${pos.x} ${pos.y - 38} L ${pos.x} ${pos.y - 28}`}
+                                                                    stroke="#a855f7"
+                                                                    strokeWidth="2"
+                                                                    markerEnd="url(#arrowPurple)"
+                                                                />
+                                                            </g>
+                                                        )}
+
+                                                        {/* Nodo circular */}
+                                                        <circle
+                                                            cx={pos.x}
+                                                            cy={pos.y}
+                                                            r="30"
+                                                            fill={isFound ? '#22c55e' : isHighlighted ? '#8b5cf6' : '#1e3a5f'}
+                                                            stroke={isHead ? '#a855f7' : '#3b82f6'}
+                                                            strokeWidth={isHead ? "3" : "2"}
+                                                        />
+
+                                                        {/* Dato */}
+                                                        <text
+                                                            x={pos.x}
+                                                            y={pos.y + 5}
+                                                            textAnchor="middle"
+                                                            fill="white"
+                                                            fontSize="16"
+                                                            fontWeight="bold"
+                                                        >
+                                                            {node.dato}
+                                                        </text>
+
+                                                        {/* Índice */}
+                                                        <text
+                                                            x={pos.x}
+                                                            y={pos.y + 50}
+                                                            textAnchor="middle"
+                                                            fill="#9ca3af"
+                                                            fontSize="10"
+                                                        >
+                                                            [{index}]
+                                                        </text>
+                                                    </g>
+                                                );
+                                            })}
+
+                                            {/* Marcador flecha púrpura */}
+                                            <defs>
+                                                <marker
+                                                    id="arrowPurple"
+                                                    viewBox="0 0 10 10"
+                                                    refX="5"
+                                                    refY="5"
+                                                    markerWidth="6"
+                                                    markerHeight="6"
+                                                    orient="auto-start-reverse"
+                                                >
+                                                    <path d="M 0 0 L 10 5 L 0 10 z" fill="#a855f7" />
+                                                </marker>
+                                            </defs>
+
+                                            {/* Leyenda */}
+                                            <g transform="translate(550, 20)">
+                                                <text x="0" y="0" fill="#9ca3af" fontSize="12" fontWeight="bold">Leyenda:</text>
+                                                <line x1="0" y1="15" x2="30" y2="15" stroke="#10b981" strokeWidth="2" />
+                                                <text x="35" y="20" fill="#10b981" fontSize="11">sig →</text>
+                                                <line x1="0" y1="35" x2="30" y2="35" stroke="#f59e0b" strokeWidth="2" />
+                                                <text x="35" y="40" fill="#f59e0b" fontSize="11">← ant</text>
+                                            </g>
+                                        </svg>
+                                    )}
+                                </div>
+
+                                {/* Estructura en memoria */}
+                                {nodes.length > 0 && (
+                                    <div className="mt-4 p-3 bg-gray-700/50 rounded-lg">
+                                        <h4 className="text-sm font-semibold text-gray-300 mb-2">Estructura Circular:</h4>
+                                        <div className="flex flex-wrap items-center gap-1 text-xs font-mono">
+                                            <span className="text-purple-400">cabecera</span>
+                                            <span className="text-gray-500">→</span>
+                                            {nodes.map((node, i) => (
+                                                <span key={i} className="flex items-center">
+                                                    <span className="bg-blue-500/30 px-2 py-1 rounded border border-blue-500">
+                                                        {node.dato}
+                                                    </span>
+                                                    <span className="text-green-400 mx-1">⇄</span>
+                                                </span>
+                                            ))}
+                                            <span className="text-purple-400">(vuelve a cabecera)</span>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Panel de operaciones */}
+                            <div className="space-y-4">
+                                {/* Insertar */}
+                                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                                    <h3 className="text-lg font-semibold text-green-400 mb-3">Insertar</h3>
+                                    <input
+                                        type="number"
+                                        value={inputValue}
+                                        onChange={(e) => setInputValue(e.target.value)}
+                                        placeholder="Valor a insertar"
+                                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-3 text-white"
+                                    />
+                                    <div className="grid grid-cols-2 gap-2 mb-3">
+                                        <button
+                                            onClick={insertarInicio}
+                                            className="flex items-center justify-center gap-1 p-2 bg-green-600 hover:bg-green-500 rounded text-sm transition-colors"
+                                        >
+                                            <PlusIcon /> Inicio
+                                        </button>
+                                        <button
+                                            onClick={insertarFinal}
+                                            className="flex items-center justify-center gap-1 p-2 bg-green-600 hover:bg-green-500 rounded text-sm transition-colors"
+                                        >
+                                            <PlusIcon /> Final
+                                        </button>
+                                    </div>
+                                    <input
+                                        type="number"
+                                        value={afterValue}
+                                        onChange={(e) => setAfterValue(e.target.value)}
+                                        placeholder="Insertar después de..."
+                                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-2 text-white"
+                                    />
+                                    <button
+                                        onClick={insertarDespues}
+                                        className="w-full flex items-center justify-center gap-1 p-2 bg-teal-600 hover:bg-teal-500 rounded text-sm transition-colors"
+                                    >
+                                        <PlusIcon /> Insertar Después
+                                    </button>
+                                </div>
+
+                                {/* Eliminar */}
+                                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                                    <h3 className="text-lg font-semibold text-red-400 mb-3">Eliminar</h3>
+                                    <div className="grid grid-cols-2 gap-2 mb-3">
+                                        <button
+                                            onClick={eliminarPrimero}
+                                            className="flex items-center justify-center gap-1 p-2 bg-red-600 hover:bg-red-500 rounded text-sm transition-colors"
+                                        >
+                                            <TrashIcon /> Primero
+                                        </button>
+                                        <button
+                                            onClick={eliminarUltimo}
+                                            className="flex items-center justify-center gap-1 p-2 bg-red-600 hover:bg-red-500 rounded text-sm transition-colors"
+                                        >
+                                            <TrashIcon /> Último
+                                        </button>
+                                    </div>
+                                    <button
+                                        onClick={eliminarPorDato}
+                                        className="w-full flex items-center justify-center gap-1 p-2 bg-orange-600 hover:bg-orange-500 rounded text-sm transition-colors"
+                                    >
+                                        <TrashIcon /> Eliminar por Dato
+                                    </button>
+                                </div>
+
+                                {/* Buscar */}
+                                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                                    <h3 className="text-lg font-semibold text-yellow-400 mb-3">Buscar</h3>
+                                    <input
+                                        type="number"
+                                        value={searchValue}
+                                        onChange={(e) => setSearchValue(e.target.value)}
+                                        placeholder="Valor a buscar"
+                                        className="w-full p-2 bg-gray-700 border border-gray-600 rounded mb-2 text-white"
+                                    />
+                                    <button
+                                        onClick={buscar}
+                                        className="w-full flex items-center justify-center gap-1 p-2 bg-yellow-600 hover:bg-yellow-500 rounded text-sm transition-colors"
+                                    >
+                                        <SearchIcon /> Buscar
+                                    </button>
+                                </div>
+
+                                {/* Recorrer */}
+                                <div className="bg-gray-800 rounded-xl p-4 border border-gray-700">
+                                    <h3 className="text-lg font-semibold text-blue-400 mb-3">Recorrer</h3>
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button
+                                            onClick={() => recorrer('forward')}
+                                            className="flex items-center justify-center gap-1 p-2 bg-blue-600 hover:bg-blue-500 rounded text-sm transition-colors"
+                                        >
+                                            <ArrowRightIcon /> sig →
+                                        </button>
+                                        <button
+                                            onClick={() => recorrer('backward')}
+                                            className="flex items-center justify-center gap-1 p-2 bg-blue-600 hover:bg-blue-500 rounded text-sm transition-colors"
+                                        >
+                                            <ArrowLeftIcon /> ← ant
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Limpiar */}
+                                <button
+                                    onClick={limpiar}
+                                    className="w-full flex items-center justify-center gap-2 p-3 bg-gray-700 hover:bg-gray-600 rounded-xl transition-colors"
+                                >
+                                    <RotateCcwIcon /> Reiniciar Lista
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Panel de algoritmo */}
+                        <div className="mt-6 bg-gray-800 rounded-xl p-6 border border-gray-700">
+                            <h3 className="text-xl font-semibold text-purple-400 mb-4">
+                                Algoritmo - Paso a Paso
+                            </h3>
+                            {algorithm.length === 0 ? (
+                                <p className="text-gray-500 text-center py-8">
+                                    Realice una operación para ver el algoritmo
+                                </p>
+                            ) : (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm overflow-x-auto">
+                                        {algorithm.map((step, index) => (
+                                            <div
+                                                key={index}
+                                                className={`py-1 px-2 rounded ${
+                                                    index === currentStep
+                                                        ? 'bg-purple-500/30 text-purple-300'
+                                                        : index < currentStep
+                                                        ? 'text-gray-500'
+                                                        : 'text-gray-400'
+                                                }`}
+                                            >
+                                                <span className="text-gray-600 mr-2">{index + 1}.</span>
+                                                {step.code}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="bg-gray-900 rounded-lg p-4">
+                                        <h4 className="text-sm font-semibold text-gray-400 mb-2">Descripción:</h4>
+                                        {algorithm.map((step, index) => (
+                                            <div
+                                                key={index}
+                                                className={`py-1 text-sm ${
+                                                    index === currentStep
+                                                        ? 'text-purple-300 font-semibold'
+                                                        : index < currentStep
+                                                        ? 'text-gray-600'
+                                                        : 'text-gray-500'
+                                                }`}
+                                            >
+                                                {index === currentStep && '→ '}
+                                                {step.desc}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Sección educativa */}
+                        <div className="mt-6 bg-gray-800 rounded-xl p-6 border border-gray-700">
+                            <h3 className="text-xl font-semibold text-pink-400 mb-4">
+                                ¿Qué es una Lista Doblemente Enlazada Circular?
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <h4 className="text-lg font-semibold text-purple-300 mb-2">Características</h4>
+                                    <ul className="space-y-2 text-gray-300">
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-pink-400">•</span>
+                                            <span><strong>Doble enlace:</strong> Cada nodo tiene punteros sig (siguiente) y ant (anterior)</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-pink-400">•</span>
+                                            <span><strong>Circular:</strong> El último nodo apunta a la cabecera y viceversa</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-pink-400">•</span>
+                                            <span><strong>Sin NULL:</strong> No hay punteros nulos, la estructura es cerrada</span>
+                                        </li>
+                                        <li className="flex items-start gap-2">
+                                            <span className="text-pink-400">•</span>
+                                            <span><strong>Recorrido bidireccional infinito:</strong> Se puede navegar en ambas direcciones sin fin</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h4 className="text-lg font-semibold text-purple-300 mb-2">Estructura del Nodo</h4>
+                                    <div className="bg-gray-900 rounded-lg p-4 font-mono text-sm">
+                                        <div className="text-blue-400">class NodoDoble {'{'}</div>
+                                        <div className="ml-4">
+                                            <div><span className="text-green-400">int</span> dato;</div>
+                                            <div><span className="text-yellow-400">NodoDoble</span> sig; <span className="text-gray-500">// siguiente</span></div>
+                                            <div><span className="text-yellow-400">NodoDoble</span> ant; <span className="text-gray-500">// anterior</span></div>
+                                        </div>
+                                        <div className="text-blue-400">{'}'}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div className="bg-green-500/10 border border-green-500/30 rounded-lg p-4">
+                                    <h4 className="text-green-400 font-semibold mb-2">✅ Ventajas</h4>
+                                    <ul className="text-sm text-gray-300 space-y-1">
+                                        <li>• Navegación bidireccional</li>
+                                        <li>• Acceso rápido al último nodo (cabecera.ant)</li>
+                                        <li>• Inserción/eliminación O(1) en extremos</li>
+                                        <li>• Recorrido cíclico continuo</li>
+                                    </ul>
+                                </div>
+                                <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
+                                    <h4 className="text-red-400 font-semibold mb-2">❌ Desventajas</h4>
+                                    <ul className="text-sm text-gray-300 space-y-1">
+                                        <li>• Mayor uso de memoria (2 punteros)</li>
+                                        <li>• Más complejo de implementar</li>
+                                        <li>• Operaciones requieren más actualizaciones</li>
+                                        <li>• Riesgo de bucles infinitos en recorridos</li>
+                                    </ul>
+                                </div>
+                                <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-4">
+                                    <h4 className="text-blue-400 font-semibold mb-2">📚 Aplicaciones</h4>
+                                    <ul className="text-sm text-gray-300 space-y-1">
+                                        <li>• Reproductor de música (playlist cíclico)</li>
+                                        <li>• Navegación en interfaces (tabs)</li>
+                                        <li>• Gestión de procesos (round-robin)</li>
+                                        <li>• Buffers circulares avanzados</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div className="mt-6 p-4 bg-purple-500/10 border border-purple-500/30 rounded-lg">
+                                <h4 className="text-purple-400 font-semibold mb-2">🔑 Concepto Clave: Circularidad + Doble Enlace</h4>
+                                <p className="text-gray-300 text-sm">
+                                    La combinación de doble enlace y circularidad proporciona la máxima flexibilidad: 
+                                    desde cualquier nodo se puede llegar a cualquier otro nodo en ambas direcciones, 
+                                    y siempre hay acceso inmediato tanto al primer como al último elemento 
+                                    (cabecera y cabecera.ant respectivamente). Esto la hace ideal para estructuras 
+                                    que requieren recorridos continuos y acceso eficiente a ambos extremos.
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="mt-6 text-center text-gray-500 text-sm">
+                            <p>Visualizador de Lista Doblemente Enlazada Circular - Estructuras de Datos</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ListaDobleCircularVisualizer />);
+    </script>
+</body>
+</html>
