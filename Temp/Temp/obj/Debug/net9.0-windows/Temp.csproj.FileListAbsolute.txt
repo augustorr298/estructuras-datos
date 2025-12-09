@@ -1,0 +1,16 @@
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\bin\Debug\net9.0-windows\Temp.exe
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\bin\Debug\net9.0-windows\Temp.deps.json
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\bin\Debug\net9.0-windows\Temp.runtimeconfig.json
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\bin\Debug\net9.0-windows\Temp.dll
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\bin\Debug\net9.0-windows\Temp.pdb
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.AssemblyInfoInputs.cache
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.AssemblyInfo.cs
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.csproj.CoreCompileInputs.cache
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.dll
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\refint\Temp.dll
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.pdb
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.genruntimeconfig.cache
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\ref\Temp.dll
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.frmPrincipal.resources
+C:\Users\ALUMNOS\Documents\edatosuri\temperaturas\Temp\obj\Debug\net9.0-windows\Temp.csproj.GenerateResource.cache

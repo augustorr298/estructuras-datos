@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida - Lista Doble Circular en C#</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            margin-bottom: 30px;
+        }
+        .corrida-section {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+        }
+        .nav-link {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .nav-link:hover {
+            background: #00a8cc;
+        }
+        .explanation {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .title-op { color: #ff79c6; font-weight: bold; }
+        .var { color: #8be9fd; }
+        .val { color: #f1fa8c; }
+        .step { color: #50fa7b; }
+        .result { color: #ffb86c; }
+        .diagram { color: #bd93f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 Lista Doble Circular - Corrida Paso a Paso</h1>
+        
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+
+        <div class="explanation">
+            <strong>Representación visual:</strong><br>
+            <code>[CAB]</code> = Nodo cabecera (sin dato)<br>
+            <code>&lt;--&gt;</code> = Doble enlace (sig y ant)<br>
+            Cada nodo tiene: <code>[ant|Dato|sig]</code><br>
+            La lista es circular: el último apunta a CAB y CAB apunta al último.
+        </div>
+
+        <div class="corrida-section">
+<pre>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+<span class="title-op">                    CORRIDA DE LISTA DOBLE CIRCULAR EN C#</span>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+
+<span class="title-op">═══ INICIALIZACIÓN ═══</span>
+<span class="step">Ejecutando:</span> ListaDobleCircular lista = new ListaDobleCircular();
+<span class="step">Línea:</span> cabecera = new Nodo();
+        <span class="var">cabecera.sig</span> = <span class="val">cabecera</span>   <span class="result">// Apunta a sí misma</span>
+        <span class="var">cabecera.ant</span> = <span class="val">cabecera</span>   <span class="result">// Apunta a sí misma</span>
+
+<span class="diagram">Estado inicial (lista vacía):</span>
+        ┌─────────────┐
+        │   ←─────────┼───┐
+        ▼             │   │
+    ┌───┴───┬────────┬┴───┤
+    │  ant  │  CAB   │ sig│
+    │ (self)│  null  │(self)
+    └───────┴────────┴────┘
+        [CAB] &lt;--&gt; [CAB] (circular vacía)
+
+
+<span class="title-op">═══ OPERACIÓN 1: InsertarInicio("A") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarInicio("A");
+
+<span class="step">Paso 1:</span> Nodo nuevoNodo = new Nodo("A");
+        <span class="var">nuevoNodo</span> = <span class="val">{ ant: null, Dato: "A", sig: null }</span>
+
+<span class="step">Paso 2:</span> Nodo primerActual = cabecera.sig;
+        <span class="var">primerActual</span> = <span class="val">cabecera</span> (porque está vacía)
+
+<span class="step">Paso 3:</span> nuevoNodo.sig = primerActual;
+        <span class="var">nuevoNodo.sig</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 4:</span> nuevoNodo.ant = cabecera;
+        <span class="var">nuevoNodo.ant</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 5:</span> cabecera.sig = nuevoNodo;
+        <span class="var">cabecera.sig</span> = <span class="val">nuevoNodo</span> (apunta a A)
+
+<span class="step">Paso 6:</span> primerActual.ant = nuevoNodo;
+        <span class="var">cabecera.ant</span> = <span class="val">nuevoNodo</span> (también apunta a A)
+
+<span class="diagram">Estado después de insertar "A":</span>
+    ┌─────────────────────────────────────────┐
+    │                                         │
+    ▼                                         │
+┌───────┐         ┌───────┐                   │
+│  CAB  │ &lt;-----&gt; │   A   │ ──────────────────┘
+│ null  │   sig   │       │   sig=CAB
+└───────┘   ant   └───────┘   ant=CAB
+    │                 ▲
+    └─────────────────┘
+
+    [CAB] &lt;--&gt; [A] &lt;--&gt; [CAB] (circular)
+
+
+<span class="title-op">═══ OPERACIÓN 2: InsertarFinal("B") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarFinal("B");
+
+<span class="step">Paso 1:</span> Nodo nuevoNodo = new Nodo("B");
+        <span class="var">nuevoNodo</span> = <span class="val">{ ant: null, Dato: "B", sig: null }</span>
+
+<span class="step">Paso 2:</span> Nodo ultimoActual = cabecera.ant;
+        <span class="var">ultimoActual</span> = <span class="val">nodo A</span> (el último actual)
+
+<span class="step">Paso 3:</span> nuevoNodo.sig = cabecera;
+        <span class="var">nuevoNodo.sig</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 4:</span> nuevoNodo.ant = ultimoActual;
+        <span class="var">nuevoNodo.ant</span> = <span class="val">nodo A</span>
+
+<span class="step">Paso 5:</span> ultimoActual.sig = nuevoNodo;
+        <span class="var">A.sig</span> = <span class="val">nuevoNodo</span> (A ahora apunta a B)
+
+<span class="step">Paso 6:</span> cabecera.ant = nuevoNodo;
+        <span class="var">cabecera.ant</span> = <span class="val">nuevoNodo</span> (CAB.ant apunta a B)
+
+<span class="diagram">Estado después de insertar "B" al final:</span>
+    ┌───────────────────────────────────────────────────┐
+    │                                                   │
+    ▼                                                   │
+┌───────┐         ┌───────┐         ┌───────┐          │
+│  CAB  │ &lt;-----&gt; │   A   │ &lt;-----&gt; │   B   │ ─────────┘
+│ null  │   sig   │       │   sig   │       │  sig=CAB
+└───────┘   ant   └───────┘   ant   └───────┘  ant=A
+    │                                   ▲
+    └───────────────────────────────────┘
+                    CAB.ant = B
+
+    [CAB] &lt;--&gt; [A] &lt;--&gt; [B] &lt;--&gt; [CAB] (circular)
+
+
+<span class="title-op">═══ OPERACIÓN 3: InsertarInicio("Z") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarInicio("Z");
+
+<span class="step">Paso 1:</span> Nodo nuevoNodo = new Nodo("Z");
+<span class="step">Paso 2:</span> Nodo primerActual = cabecera.sig;
+        <span class="var">primerActual</span> = <span class="val">nodo A</span>
+
+<span class="step">Paso 3:</span> nuevoNodo.sig = primerActual;
+        <span class="var">Z.sig</span> = <span class="val">A</span>
+
+<span class="step">Paso 4:</span> nuevoNodo.ant = cabecera;
+        <span class="var">Z.ant</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 5:</span> cabecera.sig = nuevoNodo;
+        <span class="var">cabecera.sig</span> = <span class="val">Z</span>
+
+<span class="step">Paso 6:</span> primerActual.ant = nuevoNodo;
+        <span class="var">A.ant</span> = <span class="val">Z</span>
+
+<span class="diagram">Estado después de insertar "Z" al inicio:</span>
+    ┌───────────────────────────────────────────────────────────────┐
+    │                                                               │
+    ▼                                                               │
+┌───────┐         ┌───────┐         ┌───────┐         ┌───────┐    │
+│  CAB  │ &lt;-----&gt; │   Z   │ &lt;-----&gt; │   A   │ &lt;-----&gt; │   B   │ ───┘
+│ null  │         │       │         │       │         │       │
+└───────┘         └───────┘         └───────┘         └───────┘
+    │                                                     ▲
+    └─────────────────────────────────────────────────────┘
+
+    [CAB] &lt;--&gt; [Z] &lt;--&gt; [A] &lt;--&gt; [B] &lt;--&gt; [CAB] (circular)
+
+
+<span class="title-op">═══ OPERACIÓN 4: InsertarDespuesDe("M", "A") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarDespuesDe("M", "A");  // Insertar M después de A
+
+<span class="step">Paso 1:</span> Nodo Q = cabecera.sig;
+        <span class="var">Q</span> = <span class="val">nodo Z</span>
+
+<span class="step">Paso 2:</span> while (Q != cabecera && Q.Dato != "A")
+        Iteración 1: Q.Dato = "Z" ≠ "A" → Q = Q.sig
+        <span class="var">Q</span> = <span class="val">nodo A</span>
+        Iteración 2: Q.Dato = "A" == "A" → <span class="result">¡Encontrado! Sale del while</span>
+
+<span class="step">Paso 3:</span> Nodo nuevoNodo = new Nodo("M");
+<span class="step">Paso 4:</span> Nodo siguiente = Q.sig;
+        <span class="var">siguiente</span> = <span class="val">nodo B</span>
+
+<span class="step">Paso 5:</span> nuevoNodo.sig = siguiente;
+        <span class="var">M.sig</span> = <span class="val">B</span>
+
+<span class="step">Paso 6:</span> nuevoNodo.ant = Q;
+        <span class="var">M.ant</span> = <span class="val">A</span>
+
+<span class="step">Paso 7:</span> Q.sig = nuevoNodo;
+        <span class="var">A.sig</span> = <span class="val">M</span>
+
+<span class="step">Paso 8:</span> siguiente.ant = nuevoNodo;
+        <span class="var">B.ant</span> = <span class="val">M</span>
+
+<span class="diagram">Estado después de insertar "M" después de "A":</span>
+┌───────────────────────────────────────────────────────────────────────────────┐
+│                                                                               │
+▼                                                                               │
+┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐      ┌───────┐          │
+│  CAB  │&lt;----&gt;│   Z   │&lt;----&gt;│   A   │&lt;----&gt;│   M   │&lt;----&gt;│   B   │──────────┘
+│ null  │      │       │      │       │      │       │      │       │
+└───────┘      └───────┘      └───────┘      └───────┘      └───────┘
+    │                                                           ▲
+    └───────────────────────────────────────────────────────────┘
+
+    [CAB] &lt;--&gt; [Z] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB] (circular)
+
+
+<span class="title-op">═══ OPERACIÓN 5: InsertarAntesDe("X", "A") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarAntesDe("X", "A");  // Insertar X antes de A
+
+<span class="step">Paso 1:</span> Nodo Q = cabecera.sig;
+        <span class="var">Q</span> = <span class="val">nodo Z</span>
+
+<span class="step">Paso 2:</span> while (Q != cabecera && Q.Dato != "A")
+        Iteración 1: Q.Dato = "Z" ≠ "A" → Q = Q.sig
+        <span class="var">Q</span> = <span class="val">nodo A</span>
+        Iteración 2: Q.Dato = "A" == "A" → <span class="result">¡Encontrado!</span>
+
+<span class="step">Paso 3:</span> Nodo nuevoNodo = new Nodo("X");
+<span class="step">Paso 4:</span> Nodo anterior = Q.ant;
+        <span class="var">anterior</span> = <span class="val">nodo Z</span>
+
+<span class="step">Paso 5:</span> nuevoNodo.sig = Q;
+        <span class="var">X.sig</span> = <span class="val">A</span>
+
+<span class="step">Paso 6:</span> nuevoNodo.ant = anterior;
+        <span class="var">X.ant</span> = <span class="val">Z</span>
+
+<span class="step">Paso 7:</span> anterior.sig = nuevoNodo;
+        <span class="var">Z.sig</span> = <span class="val">X</span>
+
+<span class="step">Paso 8:</span> Q.ant = nuevoNodo;
+        <span class="var">A.ant</span> = <span class="val">X</span>
+
+<span class="diagram">Estado después de insertar "X" antes de "A":</span>
+    [CAB] &lt;--&gt; [Z] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB] (circular)
+
+
+<span class="title-op">═══ OPERACIÓN 6: RecorridoDerecha() ═══</span>
+<span class="step">Ejecutando:</span> lista.RecorridoDerecha();
+
+<span class="step">Paso 1:</span> if (cabecera.sig == cabecera) → false (no está vacía)
+<span class="step">Paso 2:</span> Nodo Q = cabecera.sig;
+        <span class="var">Q</span> = <span class="val">nodo Z</span>
+
+<span class="step">Paso 3:</span> while (Q != cabecera):
+        Iteración 1: <span class="var">Q.Dato</span> = <span class="val">"Z"</span> → Imprime [Z] → Q = Q.sig = X
+        Iteración 2: <span class="var">Q.Dato</span> = <span class="val">"X"</span> → Imprime [X] → Q = Q.sig = A
+        Iteración 3: <span class="var">Q.Dato</span> = <span class="val">"A"</span> → Imprime [A] → Q = Q.sig = M
+        Iteración 4: <span class="var">Q.Dato</span> = <span class="val">"M"</span> → Imprime [M] → Q = Q.sig = B
+        Iteración 5: <span class="var">Q.Dato</span> = <span class="val">"B"</span> → Imprime [B] → Q = Q.sig = cabecera
+        Q == cabecera → <span class="result">Sale del while</span>
+
+<span class="result">Salida: Lista (derecha): [CAB] &lt;--&gt; [Z] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB]</span>
+
+
+<span class="title-op">═══ OPERACIÓN 7: RecorridoIzquierda() ═══</span>
+<span class="step">Ejecutando:</span> lista.RecorridoIzquierda();
+
+<span class="step">Paso 1:</span> Nodo Q = cabecera.ant;
+        <span class="var">Q</span> = <span class="val">nodo B</span> (el último)
+
+<span class="step">Paso 2:</span> while (Q != cabecera):
+        Iteración 1: <span class="var">Q.Dato</span> = <span class="val">"B"</span> → Imprime [B] → Q = Q.ant = M
+        Iteración 2: <span class="var">Q.Dato</span> = <span class="val">"M"</span> → Imprime [M] → Q = Q.ant = A
+        Iteración 3: <span class="var">Q.Dato</span> = <span class="val">"A"</span> → Imprime [A] → Q = Q.ant = X
+        Iteración 4: <span class="var">Q.Dato</span> = <span class="val">"X"</span> → Imprime [X] → Q = Q.ant = Z
+        Iteración 5: <span class="var">Q.Dato</span> = <span class="val">"Z"</span> → Imprime [Z] → Q = Q.ant = cabecera
+        Q == cabecera → <span class="result">Sale del while</span>
+
+<span class="result">Salida: Lista (izquierda): [CAB] &lt;--&gt; [B] &lt;--&gt; [M] &lt;--&gt; [A] &lt;--&gt; [X] &lt;--&gt; [Z] &lt;--&gt; [CAB]</span>
+
+
+<span class="title-op">═══ OPERACIÓN 8: EliminarPrimero() ═══</span>
+<span class="step">Ejecutando:</span> lista.EliminarPrimero();
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [Z] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Nodo nodoEliminar = cabecera.sig;
+        <span class="var">nodoEliminar</span> = <span class="val">nodo Z</span>
+
+<span class="step">Paso 2:</span> Nodo segundoNodo = nodoEliminar.sig;
+        <span class="var">segundoNodo</span> = <span class="val">nodo X</span>
+
+<span class="step">Paso 3:</span> cabecera.sig = segundoNodo;
+        <span class="var">cabecera.sig</span> = <span class="val">X</span>
+
+<span class="step">Paso 4:</span> segundoNodo.ant = cabecera;
+        <span class="var">X.ant</span> = <span class="val">cabecera</span>
+
+<span class="result">Resultado: Nodo 'Z' eliminado del inicio.</span>
+<span class="diagram">Estado:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB]
+
+
+<span class="title-op">═══ OPERACIÓN 9: EliminarUltimo() ═══</span>
+<span class="step">Ejecutando:</span> lista.EliminarUltimo();
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [B] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Nodo nodoEliminar = cabecera.ant;
+        <span class="var">nodoEliminar</span> = <span class="val">nodo B</span>
+
+<span class="step">Paso 2:</span> Nodo penultimoNodo = nodoEliminar.ant;
+        <span class="var">penultimoNodo</span> = <span class="val">nodo M</span>
+
+<span class="step">Paso 3:</span> penultimoNodo.sig = cabecera;
+        <span class="var">M.sig</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 4:</span> cabecera.ant = penultimoNodo;
+        <span class="var">cabecera.ant</span> = <span class="val">M</span>
+
+<span class="result">Resultado: Nodo 'B' eliminado del final.</span>
+<span class="diagram">Estado:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+
+<span class="title-op">═══ OPERACIÓN 10: EliminarPorDato("A") ═══</span>
+<span class="step">Ejecutando:</span> lista.EliminarPorDato("A");
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [A] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Nodo Q = cabecera.sig;
+        <span class="var">Q</span> = <span class="val">nodo X</span>
+
+<span class="step">Paso 2:</span> while (Q != cabecera && Q.Dato != "A")
+        Iteración 1: Q.Dato = "X" ≠ "A" → Q = Q.sig
+        <span class="var">Q</span> = <span class="val">nodo A</span>
+        Iteración 2: Q.Dato = "A" == "A" → <span class="result">¡Encontrado!</span>
+
+<span class="step">Paso 3:</span> Nodo anterior = Q.ant;
+        <span class="var">anterior</span> = <span class="val">nodo X</span>
+
+<span class="step">Paso 4:</span> Nodo siguiente = Q.sig;
+        <span class="var">siguiente</span> = <span class="val">nodo M</span>
+
+<span class="step">Paso 5:</span> anterior.sig = siguiente;
+        <span class="var">X.sig</span> = <span class="val">M</span>
+
+<span class="step">Paso 6:</span> siguiente.ant = anterior;
+        <span class="var">M.ant</span> = <span class="val">X</span>
+
+<span class="result">Resultado: Nodo 'A' eliminado.</span>
+<span class="diagram">Estado:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+
+<span class="title-op">═══ OPERACIÓN 11: BuscarNodo("M") ═══</span>
+<span class="step">Ejecutando:</span> lista.BuscarNodo("M");
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Nodo Q = cabecera.sig;
+        <span class="var">Q</span> = <span class="val">nodo X</span>
+        <span class="var">posicion</span> = <span class="val">1</span>
+
+<span class="step">Paso 2:</span> while (Q != cabecera):
+        Iteración 1: Q.Dato = "X" ≠ "M" → Q = Q.sig, posicion++
+        <span class="var">Q</span> = <span class="val">nodo M</span>, <span class="var">posicion</span> = <span class="val">2</span>
+        Iteración 2: Q.Dato = "M" == "M" → <span class="result">¡Encontrado! break</span>
+
+<span class="result">Salida: Nodo 'M' encontrado en la posición 2.</span>
+
+
+<span class="title-op">═══ OPERACIÓN 12: BuscarNodoAnterior("M") ═══</span>
+<span class="step">Ejecutando:</span> lista.BuscarNodoAnterior("M");
+
+<span class="step">Paso 1:</span> Buscar nodo M...
+        <span class="var">Q</span> = <span class="val">nodo M</span> encontrado en posición 2
+
+<span class="step">Paso 2:</span> Q.ant == cabecera? → NO (Q.ant = X)
+
+<span class="step">Paso 3:</span> El anterior a M es Q.ant.Dato = "X"
+
+<span class="result">Salida: El nodo anterior a 'M' es 'X' en la posición 1.</span>
+
+
+<span class="title-op">═══ OPERACIÓN 13: BuscarNodoSiguiente("X") ═══</span>
+<span class="step">Ejecutando:</span> lista.BuscarNodoSiguiente("X");
+
+<span class="step">Paso 1:</span> Buscar nodo X...
+        <span class="var">Q</span> = <span class="val">nodo X</span> encontrado en posición 1
+
+<span class="step">Paso 2:</span> Q.sig == cabecera? → NO (Q.sig = M)
+
+<span class="step">Paso 3:</span> El siguiente a X es Q.sig.Dato = "M"
+
+<span class="result">Salida: El nodo siguiente a 'X' es 'M' en la posición 2.</span>
+
+
+<span class="title-op">═══ OPERACIÓN 14: EliminarAntesDe("M") ═══</span>
+<span class="step">Ejecutando:</span> lista.EliminarAntesDe("M");
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [X] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Buscar nodo M...
+        <span class="var">Q</span> = <span class="val">nodo M</span>
+
+<span class="step">Paso 2:</span> Q.ant == cabecera? → NO (Q.ant = X)
+
+<span class="step">Paso 3:</span> Nodo nodoEliminar = Q.ant;
+        <span class="var">nodoEliminar</span> = <span class="val">nodo X</span>
+
+<span class="step">Paso 4:</span> Nodo anterior = nodoEliminar.ant;
+        <span class="var">anterior</span> = <span class="val">cabecera</span>
+
+<span class="step">Paso 5:</span> anterior.sig = Q;
+        <span class="var">cabecera.sig</span> = <span class="val">M</span>
+
+<span class="step">Paso 6:</span> Q.ant = anterior;
+        <span class="var">M.ant</span> = <span class="val">cabecera</span>
+
+<span class="result">Resultado: Nodo 'X' eliminado (estaba antes de 'M').</span>
+<span class="diagram">Estado:</span> [CAB] &lt;--&gt; [M] &lt;--&gt; [CAB]
+
+
+<span class="title-op">═══ OPERACIÓN 15: InsertarFinal("N"), InsertarFinal("O") ═══</span>
+<span class="step">Ejecutando:</span> lista.InsertarFinal("N"); lista.InsertarFinal("O");
+
+<span class="diagram">Estado:</span> [CAB] &lt;--&gt; [M] &lt;--&gt; [N] &lt;--&gt; [O] &lt;--&gt; [CAB]
+
+
+<span class="title-op">═══ OPERACIÓN 16: EliminarDespuesDe("M") ═══</span>
+<span class="step">Ejecutando:</span> lista.EliminarDespuesDe("M");
+
+<span class="step">Estado actual:</span> [CAB] &lt;--&gt; [M] &lt;--&gt; [N] &lt;--&gt; [O] &lt;--&gt; [CAB]
+
+<span class="step">Paso 1:</span> Buscar nodo M...
+        <span class="var">Q</span> = <span class="val">nodo M</span>
+
+<span class="step">Paso 2:</span> Q.sig == cabecera? → NO (Q.sig = N)
+
+<span class="step">Paso 3:</span> Nodo nodoEliminar = Q.sig;
+        <span class="var">nodoEliminar</span> = <span class="val">nodo N</span>
+
+<span class="step">Paso 4:</span> Nodo siguiente = nodoEliminar.sig;
+        <span class="var">siguiente</span> = <span class="val">nodo O</span>
+
+<span class="step">Paso 5:</span> Q.sig = siguiente;
+        <span class="var">M.sig</span> = <span class="val">O</span>
+
+<span class="step">Paso 6:</span> siguiente.ant = Q;
+        <span class="var">O.ant</span> = <span class="val">M</span>
+
+<span class="result">Resultado: Nodo 'N' eliminado (estaba después de 'M').</span>
+<span class="diagram">Estado final:</span> [CAB] &lt;--&gt; [M] &lt;--&gt; [O] &lt;--&gt; [CAB]
+
+
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+<span class="title-op">                              FIN DE LA CORRIDA</span>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+
+<span class="diagram">Estructura final de la Lista Doble Circular:</span>
+
+        ┌────────────────────────────────────────────────────┐
+        │                                                    │
+        ▼                                                    │
+    ┌───────┐         ┌───────┐         ┌───────┐           │
+    │  CAB  │ &lt;-----&gt; │   M   │ &lt;-----&gt; │   O   │ ──────────┘
+    │ null  │         │       │         │       │
+    └───────┘         └───────┘         └───────┘
+        │                                   ▲
+        └───────────────────────────────────┘
+              cabecera.ant = O
+
+<span class="result">Navegación bidireccional:</span>
+    → Derecha (sig): CAB → M → O → CAB → M → O → ...
+    ← Izquierda (ant): CAB → O → M → CAB → O → M → ...
+</pre>
+        </div>
+
+        <br>
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código - Lista Doble Circular en C#</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #ff6b9d;
+            border-bottom: 2px solid #ff6b9d;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .code-section {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; font-style: italic; }
+        .method { color: #50fa7b; }
+        .property { color: #ffb86c; }
+        .number { color: #bd93f9; }
+        .nav-link {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .nav-link:hover {
+            background: #00a8cc;
+        }
+        .explanation {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📋 Lista Doble Circular - Código C#</h1>
+        
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+
+        <div class="explanation">
+            <strong>Lista Doble Circular:</strong> Estructura donde cada nodo tiene dos punteros (anterior y siguiente). 
+            El último nodo apunta a la cabecera y la cabecera apunta al último, formando un ciclo bidireccional.
+            La cabecera es un nodo especial sin dato que facilita las operaciones.
+        </div>
+
+        <h2>Clase Nodo</h2>
+        <div class="code-section">
+<pre><span class="keyword">using</span> System;
+
+<span class="keyword">namespace</span> ListaDobleCircular
+{
+    <span class="comment">// Clase Nodo para lista doblemente enlazada circular.</span>
+    <span class="comment">// Cada nodo tiene referencias al nodo anterior y al siguiente.</span>
+    <span class="keyword">internal class</span> <span class="type">Nodo</span>
+    {
+        <span class="keyword">public</span> <span class="type">string</span> <span class="property">Dato</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public</span> <span class="type">Nodo</span> <span class="property">sig</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }   <span class="comment">// Puntero al siguiente nodo</span>
+        <span class="keyword">public</span> <span class="type">Nodo</span> <span class="property">ant</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }   <span class="comment">// Puntero al nodo anterior</span>
+
+        <span class="comment">// Constructor para nodos con dato</span>
+        <span class="keyword">public</span> <span class="method">Nodo</span>(<span class="type">string</span> dato)
+        {
+            ant = <span class="keyword">null</span>;
+            Dato = dato;
+            sig = <span class="keyword">null</span>;
+        }
+
+        <span class="comment">// Constructor para el nodo cabecera (sin dato)</span>
+        <span class="keyword">public</span> <span class="method">Nodo</span>()
+        {
+            ant = <span class="keyword">null</span>;
+            Dato = <span class="keyword">null</span>;
+            sig = <span class="keyword">null</span>;
+        }
+    }
+}</pre>
+        </div>
+
+        <h2>Clase ListaDobleCircular - Constructor</h2>
+        <div class="code-section">
+<pre><span class="keyword">internal class</span> <span class="type">ListaDobleCircular</span>
+{
+    <span class="keyword">private</span> <span class="type">Nodo</span> cabecera;
+
+    <span class="keyword">public</span> <span class="method">ListaDobleCircular</span>()
+    {
+        cabecera = <span class="keyword">new</span> <span class="type">Nodo</span>();
+        cabecera.sig = cabecera;  <span class="comment">// Apunta a sí misma (circular)</span>
+        cabecera.ant = cabecera;  <span class="comment">// Apunta a sí misma (circular)</span>
+    }
+}</pre>
+        </div>
+
+        <h2>Recorrido hacia la Derecha</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">RecorridoDerecha</span>()
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    Console.<span class="method">Write</span>(<span class="string">"Lista (derecha): [CAB] &lt;--&gt; "</span>);
+    <span class="type">Nodo</span> Q = cabecera.sig;
+    
+    <span class="keyword">while</span> (Q != cabecera)
+    {
+        Console.<span class="method">Write</span>(<span class="string">"["</span> + Q.Dato + <span class="string">"]"</span>);
+        Q = Q.sig;
+        
+        <span class="keyword">if</span> (Q != cabecera)
+            Console.<span class="method">Write</span>(<span class="string">" &lt;--&gt; "</span>);
+    }
+    Console.<span class="method">WriteLine</span>(<span class="string">" &lt;--&gt; [CAB] (circular)"</span>);
+}</pre>
+        </div>
+
+        <h2>Recorrido hacia la Izquierda</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">RecorridoIzquierda</span>()
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    Console.<span class="method">Write</span>(<span class="string">"Lista (izquierda): [CAB] &lt;--&gt; "</span>);
+    <span class="type">Nodo</span> Q = cabecera.ant;  <span class="comment">// Empezamos desde el último</span>
+    
+    <span class="keyword">while</span> (Q != cabecera)
+    {
+        Console.<span class="method">Write</span>(<span class="string">"["</span> + Q.Dato + <span class="string">"]"</span>);
+        Q = Q.ant;  <span class="comment">// Avanzamos hacia atrás</span>
+        
+        <span class="keyword">if</span> (Q != cabecera)
+            Console.<span class="method">Write</span>(<span class="string">" &lt;--&gt; "</span>);
+    }
+    Console.<span class="method">WriteLine</span>(<span class="string">" &lt;--&gt; [CAB] (circular)"</span>);
+}</pre>
+        </div>
+
+        <h2>Insertar al Inicio</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">InsertarInicio</span>(<span class="type">string</span> dato)
+{
+    <span class="type">Nodo</span> nuevoNodo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+    
+    <span class="type">Nodo</span> primerActual = cabecera.sig;
+    
+    <span class="comment">// Conectar nuevo nodo</span>
+    nuevoNodo.sig = primerActual;
+    nuevoNodo.ant = cabecera;
+    
+    <span class="comment">// Actualizar conexiones existentes</span>
+    cabecera.sig = nuevoNodo;
+    primerActual.ant = nuevoNodo;
+
+    Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + dato + <span class="string">"' insertado al inicio."</span>);
+}</pre>
+        </div>
+
+        <h2>Insertar al Final</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">InsertarFinal</span>(<span class="type">string</span> dato)
+{
+    <span class="type">Nodo</span> nuevoNodo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+    
+    <span class="type">Nodo</span> ultimoActual = cabecera.ant;
+    
+    <span class="comment">// Conectar nuevo nodo</span>
+    nuevoNodo.sig = cabecera;
+    nuevoNodo.ant = ultimoActual;
+    
+    <span class="comment">// Actualizar conexiones existentes</span>
+    ultimoActual.sig = nuevoNodo;
+    cabecera.ant = nuevoNodo;
+
+    Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + dato + <span class="string">"' insertado al final."</span>);
+}</pre>
+        </div>
+
+        <h2>Insertar Después De</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">InsertarDespuesDe</span>(<span class="type">string</span> dato, <span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+
+    <span class="comment">// Buscar el nodo de referencia (recorrido circular)</span>
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+        Q = Q.sig;
+
+    <span class="keyword">if</span> (Q != cabecera)
+    {
+        <span class="type">Nodo</span> nuevoNodo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+        <span class="type">Nodo</span> siguiente = Q.sig;
+        
+        nuevoNodo.sig = siguiente;
+        nuevoNodo.ant = Q;
+        
+        Q.sig = nuevoNodo;
+        siguiente.ant = nuevoNodo;
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + dato + <span class="string">"' insertado después de '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Insertar Antes De</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">InsertarAntesDe</span>(<span class="type">string</span> dato, <span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+
+    <span class="comment">// Buscar el nodo de referencia</span>
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+        Q = Q.sig;
+
+    <span class="keyword">if</span> (Q != cabecera)
+    {
+        <span class="type">Nodo</span> nuevoNodo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+        <span class="type">Nodo</span> anterior = Q.ant;
+
+        nuevoNodo.sig = Q;
+        nuevoNodo.ant = anterior;
+
+        anterior.sig = nuevoNodo;
+        Q.ant = nuevoNodo;
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + dato + <span class="string">"' insertado antes de '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Eliminar Primero</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">EliminarPrimero</span>()
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía. No hay nodos que eliminar."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> nodoEliminar = cabecera.sig;
+    <span class="type">Nodo</span> segundoNodo = nodoEliminar.sig;
+
+    cabecera.sig = segundoNodo;
+    segundoNodo.ant = cabecera;
+
+    Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + nodoEliminar.Dato + <span class="string">"' eliminado del inicio."</span>);
+}</pre>
+        </div>
+
+        <h2>Eliminar Último</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">EliminarUltimo</span>()
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía. No hay nodos que eliminar."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> nodoEliminar = cabecera.ant;
+    <span class="type">Nodo</span> penultimoNodo = nodoEliminar.ant;
+
+    penultimoNodo.sig = cabecera;
+    cabecera.ant = penultimoNodo;
+
+    Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + nodoEliminar.Dato + <span class="string">"' eliminado del final."</span>);
+}</pre>
+        </div>
+
+        <h2>Eliminar por Dato</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">EliminarPorDato</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía. No hay nodos que eliminar."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+
+    <span class="comment">// Buscar el nodo</span>
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+        Q = Q.sig;
+
+    <span class="keyword">if</span> (Q != cabecera)
+    {
+        <span class="type">Nodo</span> anterior = Q.ant;
+        <span class="type">Nodo</span> siguiente = Q.sig;
+
+        anterior.sig = siguiente;
+        siguiente.ant = anterior;
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + datoBuscado + <span class="string">"' eliminado."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Eliminar Antes De</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">EliminarAntesDe</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+
+    <span class="comment">// Buscar el nodo de referencia</span>
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+        Q = Q.sig;
+
+    <span class="keyword">if</span> (Q == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else if</span> (Q.ant == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo '"</span> + datoBuscado + <span class="string">"' es el primero. No hay nodo antes."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="type">Nodo</span> nodoEliminar = Q.ant;
+        <span class="type">Nodo</span> anterior = nodoEliminar.ant;
+
+        anterior.sig = Q;
+        Q.ant = anterior;
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + nodoEliminar.Dato + <span class="string">"' eliminado."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Eliminar Después De</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">EliminarDespuesDe</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+
+    <span class="comment">// Buscar el nodo de referencia</span>
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+        Q = Q.sig;
+
+    <span class="keyword">if</span> (Q == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else if</span> (Q.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo '"</span> + datoBuscado + <span class="string">"' es el último. No hay nodo después."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="type">Nodo</span> nodoEliminar = Q.sig;
+        <span class="type">Nodo</span> siguiente = nodoEliminar.sig;
+
+        Q.sig = siguiente;
+        siguiente.ant = Q;
+
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + nodoEliminar.Dato + <span class="string">"' eliminado."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Buscar Nodo</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">BuscarNodo</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+    <span class="type">int</span> posicion = <span class="number">1</span>;
+    <span class="type">bool</span> encontrado = <span class="keyword">false</span>;
+
+    <span class="keyword">while</span> (Q != cabecera)
+    {
+        <span class="keyword">if</span> (Q.Dato == datoBuscado)
+        {
+            Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + datoBuscado + <span class="string">"' encontrado en posición "</span> + posicion);
+            encontrado = <span class="keyword">true</span>;
+            <span class="keyword">break</span>;
+        }
+        Q = Q.sig;
+        posicion++;
+    }
+
+    <span class="keyword">if</span> (!encontrado)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"Nodo '"</span> + datoBuscado + <span class="string">"' no encontrado."</span>);
+    }
+}</pre>
+        </div>
+
+        <h2>Buscar Nodo Anterior</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">BuscarNodoAnterior</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+    <span class="type">int</span> posicion = <span class="number">1</span>;
+
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+    {
+        Q = Q.sig;
+        posicion++;
+    }
+
+    <span class="keyword">if</span> (Q == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else if</span> (Q.ant == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo '"</span> + datoBuscado + <span class="string">"' es el primero. Su anterior es la CABECERA."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"Anterior a '"</span> + datoBuscado + <span class="string">"' es '"</span> + Q.ant.Dato + <span class="string">"' en posición "</span> + (posicion - <span class="number">1</span>));
+    }
+}</pre>
+        </div>
+
+        <h2>Buscar Nodo Siguiente</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">BuscarNodoSiguiente</span>(<span class="type">string</span> datoBuscado)
+{
+    <span class="keyword">if</span> (cabecera.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"La lista está vacía."</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="type">Nodo</span> Q = cabecera.sig;
+    <span class="type">int</span> posicion = <span class="number">1</span>;
+
+    <span class="keyword">while</span> (Q != cabecera && Q.Dato != datoBuscado)
+    {
+        Q = Q.sig;
+        posicion++;
+    }
+
+    <span class="keyword">if</span> (Q == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo de referencia '"</span> + datoBuscado + <span class="string">"'."</span>);
+    }
+    <span class="keyword">else if</span> (Q.sig == cabecera)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo '"</span> + datoBuscado + <span class="string">"' es el último. Su siguiente es la CABECERA."</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"Siguiente a '"</span> + datoBuscado + <span class="string">"' es '"</span> + Q.sig.Dato + <span class="string">"' en posición "</span> + (posicion + <span class="number">1</span>));
+    }
+}</pre>
+        </div>
+
+        <br>
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+    </div>
+</body>
+</html>

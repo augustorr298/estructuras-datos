@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte - Sistema de Inventarios</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2.5cm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #000;
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #000;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        p {
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+        
+        .portada {
+            text-align: center;
+            margin-top: 100px;
+            page-break-after: always;
+        }
+        
+        .portada h1 {
+            font-size: 24pt;
+            margin-top: 50px;
+        }
+        
+        .portada .subtitulo {
+            font-size: 16pt;
+            margin-top: 20px;
+            font-weight: normal;
+        }
+        
+        .portada .info {
+            margin-top: 100px;
+            font-size: 14pt;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 10pt;
+            line-height: 1.4;
+            font-family: 'Courier New', monospace;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 11pt;
+        }
+        
+        .figura {
+            text-align: center;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .figura img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .figura-caption {
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 11pt;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        
+        .lista-numerada {
+            margin-left: 20px;
+        }
+        
+        .lista-numerada li {
+            margin-bottom: 10px;
+        }
+        
+        .nota {
+            background-color: #fff8dc;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .memoria-estatica {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .memoria-dinamica {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .seccion {
+            page-break-before: always;
+        }
+        
+        ul {
+            margin-left: 30px;
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+        }
+        
+        .ecuacion {
+            text-align: center;
+            font-style: italic;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px dashed #999;
+        }
+
+        .operacion {
+            background-color: #f0f4f8;
+            border-left: 4px solid #3f51b5;
+            padding: 15px;
+            margin: 15px 0;
+            page-break-inside: avoid;
+        }
+
+        .operacion h4 {
+            margin-top: 0;
+            color: #3f51b5;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+    <h1>SISTEMA DE INVENTARIOS</h1>
+    <p class="subtitulo">Gestión de Productos con Arreglos Bidimensionales</p>
+    <p class="subtitulo">Usando Memoria Estática</p>
+    
+    <div class="info">
+        <p><strong>Materia:</strong> Estructura de Datos</p>
+        <p><strong>Fecha:</strong> Diciembre 2025</p>
+    </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="seccion">
+    <h1>ÍNDICE</h1>
+    <ol class="lista-numerada">
+        <li><strong>Introducción</strong>
+            <ul>
+                <li>Descripción de la aplicación</li>
+                <li>Memoria estática vs dinámica</li>
+                <li>Justificación del uso de memoria estática</li>
+            </ul>
+        </li>
+        <li><strong>Desarrollo de la Aplicación</strong>
+            <ul>
+                <li>Estructura de datos utilizada</li>
+                <li>Interfaz de usuario</li>
+                <li>Funcionalidades implementadas (CRUD)</li>
+                <li>Explicación del código</li>
+            </ul>
+        </li>
+        <li><strong>Conclusiones</strong>
+            <ul>
+                <li>Ventajas de la memoria estática</li>
+                <li>Limitaciones encontradas</li>
+                <li>Aprendizajes obtenidos</li>
+            </ul>
+        </li>
+    </ol>
+</div>
+
+<!-- 1. INTRODUCCIÓN -->
+<div class="seccion">
+    <h1>1. INTRODUCCIÓN</h1>
+    
+    <h2>1.1 Descripción de la Aplicación</h2>
+    
+    <p>
+        La aplicación <strong>Sistema de Inventarios</strong> ha sido desarrollada para gestionar el 
+        registro y control de productos en un almacén utilizando un arreglo bidimensional. El sistema 
+        permite administrar información de múltiples productos, donde cada producto cuenta con cuatro 
+        atributos: código del producto, cantidad en stock, precio unitario y código del proveedor.
+    </p>
+    
+    <p>
+        El objetivo principal de la aplicación es demostrar el uso práctico de arreglos bidimensionales 
+        para implementar las operaciones fundamentales de un sistema de gestión: <strong>Crear, Leer, 
+        Actualizar y Eliminar</strong> (conocidas como operaciones CRUD por sus siglas en inglés).
+    </p>
+    
+    <h2>1.2 Memoria Estática vs Memoria Dinámica</h2>
+    
+    <p>
+        En programación, existen dos tipos fundamentales de asignación de memoria:
+    </p>
+    
+    <div class="memoria-estatica">
+        <h3>Memoria Estática</h3>
+        <p>
+            La memoria estática se asigna en <strong>tiempo de compilación</strong>. Las estructuras de datos 
+            tienen un tamaño fijo que se define antes de ejecutar el programa y permanece constante durante 
+            toda la ejecución.
+        </p>
+        <p><strong>Características:</strong></p>
+        <ul>
+            <li>Tamaño fijo y predefinido</li>
+            <li>Se almacena en el segmento de datos o en la pila (stack)</li>
+            <li>Asignación y liberación automática</li>
+            <li>Acceso más rápido mediante índices</li>
+            <li>Menor overhead de gestión</li>
+            <li>No requiere desasignación manual</li>
+        </ul>
+        <p><strong>Ejemplo en C#:</strong></p>
+        <pre>int[,] inventario = new int[n, 4];  // n productos × 4 atributos</pre>
+    </div>
+    
+    <div class="memoria-dinamica">
+        <h3>Memoria Dinámica</h3>
+        <p>
+            La memoria dinámica se asigna en <strong>tiempo de ejecución</strong> según las necesidades del 
+            programa. Permite crear estructuras de datos cuyo tamaño puede variar durante la ejecución.
+        </p>
+        <p><strong>Características:</strong></p>
+        <ul>
+            <li>Tamaño variable y flexible</li>
+            <li>Se almacena en el heap (montículo)</li>
+            <li>Requiere gestión manual o automática (garbage collector)</li>
+            <li>Mayor flexibilidad para agregar/eliminar elementos</li>
+            <li>Permite crecimiento y reducción según necesidad</li>
+            <li>Mayor overhead de gestión</li>
+        </ul>
+        <p><strong>Ejemplo en C#:</strong></p>
+        <pre>List&lt;Producto&gt; inventario = new List&lt;Producto&gt;();  // Tamaño variable
+inventario.Add(nuevoProducto);  // Puede crecer dinámicamente</pre>
+    </div>
+    
+    <h2>1.3 Justificación del Uso de Memoria Estática</h2>
+    
+    <p>
+        Para esta aplicación se decidió utilizar <strong>memoria estática</strong> mediante un arreglo 
+        bidimensional por las siguientes razones:
+    </p>
+    
+    <ol class="lista-numerada">
+        <li><strong>Capacidad Predefinida:</strong> El usuario define la cantidad máxima de productos 
+        al iniciar, estableciendo un límite claro para el inventario.</li>
+        
+        <li><strong>Eficiencia de Acceso:</strong> Los arreglos ofrecen acceso O(1) a cualquier elemento 
+        mediante índices, permitiendo búsquedas y modificaciones rápidas.</li>
+        
+        <li><strong>Estructura Tabular Natural:</strong> Un arreglo bidimensional [productos, atributos] 
+        representa naturalmente una tabla donde cada fila es un producto y cada columna un atributo.</li>
+        
+        <li><strong>Simplicidad de Implementación:</strong> No requiere gestión compleja de memoria ni 
+        estructuras de datos adicionales como listas enlazadas.</li>
+        
+        <li><strong>Control de Recursos:</strong> Se conoce exactamente cuánta memoria utilizará la 
+        aplicación desde el inicio.</li>
+        
+        <li><strong>Demostración Educativa:</strong> Permite comprender el funcionamiento interno de 
+        las estructuras de datos antes de usar abstracciones de más alto nivel.</li>
+    </ol>
+    
+    <div class="nota">
+        <strong>Nota Importante:</strong> En aplicaciones empresariales reales, normalmente se utilizan 
+        bases de datos o estructuras dinámicas. Sin embargo, comprender el manejo de arreglos bidimensionales 
+        es fundamental para entender cómo funcionan internamente estas estructuras.
+    </div>
+</div>
+
+<!-- 2. DESARROLLO -->
+<div class="seccion">
+    <h1>2. DESARROLLO DE LA APLICACIÓN</h1>
+    
+    <h2>2.1 Estructura de Datos Utilizada</h2>
+    
+    <p>
+        La estructura principal de la aplicación es un <strong>arreglo bidimensional</strong> de tipo entero:
+    </p>
+    
+    <pre>int[,] inventario = new int[n, 4];</pre>
+    
+    <p><strong>Organización del arreglo:</strong></p>
+    <ul>
+        <li><strong>Primera dimensión (n):</strong> Representa el número de productos (filas), definido por el usuario</li>
+        <li><strong>Segunda dimensión (4):</strong> Representa los 4 atributos de cada producto (columnas)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Columna</th>
+            <th>Índice</th>
+            <th>Descripción</th>
+            <th>Ejemplo</th>
+        </tr>
+        <tr>
+            <td>Código del Producto</td>
+            <td>0</td>
+            <td>Identificador único del producto</td>
+            <td>1001, 1002, 1003...</td>
+        </tr>
+        <tr>
+            <td>Cantidad en Stock</td>
+            <td>1</td>
+            <td>Número de unidades disponibles</td>
+            <td>50, 100, 25...</td>
+        </tr>
+        <tr>
+            <td>Precio Unitario</td>
+            <td>2</td>
+            <td>Precio por unidad del producto</td>
+            <td>150, 299, 75...</td>
+        </tr>
+        <tr>
+            <td>Código del Proveedor</td>
+            <td>3</td>
+            <td>Identificador del proveedor</td>
+            <td>501, 502, 503...</td>
+        </tr>
+    </table>
+
+    <p><strong>Representación visual del arreglo:</strong></p>
+    
+    <table>
+        <tr>
+            <th>Fila</th>
+            <th>inventario[i,0]<br>Código</th>
+            <th>inventario[i,1]<br>Cantidad</th>
+            <th>inventario[i,2]<br>Precio</th>
+            <th>inventario[i,3]<br>Proveedor</th>
+        </tr>
+        <tr>
+            <td>0</td>
+            <td>1001</td>
+            <td>50</td>
+            <td>150</td>
+            <td>501</td>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>1002</td>
+            <td>30</td>
+            <td>299</td>
+            <td>502</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>1003</td>
+            <td>100</td>
+            <td>75</td>
+            <td>501</td>
+        </tr>
+        <tr>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+            <td>...</td>
+        </tr>
+        <tr>
+            <td>n-1</td>
+            <td>-1 (vacío)</td>
+            <td>-1</td>
+            <td>-1</td>
+            <td>-1</td>
+        </tr>
+    </table>
+    
+    <div class="nota">
+        <strong>Convención:</strong> Las filas con código -1 se consideran vacías o eliminadas, 
+        permitiendo reutilizar espacios sin necesidad de redimensionar el arreglo.
+    </div>
+    
+    <h2>2.2 Interfaz de Usuario</h2>
+    
+    <p>
+        La interfaz gráfica fue diseñada con Windows Forms y se divide en secciones claramente definidas:
+    </p>
+    
+    <div class="figura">
+        <!-- Aquí va la captura de pantalla de la interfaz -->
+        <p>[Insertar captura de pantalla de la interfaz principal]</p>
+        <p class="figura-caption">Figura 1. Interfaz principal del Sistema de Inventarios</p>
+    </div>
+    
+    <p><strong>Componentes de la interfaz:</strong></p>
+    
+    <ol class="lista-numerada">
+        <li><strong>Panel de Creación:</strong> Permite definir el tamaño del inventario (número de productos)</li>
+        <li><strong>Panel de Operaciones:</strong> Botones para Insertar, Consultar, Modificar y Eliminar</li>
+        <li><strong>Panel de Entrada:</strong> Campo de texto dinámico para ingresar valores según la operación</li>
+        <li><strong>DataGridView:</strong> Tabla que muestra el contenido actual del inventario</li>
+        <li><strong>Panel de Control:</strong> Botones para Limpiar/Reiniciar y Regresar</li>
+    </ol>
+    
+    <h2>2.3 Funcionalidades Implementadas (CRUD)</h2>
+    
+    <p>
+        El sistema implementa las cuatro operaciones fundamentales de gestión de datos. El botón de acción 
+        cambia su texto según la operación seleccionada para una mejor experiencia de usuario.
+    </p>
+    
+    <div class="operacion">
+        <h4>C - Create (Insertar Producto)</h4>
+        <p>
+            Permite agregar un nuevo producto al inventario. El proceso solicita secuencialmente 
+            cada uno de los cuatro atributos del producto. El botón muestra "OK, continuar".
+        </p>
+        <p><strong>Flujo de inserción:</strong></p>
+        <ol>
+            <li>Verificar si hay espacio disponible en el arreglo</li>
+            <li>Solicitar código del producto (validar que no exista)</li>
+            <li>Solicitar cantidad en stock</li>
+            <li>Solicitar precio unitario</li>
+            <li>Solicitar código del proveedor</li>
+            <li>Mostrar confirmación y actualizar la visualización</li>
+        </ol>
+    </div>
+    
+    <div class="operacion">
+        <h4>R - Read (Consultar Producto)</h4>
+        <p>
+            Permite buscar un producto por su código y mostrar toda su información. 
+            El botón muestra "Buscar".
+        </p>
+        <p><strong>Flujo de consulta:</strong></p>
+        <ol>
+            <li>Solicitar el código del producto a buscar</li>
+            <li>Recorrer el arreglo buscando coincidencia</li>
+            <li>Si se encuentra, mostrar todos los atributos con su posición en el arreglo</li>
+            <li>Si no se encuentra, mostrar mensaje de error</li>
+        </ol>
+    </div>
+    
+    <div class="operacion">
+        <h4>U - Update (Modificar Stock)</h4>
+        <p>
+            Permite modificar la cantidad en stock de un producto existente. 
+            El botón muestra "Modificar" y luego "Confirmar".
+        </p>
+        <p><strong>Flujo de modificación:</strong></p>
+        <ol>
+            <li>Solicitar el código del producto a modificar</li>
+            <li>Buscar el producto en el arreglo</li>
+            <li>Si se encuentra, mostrar el stock actual en el label y solicitar nueva cantidad</li>
+            <li>Confirmar y mostrar mensaje con cantidad anterior y nueva</li>
+            <li>Actualizar la visualización</li>
+        </ol>
+    </div>
+    
+    <div class="operacion">
+        <h4>D - Delete (Eliminar Producto)</h4>
+        <p>
+            Permite eliminar un producto del inventario marcando su fila como vacía. 
+            El botón muestra "Eliminar".
+        </p>
+        <p><strong>Flujo de eliminación:</strong></p>
+        <ol>
+            <li>Solicitar el código del producto a eliminar</li>
+            <li>Buscar el producto en el arreglo</li>
+            <li>Mostrar información del producto y solicitar confirmación</li>
+            <li>Si se confirma, marcar toda la fila con -1</li>
+            <li>Actualizar la visualización</li>
+        </ol>
+    </div>
+    
+    <h2>2.4 Explicación del Código</h2>
+    
+    <h3>2.4.1 Declaración de Variables</h3>
+    
+    <pre>
+// Variables
+int n;
+int columnas = 4;
+int[,] inventario;
+int totalProductos = 0;
+string operacionActual = "";
+int indiceEncontrado = -1;
+DataTable dt = new DataTable();
+    </pre>
+    
+    <p>
+        <strong>Enfoque con contador:</strong> Se utiliza <code>totalProductos</code> como contador simple 
+        para verificar si hay espacio disponible (<code>totalProductos &lt; n</code>) o si el inventario 
+        está vacío (<code>totalProductos == 0</code>), en lugar de métodos de búsqueda auxiliares.
+    </p>
+    
+    <h3>2.4.2 Método de Búsqueda</h3>
+    
+    <pre>
+// Buscar producto por código
+private int Buscar(int codigo)
+{
+    for (int i = 0; i &lt; n; i++)
+    {
+        if (inventario[i, 0] == codigo)
+            return i;
+    }
+    return -1;
+}
+    </pre>
+    
+    <p>
+        <strong>Análisis de complejidad:</strong> Este método tiene una complejidad de O(n), donde n es 
+        el número de productos. En el peor caso, debe recorrer todo el arreglo para determinar que un 
+        producto no existe.
+    </p>
+    
+    <h3>2.4.3 Método para Mostrar Datos</h3>
+    
+    <pre>
+// Mostrar datos
+private void MostrarDatos()
+{
+    dt.Clear();
+    for (int i = 0; i &lt; n; i++)
+    {
+        if (inventario[i, 0] != -1)
+        {
+            DataRow fila = dt.NewRow();
+            fila["Código"] = inventario[i, 0];
+            fila["Cantidad"] = inventario[i, 1];
+            fila["Precio"] = inventario[i, 2];
+            fila["Proveedor"] = inventario[i, 3];
+            dt.Rows.Add(fila);
+        }
+    }
+    dtgInventario.DataSource = dt;
+}
+    </pre>
+    
+    <p>
+        Este método sincroniza el contenido del arreglo con el DataGridView, filtrando automáticamente 
+        las filas marcadas como eliminadas (código = -1).
+    </p>
+    
+    <h3>2.4.4 Creación del Inventario</h3>
+    
+    <pre>
+// Botón crear
+private void btnCrear_Click(object sender, EventArgs e)
+{
+    n = int.Parse(txtNumProductos.Text);
+    inventario = new int[n, columnas];
+
+    for (int i = 0; i &lt; n; i++)
+    {
+        for (int j = 0; j &lt; columnas; j++)
+        {
+            inventario[i, j] = -1;
+        }
+    }
+
+    dt = new DataTable();
+    dt.Columns.Add("Código", typeof(int));
+    dt.Columns.Add("Cantidad", typeof(int));
+    dt.Columns.Add("Precio", typeof(int));
+    dt.Columns.Add("Proveedor", typeof(int));
+
+    btnInsertar.Enabled = true;
+    btnConsultar.Enabled = true;
+    btnModificar.Enabled = true;
+    btnEliminar.Enabled = true;
+    totalProductos = 0;
+}
+    </pre>
+    
+    <h3>2.4.5 Inserción de Productos</h3>
+    
+    <div class="figura">
+        <!-- Aquí va la captura de pantalla de inserción -->
+        <p>[Insertar captura de pantalla del proceso de inserción]</p>
+        <p class="figura-caption">Figura 2. Proceso de inserción de un producto</p>
+    </div>
+    
+    <h3>2.4.6 Consulta de Productos</h3>
+    
+    <div class="figura">
+        <!-- Aquí va la captura de pantalla de consulta -->
+        <p>[Insertar captura de pantalla del resultado de consulta]</p>
+        <p class="figura-caption">Figura 3. Resultado de consulta de producto</p>
+    </div>
+    
+    <h3>2.4.7 Modificación de Stock</h3>
+    
+    <div class="figura">
+        <!-- Aquí va la captura de pantalla de modificación -->
+        <p>[Insertar captura de pantalla del proceso de modificación]</p>
+        <p class="figura-caption">Figura 4. Modificación del stock de un producto</p>
+    </div>
+    
+    <h3>2.4.8 Eliminación de Productos</h3>
+    
+    <pre>
+case "eliminar":
+    int indiceEliminar = Buscar(valor);
+    if (indiceEliminar != -1)
+    {
+        DialogResult confirmar = MessageBox.Show(
+            "¿Está seguro de eliminar el producto?",
+            "Confirmar eliminación", 
+            MessageBoxButtons.YesNo);
+
+        if (confirmar == DialogResult.Yes)
+        {
+            inventario[indiceEliminar, 0] = -1;
+            inventario[indiceEliminar, 1] = -1;
+            inventario[indiceEliminar, 2] = -1;
+            inventario[indiceEliminar, 3] = -1;
+            totalProductos--;
+            MostrarDatos();
+        }
+    }
+    break;
+    </pre>
+    
+    <div class="nota">
+        <strong>Eliminación Lógica:</strong> En lugar de redimensionar el arreglo (lo cual no es posible 
+        con memoria estática), se utiliza una eliminación lógica marcando la fila con -1. Esto permite 
+        reutilizar ese espacio para futuros productos.
+    </div>
+    
+    <div class="figura">
+        <!-- Aquí va la captura de pantalla de eliminación -->
+        <p>[Insertar captura de pantalla de confirmación de eliminación]</p>
+        <p class="figura-caption">Figura 5. Confirmación de eliminación de producto</p>
+    </div>
+</div>
+
+<!-- 3. CONCLUSIONES -->
+<div class="seccion">
+    <h1>3. CONCLUSIONES</h1>
+    
+    <h2>3.1 Ventajas de la Memoria Estática en este Proyecto</h2>
+    
+    <ul>
+        <li><strong>Acceso Directo:</strong> El acceso a cualquier producto es O(1) mediante 
+        <code>inventario[fila, columna]</code>, sin necesidad de recorrer estructuras enlazadas.</li>
+        
+        <li><strong>Estructura Tabular:</strong> El arreglo bidimensional representa naturalmente 
+        la relación productos-atributos, similar a una tabla de base de datos.</li>
+        
+        <li><strong>Predecibilidad:</strong> Se conoce exactamente cuánta memoria se utilizará 
+        desde el momento de la creación.</li>
+        
+        <li><strong>Simplicidad:</strong> La implementación es directa y fácil de entender, 
+        ideal para propósitos educativos.</li>
+        
+        <li><strong>Sin Fragmentación:</strong> Al estar en un bloque contiguo de memoria, 
+        no hay fragmentación como puede ocurrir con estructuras dinámicas.</li>
+    </ul>
+    
+    <h2>3.2 Limitaciones Encontradas</h2>
+    
+    <ul>
+        <li><strong>Tamaño Fijo:</strong> Una vez creado el inventario, no es posible agregar 
+        más productos de los definidos inicialmente.</li>
+        
+        <li><strong>Desperdicio de Memoria:</strong> Si se eliminan productos, las filas quedan 
+        marcadas como vacías pero siguen ocupando memoria.</li>
+        
+        <li><strong>Búsqueda Lineal:</strong> La búsqueda por código requiere recorrer el arreglo, 
+        lo cual puede ser lento con muchos productos.</li>
+        
+        <li><strong>Tipos de Datos:</strong> Al usar int para todo, se limita a valores enteros. 
+        Los precios no pueden tener decimales.</li>
+        
+        <li><strong>Sin Ordenamiento:</strong> Los productos se almacenan en el orden de inserción, 
+        no hay ordenamiento automático por código u otro criterio.</li>
+    </ul>
+    
+    <h2>3.3 Aprendizajes Obtenidos</h2>
+    
+    <ol class="lista-numerada">
+        <li><strong>Manejo de Arreglos Bidimensionales:</strong> Se comprendió cómo usar las dos 
+        dimensiones para representar una estructura tabular (filas = registros, columnas = campos).</li>
+        
+        <li><strong>Operaciones CRUD:</strong> Se implementaron las cuatro operaciones básicas de 
+        gestión de datos, entendiendo cómo cada una manipula el arreglo.</li>
+        
+        <li><strong>Eliminación Lógica:</strong> Se aprendió que en estructuras estáticas, la 
+        "eliminación" se realiza marcando registros como inválidos, no borrándolos físicamente.</li>
+        
+        <li><strong>Validaciones:</strong> Se implementaron validaciones para evitar códigos 
+        duplicados, valores negativos y operaciones sobre inventarios vacíos.</li>
+        
+        <li><strong>Interfaz Dinámica:</strong> Se diseñó una interfaz que adapta sus controles 
+        según la operación que el usuario está realizando.</li>
+        
+        <li><strong>Sincronización Vista-Datos:</strong> Se comprendió la importancia de mantener 
+        sincronizada la estructura de datos interna con la visualización en pantalla.</li>
+    </ol>
+    
+    <h2>3.4 Posibles Mejoras Futuras</h2>
+    
+    <ul>
+        <li>Implementar búsqueda binaria (requeriría mantener el arreglo ordenado)</li>
+        <li>Agregar persistencia de datos (guardar/cargar de archivos)</li>
+        <li>Permitir modificar todos los atributos, no solo el stock</li>
+        <li>Implementar reportes de inventario bajo stock</li>
+        <li>Agregar validación de rangos para códigos y precios</li>
+        <li>Migrar a una estructura dinámica (List&lt;Producto&gt;) para eliminar la limitación de tamaño</li>
+    </ul>
+    
+    <div class="nota">
+        <strong>Reflexión Final:</strong> Este ejercicio demuestra que aunque las estructuras estáticas 
+        tienen limitaciones, son fundamentales para comprender cómo funcionan internamente las estructuras 
+        de datos más complejas. Antes de usar abstracciones de alto nivel como listas o diccionarios, 
+        es importante entender los conceptos básicos de almacenamiento y acceso a memoria.
+    </div>
+</div>
+
+</body>
+</html>

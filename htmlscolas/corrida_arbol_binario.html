@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida - Árbol Binario de Búsqueda en C#</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            margin-bottom: 30px;
+        }
+        .corrida-section {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            border: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            white-space: pre;
+        }
+        .nav-link {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .nav-link:hover {
+            background: #00a8cc;
+        }
+        .explanation {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+        .title-op { color: #ff79c6; font-weight: bold; }
+        .var { color: #8be9fd; }
+        .val { color: #f1fa8c; }
+        .step { color: #50fa7b; }
+        .result { color: #ffb86c; }
+        .diagram { color: #bd93f9; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Árbol Binario de Búsqueda - Corrida Paso a Paso</h1>
+        
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+
+        <div class="explanation">
+            <strong>Representación visual:</strong><br>
+            Cada nodo tiene: <code>[izq|Dato|der]</code><br>
+            <code>Raiz</code> = Puntero al nodo raíz<br>
+            Propiedad ABB: izquierda &lt; nodo &lt; derecha
+        </div>
+
+        <div class="corrida-section">
+<pre>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+<span class="title-op">                    CORRIDA DE ÁRBOL BINARIO DE BÚSQUEDA EN C#</span>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+
+<span class="title-op">═══ INICIALIZACIÓN ═══</span>
+<span class="step">Ejecutando:</span> ArbolB arbol = new ArbolB();
+<span class="step">Línea:</span> Raiz = null;
+
+<span class="diagram">Estado inicial (árbol vacío):</span>
+    Raiz → null
+
+
+<span class="title-op">═══ OPERACIÓN 1: Insertar(50) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(50);
+
+<span class="step">Paso 1:</span> NodoArbolB nuevoNodo = new NodoArbolB(50);
+        <span class="var">nuevoNodo</span> = <span class="val">{ Dato: 50, izq: null, der: null }</span>
+
+<span class="step">Paso 2:</span> if (Raiz == null) → true
+        <span class="var">Raiz</span> = <span class="val">nuevoNodo</span>
+
+<span class="result">Salida: El nodo 50 fue insertado como raíz</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        null    null
+
+
+<span class="title-op">═══ OPERACIÓN 2: Insertar(30) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(30);
+
+<span class="step">Paso 1:</span> NodoArbolB nuevoNodo = new NodoArbolB(30);
+<span class="step">Paso 2:</span> if (Raiz == null) → false
+<span class="step">Paso 3:</span> NodoArbolB actual = Raiz;   // actual = nodo 50
+        NodoArbolB padre = null;
+
+<span class="step">Paso 4:</span> while (actual != null):
+        <span class="var">Iteración 1:</span>
+            padre = actual;           // padre = nodo 50
+            30 &lt; 50? → true
+            actual = actual.izq;      // actual = null
+        <span class="result">Sale del while (actual == null)</span>
+
+<span class="step">Paso 5:</span> 30 &lt; padre.Dato (50)? → true
+        padre.izq = nuevoNodo;
+
+<span class="result">Salida: El dato 30 fue insertado a la izquierda de 50</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        [30]    null
+
+
+<span class="title-op">═══ OPERACIÓN 3: Insertar(70) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(70);
+
+<span class="step">Paso 1:</span> NodoArbolB nuevoNodo = new NodoArbolB(70);
+<span class="step">Paso 2:</span> actual = Raiz (nodo 50), padre = null
+
+<span class="step">Paso 3:</span> while (actual != null):
+        <span class="var">Iteración 1:</span>
+            padre = actual;           // padre = nodo 50
+            70 &lt; 50? → false
+            70 &gt; 50? → true
+            actual = actual.der;      // actual = null
+        <span class="result">Sale del while</span>
+
+<span class="step">Paso 4:</span> 70 &lt; padre.Dato (50)? → false
+        padre.der = nuevoNodo;
+
+<span class="result">Salida: El dato 70 fue insertado a la derecha de 50</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        [30]    [70]
+
+
+<span class="title-op">═══ OPERACIÓN 4: Insertar(20) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(20);
+
+<span class="step">Paso 1:</span> actual = Raiz (50), padre = null
+
+<span class="step">Paso 2:</span> while (actual != null):
+        <span class="var">Iteración 1:</span>
+            padre = 50
+            20 &lt; 50? → true
+            actual = actual.izq;      // actual = nodo 30
+        <span class="var">Iteración 2:</span>
+            padre = 30
+            20 &lt; 30? → true
+            actual = actual.izq;      // actual = null
+        <span class="result">Sale del while</span>
+
+<span class="step">Paso 3:</span> 20 &lt; 30? → true → padre.izq = nuevoNodo
+
+<span class="result">Salida: El dato 20 fue insertado a la izquierda de 30</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        [30]    [70]
+        /
+     [20]
+
+
+<span class="title-op">═══ OPERACIÓN 5: Insertar(40) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(40);
+
+<span class="step">Recorrido:</span> 50 → izq → 30 → der → null
+<span class="step">Resultado:</span> 40 &gt; 30 → padre.der = nuevoNodo
+
+<span class="result">Salida: El dato 40 fue insertado a la derecha de 30</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        [30]    [70]
+        /  \
+     [20]  [40]
+
+
+<span class="title-op">═══ OPERACIÓN 6: Insertar(60) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(60);
+
+<span class="step">Recorrido:</span> 50 → der → 70 → izq → null
+<span class="step">Resultado:</span> 60 &lt; 70 → padre.izq = nuevoNodo
+
+<span class="result">Salida: El dato 60 fue insertado a la izquierda de 70</span>
+
+<span class="diagram">Estado del árbol:</span>
+            [50]
+           /    \
+        [30]    [70]
+        /  \    /
+     [20] [40] [60]
+
+
+<span class="title-op">═══ OPERACIÓN 7: Insertar(80) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(80);
+
+<span class="step">Recorrido:</span> 50 → der → 70 → der → null
+<span class="step">Resultado:</span> 80 &gt; 70 → padre.der = nuevoNodo
+
+<span class="result">Salida: El dato 80 fue insertado a la derecha de 70</span>
+
+<span class="diagram">Estado del árbol completo:</span>
+                [50]
+               /    \
+            [30]    [70]
+            /  \    /   \
+         [20] [40] [60] [80]
+
+
+<span class="title-op">═══ OPERACIÓN 8: Buscar(40) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Buscar(40);
+
+<span class="step">Paso 1:</span> Raiz != null → continuar
+
+<span class="step">Paso 2:</span> BuscarRec(Raiz)  // nodo = 50
+        <span class="var">Llamada 1:</span> nodo.Dato = 50
+            50 == 40? → false
+            40 &lt; 50? → true
+            BuscarRec(nodo.izq)  // nodo = 30
+        
+        <span class="var">Llamada 2:</span> nodo.Dato = 30
+            30 == 40? → false
+            40 &lt; 30? → false
+            BuscarRec(nodo.der)  // nodo = 40
+        
+        <span class="var">Llamada 3:</span> nodo.Dato = 40
+            40 == 40? → <span class="result">¡ENCONTRADO!</span>
+
+<span class="result">Salida: El dato 40 fue encontrado en el árbol</span>
+
+<span class="diagram">Camino de búsqueda:</span> 50 → 30 → 40 ✓
+
+
+<span class="title-op">═══ OPERACIÓN 9: Buscar(55) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Buscar(55);
+
+<span class="step">Camino:</span>
+        55 &lt; 50? → false, 55 &gt; 50? → true → ir derecha (70)
+        55 &lt; 70? → true → ir izquierda (60)
+        55 &lt; 60? → true → ir izquierda (null)
+        nodo == null → <span class="result">NO ENCONTRADO</span>
+
+<span class="result">Salida: El dato 55 NO se encontró en el árbol</span>
+
+
+<span class="title-op">═══ OPERACIÓN 10: ImprimirArbol() ═══</span>
+<span class="step">Ejecutando:</span> arbol.ImprimirArbol();
+
+<span class="step">Proceso recursivo:</span>
+<span class="result">Salida:</span>
+--- Estructura del Árbol ---
+
+50
+ |
+ |-Der: 70
+ |     |
+ |     |-Der: 80
+ |     |
+ |     L-Izq: 60
+ |
+ L-Izq: 30
+       |
+       |-Der: 40
+       |
+       L-Izq: 20
+
+
+<span class="title-op">═══ OPERACIÓN 11: Eliminar(20) - Nodo sin hijos ═══</span>
+<span class="step">Ejecutando:</span> arbol.Eliminar(20);
+
+<span class="diagram">Estado actual:</span>
+                [50]
+               /    \
+            [30]    [70]
+            /  \    /   \
+         [20] [40] [60] [80]
+
+<span class="step">Paso 1:</span> Eliminar(Raiz, 20)
+        20 &lt; 50? → true
+        Raiz.izq = Eliminar(Raiz.izq, 20)  // Llamada recursiva con nodo 30
+
+<span class="step">Paso 2:</span> Eliminar(nodo 30, 20)
+        20 &lt; 30? → true
+        nodo.izq = Eliminar(nodo.izq, 20)  // Llamada recursiva con nodo 20
+
+<span class="step">Paso 3:</span> Eliminar(nodo 20, 20)
+        20 == 20? → <span class="result">¡Encontrado!</span>
+        NodoEliminar = nodo 20
+        NodoEliminar.der == null? → true
+        return NodoEliminar.izq (null)
+
+<span class="step">Resultado:</span> nodo30.izq = null (el 20 fue eliminado)
+
+<span class="result">Salida: El nodo 20 se ha eliminado</span>
+
+<span class="diagram">Estado después de eliminar 20:</span>
+                [50]
+               /    \
+            [30]    [70]
+               \    /   \
+              [40] [60] [80]
+
+
+<span class="title-op">═══ OPERACIÓN 12: Eliminar(70) - Nodo con dos hijos ═══</span>
+<span class="step">Ejecutando:</span> arbol.Eliminar(70);
+
+<span class="diagram">Estado actual:</span>
+                [50]
+               /    \
+            [30]    [70]
+               \    /   \
+              [40] [60] [80]
+
+<span class="step">Paso 1:</span> Eliminar(Raiz, 70)
+        70 &gt; 50? → true
+        Raiz.der = Eliminar(Raiz.der, 70)  // nodo = 70
+
+<span class="step">Paso 2:</span> Eliminar(nodo 70, 70)
+        70 == 70? → <span class="result">¡Encontrado!</span>
+        NodoEliminar = nodo 70
+        NodoEliminar.der == null? → false (tiene 80)
+        NodoEliminar.izq == null? → false (tiene 60)
+        <span class="result">Caso 3: Nodo con DOS hijos</span>
+
+<span class="step">Paso 3:</span> Buscar sucesor (mínimo del subárbol derecho)
+        sucesor = Minimo(nodo70.der)
+        Minimo(nodo 80):
+            while (nodo.izq != null) → 80.izq = null → sale
+            return nodo 80
+        <span class="var">sucesor</span> = <span class="val">80</span>
+
+<span class="step">Paso 4:</span> Reemplazar dato
+        Raiz.Dato = sucesor.Dato
+        <span class="var">nodo70.Dato</span> = <span class="val">80</span>
+
+<span class="step">Paso 5:</span> Eliminar el sucesor original
+        Raiz.der = Eliminar(Raiz.der, 80)
+        // Esto elimina el nodo 80 original (que ahora es hoja)
+
+<span class="result">Salida: El nodo 70 fue reemplazado por 80</span>
+
+<span class="diagram">Estado después de eliminar 70:</span>
+                [50]
+               /    \
+            [30]    [80]
+               \    /   
+              [40] [60]
+
+
+<span class="title-op">═══ OPERACIÓN 13: Eliminar(30) - Nodo con un hijo ═══</span>
+<span class="step">Ejecutando:</span> arbol.Eliminar(30);
+
+<span class="diagram">Estado actual:</span>
+                [50]
+               /    \
+            [30]    [80]
+               \    /   
+              [40] [60]
+
+<span class="step">Paso 1:</span> Eliminar(Raiz, 30)
+        30 &lt; 50? → true
+        Raiz.izq = Eliminar(Raiz.izq, 30)  // nodo = 30
+
+<span class="step">Paso 2:</span> Eliminar(nodo 30, 30)
+        30 == 30? → <span class="result">¡Encontrado!</span>
+        NodoEliminar = nodo 30
+        NodoEliminar.der == null? → false (tiene 40)
+        NodoEliminar.izq == null? → true
+        <span class="result">Caso 2: Solo hijo derecho</span>
+        return NodoEliminar.der (nodo 40)
+
+<span class="step">Resultado:</span> Raiz.izq = nodo 40
+
+<span class="result">Salida: El nodo 30 se ha eliminado</span>
+
+<span class="diagram">Estado después de eliminar 30:</span>
+                [50]
+               /    \
+            [40]    [80]
+                    /   
+                  [60]
+
+
+<span class="title-op">═══ OPERACIÓN 14: Buscar(80) ═══</span>
+<span class="step">Ejecutando:</span> arbol.Buscar(80);
+
+<span class="step">Camino:</span> 50 → der → 80 ✓
+
+<span class="result">Salida: El dato 80 fue encontrado en el árbol</span>
+
+
+<span class="title-op">═══ OPERACIÓN 15: Insertar(50) - Duplicado ═══</span>
+<span class="step">Ejecutando:</span> arbol.Insertar(50);
+
+<span class="step">Paso 1:</span> actual = Raiz (50)
+<span class="step">Paso 2:</span> while: 50 &lt; 50? → false, 50 &gt; 50? → false
+        <span class="result">else: dato ya existe</span>
+
+<span class="result">Salida: El dato 50 ya existe en el árbol y no fue insertado</span>
+
+
+<span class="title-op">═══ OPERACIÓN 16: Eliminar(50) - Eliminar la raíz ═══</span>
+<span class="step">Ejecutando:</span> arbol.Eliminar(50);
+
+<span class="diagram">Estado actual:</span>
+                [50]
+               /    \
+            [40]    [80]
+                    /   
+                  [60]
+
+<span class="step">Paso 1:</span> Eliminar(Raiz, 50)
+        50 == 50? → <span class="result">¡Raíz encontrada!</span>
+        NodoEliminar.der == null? → false (tiene 80)
+        NodoEliminar.izq == null? → false (tiene 40)
+        <span class="result">Caso 3: Raíz con DOS hijos</span>
+
+<span class="step">Paso 2:</span> sucesor = Minimo(nodo50.der)
+        Minimo(nodo 80):
+            80.izq = 60, continuar
+            60.izq = null → return 60
+        <span class="var">sucesor</span> = <span class="val">60</span>
+
+<span class="step">Paso 3:</span> Raiz.Dato = 60
+<span class="step">Paso 4:</span> Raiz.der = Eliminar(Raiz.der, 60)
+
+<span class="result">Salida: El nodo 50 fue reemplazado por 60</span>
+
+<span class="diagram">Estado final:</span>
+                [60]
+               /    \
+            [40]    [80]
+
+
+<span class="title-op">═══ OPERACIÓN 17: ImprimirArbol() - Estado Final ═══</span>
+<span class="step">Ejecutando:</span> arbol.ImprimirArbol();
+
+<span class="result">Salida:</span>
+--- Estructura del Árbol ---
+
+60
+ |
+ |-Der: 80
+ |
+ L-Izq: 40
+
+
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+<span class="title-op">                              FIN DE LA CORRIDA</span>
+<span class="title-op">══════════════════════════════════════════════════════════════════════════════════</span>
+
+<span class="diagram">Resumen de operaciones realizadas:</span>
+
+<span class="step">Inserciones:</span> 50(raíz), 30, 70, 20, 40, 60, 80
+
+<span class="step">Árbol máximo construido:</span>
+                [50]
+               /    \
+            [30]    [70]
+            /  \    /   \
+         [20] [40] [60] [80]
+
+<span class="step">Eliminaciones:</span>
+    • 20 (sin hijos) → se elimina directamente
+    • 70 (dos hijos) → reemplazado por sucesor 80
+    • 30 (un hijo)   → reemplazado por su hijo 40
+    • 50 (raíz, dos hijos) → reemplazado por sucesor 60
+
+<span class="step">Árbol final:</span>
+                [60]
+               /    \
+            [40]    [80]
+
+<span class="result">Propiedades ABB mantenidas:</span>
+    40 &lt; 60 &lt; 80 ✓
+</pre>
+        </div>
+
+        <br>
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+    </div>
+</body>
+</html>

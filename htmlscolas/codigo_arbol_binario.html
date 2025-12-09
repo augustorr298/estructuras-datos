@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código - Árbol Binario de Búsqueda en C#</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+            margin-bottom: 30px;
+        }
+        h2 {
+            color: #ff6b9d;
+            border-bottom: 2px solid #ff6b9d;
+            padding-bottom: 10px;
+            margin-top: 40px;
+        }
+        .code-section {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            border: 1px solid #30363d;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .keyword { color: #ff79c6; }
+        .type { color: #8be9fd; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; font-style: italic; }
+        .method { color: #50fa7b; }
+        .property { color: #ffb86c; }
+        .number { color: #bd93f9; }
+        .nav-link {
+            display: inline-block;
+            background: #00d4ff;
+            color: #1a1a2e;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 5px;
+        }
+        .nav-link:hover {
+            background: #00a8cc;
+        }
+        .explanation {
+            background: rgba(0, 212, 255, 0.1);
+            border-left: 4px solid #00d4ff;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 0 10px 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 Árbol Binario de Búsqueda - Código C#</h1>
+        
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+
+        <div class="explanation">
+            <strong>Árbol Binario de Búsqueda (ABB):</strong> Estructura de datos jerárquica donde cada nodo tiene 
+            como máximo dos hijos. Para cada nodo: todos los valores del subárbol izquierdo son menores, 
+            y todos los del subárbol derecho son mayores. Permite búsqueda, inserción y eliminación eficientes.
+        </div>
+
+        <h2>Clase NodoArbolB</h2>
+        <div class="code-section">
+<pre><span class="keyword">using</span> System;
+
+<span class="keyword">namespace</span> ArbolBinario
+{
+    <span class="keyword">internal class</span> <span class="type">NodoArbolB</span>
+    {
+        <span class="keyword">public</span> <span class="type">int</span> <span class="property">Dato</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+
+        <span class="keyword">public</span> <span class="type">NodoArbolB</span> <span class="property">izq</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// Hijo izquierdo</span>
+
+        <span class="keyword">public</span> <span class="type">NodoArbolB</span> <span class="property">der</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }  <span class="comment">// Hijo derecho</span>
+
+        <span class="keyword">public</span> <span class="method">NodoArbolB</span>(<span class="type">int</span> dato)
+        {
+            Dato = dato;
+            izq = <span class="keyword">null</span>;
+            der = <span class="keyword">null</span>;
+        }
+    }
+}</pre>
+        </div>
+
+        <h2>Clase ArbolB - Constructor</h2>
+        <div class="code-section">
+<pre><span class="keyword">internal class</span> <span class="type">ArbolB</span>
+{
+    <span class="keyword">private</span> <span class="type">NodoArbolB</span> Raiz;
+
+    <span class="keyword">public</span> <span class="method">ArbolB</span>()
+    {
+        Raiz = <span class="keyword">null</span>;  <span class="comment">// El árbol inicia vacío</span>
+    }
+}</pre>
+        </div>
+
+        <h2>Método Insertar</h2>
+        <div class="explanation">
+            <strong>Lógica de inserción:</strong> Si el dato es menor al nodo actual, va a la izquierda. 
+            Si es mayor, va a la derecha. Si es igual, no se inserta (evita duplicados).
+        </div>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">Insertar</span>(<span class="type">int</span> dato)
+{
+    <span class="type">NodoArbolB</span> nuevoNodo = <span class="keyword">new</span> <span class="type">NodoArbolB</span>(dato);
+    
+    <span class="keyword">if</span> (Raiz == <span class="keyword">null</span>)
+    {
+        Raiz = nuevoNodo;
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo "</span> + dato + <span class="string">" fue insertado como raíz"</span>);
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="type">NodoArbolB</span> actual = Raiz;
+        <span class="type">NodoArbolB</span> padre = <span class="keyword">null</span>;
+
+        <span class="keyword">while</span> (actual != <span class="keyword">null</span>)
+        {
+            padre = actual;
+            
+            <span class="keyword">if</span> (dato &lt; actual.Dato)
+            {
+                actual = actual.izq;  <span class="comment">// Ir a la izquierda</span>
+            }
+            <span class="keyword">else if</span> (dato &gt; actual.Dato)
+            {
+                actual = actual.der;  <span class="comment">// Ir a la derecha</span>
+            }
+            <span class="keyword">else</span>
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"El dato "</span> + dato + 
+                    <span class="string">" ya existe en el árbol y no fue insertado"</span>);
+                <span class="keyword">return</span>;
+            }
+        }
+
+        <span class="comment">// Insertar el nuevo nodo</span>
+        <span class="keyword">if</span> (dato &lt; padre.Dato)
+        {
+            padre.izq = nuevoNodo;
+            Console.<span class="method">WriteLine</span>(<span class="string">"El dato "</span> + dato + 
+                <span class="string">" fue insertado a la izquierda de "</span> + padre.Dato);
+        }
+        <span class="keyword">else</span>
+        {
+            padre.der = nuevoNodo;
+            Console.<span class="method">WriteLine</span>(<span class="string">"El dato "</span> + dato + 
+                <span class="string">" fue insertado a la derecha de "</span> + padre.Dato);
+        }
+    }
+}</pre>
+        </div>
+
+        <h2>Método Eliminar (Público)</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">Eliminar</span>(<span class="type">int</span> dato)
+{
+    Raiz = <span class="method">Eliminar</span>(Raiz, dato);  <span class="comment">// Llama al método recursivo privado</span>
+}</pre>
+        </div>
+
+        <h2>Método Eliminar (Privado - Recursivo)</h2>
+        <div class="explanation">
+            <strong>Casos de eliminación:</strong><br>
+            1. Nodo sin hijos: simplemente se elimina.<br>
+            2. Nodo con un hijo: se reemplaza por su hijo.<br>
+            3. Nodo con dos hijos: se reemplaza por el mínimo del subárbol derecho (sucesor).
+        </div>
+        <div class="code-section">
+<pre><span class="keyword">private</span> <span class="type">NodoArbolB</span> <span class="method">Eliminar</span>(<span class="type">NodoArbolB</span> Raiz, <span class="type">int</span> dato)
+{
+    <span class="keyword">if</span> (Raiz == <span class="keyword">null</span>)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"El dato "</span> + dato + <span class="string">" no se encontró en el árbol"</span>);
+        <span class="keyword">return</span> <span class="keyword">null</span>;
+    }
+
+    <span class="comment">// Buscar el nodo a eliminar</span>
+    <span class="keyword">if</span> (dato &lt; Raiz.Dato)
+    {
+        Raiz.izq = <span class="method">Eliminar</span>(Raiz.izq, dato);
+    }
+    <span class="keyword">else if</span> (dato &gt; Raiz.Dato)
+    {
+        Raiz.der = <span class="method">Eliminar</span>(Raiz.der, dato);
+    }
+    <span class="keyword">else</span>
+    {
+        <span class="comment">// Nodo encontrado - proceder a eliminar</span>
+        <span class="type">NodoArbolB</span> NodoEliminar = Raiz;
+
+        <span class="comment">// Caso 1: Nodo sin hijo derecho</span>
+        <span class="keyword">if</span> (NodoEliminar.der == <span class="keyword">null</span>)
+        {
+            Console.<span class="method">WriteLine</span>(<span class="string">"El nodo "</span> + dato + <span class="string">" se ha eliminado"</span>);
+            <span class="keyword">return</span> NodoEliminar.izq;
+        }
+        <span class="comment">// Caso 2: Nodo sin hijo izquierdo</span>
+        <span class="keyword">else if</span> (NodoEliminar.izq == <span class="keyword">null</span>)
+        {
+            Console.<span class="method">WriteLine</span>(<span class="string">"El nodo "</span> + dato + <span class="string">" se ha eliminado"</span>);
+            <span class="keyword">return</span> NodoEliminar.der;
+        }
+
+        <span class="comment">// Caso 3: Nodo con dos hijos - buscar sucesor</span>
+        <span class="type">NodoArbolB</span> sucesor = <span class="method">Minimo</span>(Raiz.der);
+        Console.<span class="method">WriteLine</span>(<span class="string">"El nodo "</span> + dato + <span class="string">" fue reemplazado por "</span> + sucesor.Dato);
+        Raiz.Dato = sucesor.Dato;
+        Raiz.der = <span class="method">Eliminar</span>(Raiz.der, sucesor.Dato);
+    }
+
+    <span class="keyword">return</span> Raiz;
+}</pre>
+        </div>
+
+        <h2>Método Mínimo (Auxiliar)</h2>
+        <div class="code-section">
+<pre><span class="keyword">private</span> <span class="type">NodoArbolB</span> <span class="method">Minimo</span>(<span class="type">NodoArbolB</span> nodo)
+{
+    <span class="comment">// El mínimo siempre está en el extremo izquierdo</span>
+    <span class="keyword">while</span> (nodo.izq != <span class="keyword">null</span>)
+    {
+        nodo = nodo.izq;
+    }
+    <span class="keyword">return</span> nodo;
+}</pre>
+        </div>
+
+        <h2>Método Buscar</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">Buscar</span>(<span class="type">int</span> dato)
+{
+    <span class="keyword">if</span> (Raiz == <span class="keyword">null</span>)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"\nEl árbol está vacío"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    <span class="method">BuscarRec</span>(Raiz);
+
+    <span class="keyword">void</span> <span class="method">BuscarRec</span>(<span class="type">NodoArbolB</span> nodo)
+    {
+        <span class="keyword">if</span> (nodo == <span class="keyword">null</span>)
+        {
+            Console.<span class="method">WriteLine</span>(<span class="string">"\nEl dato "</span> + dato + <span class="string">" NO se encontró en el árbol"</span>);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (nodo.Dato == dato)
+        {
+            Console.<span class="method">WriteLine</span>(<span class="string">"\nEl dato "</span> + dato + <span class="string">" fue encontrado en el árbol"</span>);
+            <span class="keyword">return</span>;
+        }
+
+        <span class="keyword">if</span> (dato &lt; nodo.Dato)
+            <span class="method">BuscarRec</span>(nodo.izq);  <span class="comment">// Buscar en subárbol izquierdo</span>
+        <span class="keyword">else</span>
+            <span class="method">BuscarRec</span>(nodo.der);  <span class="comment">// Buscar en subárbol derecho</span>
+    }
+}</pre>
+        </div>
+
+        <h2>Método ImprimirArbol (Público)</h2>
+        <div class="code-section">
+<pre><span class="keyword">public void</span> <span class="method">ImprimirArbol</span>()
+{
+    <span class="keyword">if</span> (Raiz == <span class="keyword">null</span>)
+    {
+        Console.<span class="method">WriteLine</span>(<span class="string">"\nEl árbol está vacío"</span>);
+        <span class="keyword">return</span>;
+    }
+
+    Console.<span class="method">WriteLine</span>(<span class="string">"\n--- Estructura del Árbol ---\n"</span>);
+    <span class="method">ImprimirArbol</span>(Raiz, <span class="string">""</span>);
+}</pre>
+        </div>
+
+        <h2>Método ImprimirArbol (Privado - Recursivo)</h2>
+        <div class="code-section">
+<pre><span class="keyword">private void</span> <span class="method">ImprimirArbol</span>(<span class="type">NodoArbolB</span> nodo, <span class="type">string</span> espacios)
+{
+    <span class="keyword">if</span> (nodo == <span class="keyword">null</span>)
+    {
+        <span class="keyword">return</span>;
+    }
+
+    Console.<span class="method">WriteLine</span>(espacios + nodo.Dato);
+
+    <span class="comment">// Imprimir hijo derecho</span>
+    <span class="keyword">if</span> (nodo.der != <span class="keyword">null</span>)
+    {
+        Console.<span class="method">WriteLine</span>(espacios + <span class="string">" |"</span>);
+        Console.<span class="method">Write</span>(espacios + <span class="string">" |-Der: "</span>);
+        <span class="method">ImprimirArbol</span>(nodo.der, espacios + <span class="string">" |    "</span>);
+    }
+
+    <span class="comment">// Imprimir hijo izquierdo</span>
+    <span class="keyword">if</span> (nodo.izq != <span class="keyword">null</span>)
+    {
+        Console.<span class="method">WriteLine</span>(espacios + <span class="string">" |"</span>);
+        Console.<span class="method">Write</span>(espacios + <span class="string">" L-Izq: "</span>);
+        <span class="method">ImprimirArbol</span>(nodo.izq, espacios + <span class="string">"      "</span>);
+    }
+}</pre>
+        </div>
+
+        <br>
+        <p><a href="../menu.html" class="nav-link">← Volver al Menú</a></p>
+    </div>
+</body>
+</html>

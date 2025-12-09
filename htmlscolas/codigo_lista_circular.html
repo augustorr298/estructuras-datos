@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Código - Lista Circular Enlazada</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .archivo {
+            background: white;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .archivo-header {
+            background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+            color: white;
+            padding: 15px 25px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        .archivo-header .icono { margin-right: 10px; }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 25px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .keyword { color: #569cd6; }
+        .type { color: #4ec9b0; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+        .method { color: #dcdcaa; }
+        .number { color: #b5cea8; }
+        .property { color: #9cdcfe; }
+        .nav-link {
+            display: inline-block;
+            margin: 10px 10px 20px 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.3); transform: translateY(-2px); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../menu.html" class="nav-link">← Volver al Menú</a>
+        <h1>📝 Lista Circular Enlazada - Código C#</h1>
+
+        <!-- NODO -->
+        <div class="archivo">
+            <div class="archivo-header">
+                <span class="icono">📄</span> Nodo.cs - Clase Nodo
+            </div>
+            <pre><code><span class="keyword">using</span> System;
+
+<span class="keyword">namespace</span> ListaCircular
+{
+    <span class="keyword">internal class</span> <span class="type">Nodo</span>
+    {
+        <span class="keyword">public</span> <span class="type">string</span> <span class="property">Dato</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+        <span class="keyword">public</span> <span class="type">Nodo</span> <span class="property">sig</span> { <span class="keyword">get</span>; <span class="keyword">set</span>; }
+
+        <span class="comment">// Constructor para nodo de datos</span>
+        <span class="keyword">public</span> <span class="method">Nodo</span>(<span class="type">string</span> dato)
+        {
+            Dato = dato;
+            sig = <span class="keyword">null</span>;
+        }
+
+        <span class="comment">// Constructor para la cabecera</span>
+        <span class="keyword">public</span> <span class="method">Nodo</span>()
+        {
+            Dato = <span class="keyword">null</span>;
+            sig = <span class="keyword">null</span>;
+        }
+    }
+}</code></pre>
+        </div>
+
+        <!-- LISTA CIRCULAR -->
+        <div class="archivo">
+            <div class="archivo-header">
+                <span class="icono">📄</span> ListaCircularEnlazada.cs - Operaciones
+            </div>
+            <pre><code><span class="keyword">using</span> System;
+
+<span class="keyword">namespace</span> ListaCircular
+{
+    <span class="keyword">internal class</span> <span class="type">ListaCircularEnlazada</span>
+    {
+        <span class="keyword">private</span> <span class="type">Nodo</span> <span class="property">P</span>;  <span class="comment">// Nodo cabecera</span>
+
+        <span class="comment">// Constructor: P apunta a sí mismo (lista vacía circular)</span>
+        <span class="keyword">public</span> <span class="method">ListaCircularEnlazada</span>()
+        {
+            P = <span class="keyword">new</span> <span class="type">Nodo</span>();
+            P.sig = P;  <span class="comment">// Circular: cabecera apunta a sí misma</span>
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// RECORRIDO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">Recorrido</span>()
+        {
+            <span class="keyword">if</span> (P.sig == P)
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"Lista vacía."</span>);
+            }
+            <span class="keyword">else</span>
+            {
+                Console.<span class="method">Write</span>(<span class="string">"Lista: [P] --> "</span>);
+                <span class="type">Nodo</span> Q = P.sig;
+                <span class="keyword">do</span>
+                {
+                    Console.<span class="method">Write</span>(<span class="string">"["</span> + Q.Dato + <span class="string">"]"</span>);
+                    Q = Q.sig;
+                    <span class="keyword">if</span> (Q != P)
+                        Console.<span class="method">Write</span>(<span class="string">" --> "</span>);
+                } <span class="keyword">while</span> (Q != P);
+                Console.<span class="method">WriteLine</span>(<span class="string">" --> [P] (circular)"</span>);
+            }
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// INSERTAR AL INICIO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">InsertarAlInicio</span>(<span class="type">string</span> dato)
+        {
+            <span class="type">Nodo</span> Q = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+            Q.sig = P.sig;      <span class="comment">// Nuevo nodo apunta al primero actual</span>
+            P.sig = Q;          <span class="comment">// Cabecera apunta al nuevo</span>
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// INSERTAR AL FINAL</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">InsertarAlFinal</span>(<span class="type">string</span> dato)
+        {
+            <span class="type">Nodo</span> Q = P;
+            <span class="keyword">while</span> (Q.sig != P)   <span class="comment">// Buscar el último nodo</span>
+            {
+                Q = Q.sig;
+            }
+            <span class="type">Nodo</span> nuevo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+            nuevo.sig = P;      <span class="comment">// Nuevo apunta a cabecera (circular)</span>
+            Q.sig = nuevo;      <span class="comment">// Último actual apunta al nuevo</span>
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// INSERTAR DESPUÉS DE UN DATO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">InsertarDespuesDe</span>(<span class="type">string</span> dato, <span class="type">string</span> datoBuscado)
+        {
+            <span class="type">Nodo</span> Q = P.sig;
+            <span class="keyword">while</span> (Q != P && Q.Dato != datoBuscado)
+            {
+                Q = Q.sig;
+            }
+
+            <span class="keyword">if</span> (Q != P)
+            {
+                <span class="type">Nodo</span> NuevoNodo = <span class="keyword">new</span> <span class="type">Nodo</span>(dato);
+                NuevoNodo.sig = Q.sig;
+                Q.sig = NuevoNodo;
+            }
+            <span class="keyword">else</span>
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"No se encontró el nodo."</span>);
+            }
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// ELIMINAR PRIMER NODO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">EliminarPrimerNodo</span>()
+        {
+            <span class="keyword">if</span> (P.sig == P)
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"Lista vacía."</span>);
+            }
+            <span class="keyword">else</span>
+            {
+                P.sig = P.sig.sig;  <span class="comment">// Cabecera salta al segundo</span>
+            }
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// ELIMINAR ÚLTIMO NODO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">EliminarUltimoNodo</span>()
+        {
+            <span class="keyword">if</span> (P.sig == P)
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"Lista vacía."</span>);
+            }
+            <span class="keyword">else</span>
+            {
+                <span class="type">Nodo</span> Q = P;
+                <span class="keyword">while</span> (Q.sig.sig != P)  <span class="comment">// Buscar penúltimo</span>
+                {
+                    Q = Q.sig;
+                }
+                Q.sig = P;  <span class="comment">// Penúltimo apunta a cabecera</span>
+            }
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// ELIMINAR POR DATO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">EliminarNodoPorDato</span>(<span class="type">string</span> datoBuscado)
+        {
+            <span class="keyword">if</span> (P.sig == P)
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"Lista vacía."</span>);
+            }
+            <span class="keyword">else</span>
+            {
+                <span class="type">Nodo</span> Q = P;
+                <span class="keyword">while</span> (Q.sig != P && Q.sig.Dato != datoBuscado)
+                {
+                    Q = Q.sig;
+                }
+                <span class="keyword">if</span> (Q.sig != P)
+                {
+                    Q.sig = Q.sig.sig;  <span class="comment">// Saltar el nodo encontrado</span>
+                }
+                <span class="keyword">else</span>
+                {
+                    Console.<span class="method">WriteLine</span>(<span class="string">"Dato no encontrado."</span>);
+                }
+            }
+        }
+
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="comment">// BUSCAR NODO</span>
+        <span class="comment">// ═══════════════════════════════════════════════════════════</span>
+        <span class="keyword">public void</span> <span class="method">BuscarNodo</span>(<span class="type">string</span> datoBuscado)
+        {
+            <span class="keyword">if</span> (P.sig == P)
+            {
+                Console.<span class="method">WriteLine</span>(<span class="string">"Lista vacía."</span>);
+            }
+            <span class="keyword">else</span>
+            {
+                <span class="type">Nodo</span> Q = P.sig;
+                <span class="type">int</span> posicion = <span class="number">1</span>;
+
+                <span class="keyword">while</span> (Q != P)
+                {
+                    <span class="keyword">if</span> (Q.Dato == datoBuscado)
+                    {
+                        Console.<span class="method">WriteLine</span>(<span class="string">"Encontrado en posición "</span> + posicion);
+                        <span class="keyword">return</span>;
+                    }
+                    Q = Q.sig;
+                    posicion++;
+                }
+                Console.<span class="method">WriteLine</span>(<span class="string">"Dato no encontrado."</span>);
+            }
+        }
+    }
+}</code></pre>
+        </div>
+
+        <!-- DIAGRAMA VISUAL -->
+        <div class="archivo">
+            <div class="archivo-header">
+                <span class="icono">📊</span> Estructura Visual
+            </div>
+            <pre><code><span class="comment">Lista Circular con Cabecera (P)</span>
+
+<span class="string">Lista Vacía:</span>
+    ┌─────┐
+    │  P  │ ──┐
+    │ sig │   │
+    └──┬──┘   │
+       └──────┘   <span class="comment">(P apunta a sí mismo)</span>
+
+<span class="string">Con elementos [A, B, C]:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  A  │ ──► │  B  │ ──► │  C  │ ──┐
+    │ sig │     │ sig │     │ sig │     │ sig │   │
+    └──┬──┘     └─────┘     └─────┘     └─────┘   │
+       ▲                                          │
+       └──────────────────────────────────────────┘
+                    <span class="comment">(El último apunta a P)</span>
+
+<span class="string">Condición de lista vacía:</span>  P.sig == P
+<span class="string">Condición de fin de ciclo:</span> Q == P  o  Q.sig == P</code></pre>
+        </div>
+    </div>
+</body>
+</html>

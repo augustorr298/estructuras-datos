@@ -1,0 +1,7 @@
+C:\Users\janet\Downloads\luz\DobleCircularList\bin\Debug\DobleCircularList.exe.config
+C:\Users\janet\Downloads\luz\DobleCircularList\bin\Debug\DobleCircularList.exe
+C:\Users\janet\Downloads\luz\DobleCircularList\bin\Debug\DobleCircularList.pdb
+C:\Users\janet\Downloads\luz\DobleCircularList\obj\Debug\DobleCircularList.csproj.AssemblyReference.cache
+C:\Users\janet\Downloads\luz\DobleCircularList\obj\Debug\DobleCircularList.csproj.CoreCompileInputs.cache
+C:\Users\janet\Downloads\luz\DobleCircularList\obj\Debug\DobleCircularList.exe
+C:\Users\janet\Downloads\luz\DobleCircularList\obj\Debug\DobleCircularList.pdb

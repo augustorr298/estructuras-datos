@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corrida - Lista Circular Enlazada</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #6c5ce7 0%, #a29bfe 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .seccion {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .seccion h2 {
+            color: #6c5ce7;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #6c5ce7;
+        }
+        pre {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 10px;
+            overflow-x: auto;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+        .variable { color: #9cdcfe; }
+        .valor { color: #b5cea8; }
+        .nuevo { color: #4ec9b0; font-weight: bold; }
+        .titulo { color: #ce9178; font-weight: bold; }
+        .separador { color: #569cd6; }
+        .nav-link {
+            display: inline-block;
+            margin: 10px 10px 20px 0;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+        }
+        .nav-link:hover { background: rgba(255,255,255,0.3); }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="../menu.html" class="nav-link">← Volver al Menú</a>
+        <h1>📊 Corrida: Lista Circular Enlazada</h1>
+        
+        <div class="seccion">
+            <h2>📋 Corrida Completa</h2>
+            <pre><code><span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">ESTADO INICIAL</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Constructor:</span>  P = new Nodo()    P.sig = P
+<span class="separador">Estado:</span>
+    ┌─────┐
+    │  P  │ ──┐
+    │ sig │   │
+    └──┬──┘   │
+       └──────┘   (Lista vacía: P.sig == P)
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">INSERTAR AL INICIO (dato = "A")</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Crear nodo:</span>      Q = new Nodo("A")
+<span class="separador">Enlazar:</span>         Q.sig = P.sig  →  Q.sig = <span class="nuevo">P</span>
+<span class="separador">Actualizar P:</span>    P.sig = Q      →  P.sig = <span class="nuevo">Q(A)</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐
+    │  P  │ ──► │  A  │ ──┐
+    │ sig │     │ sig │   │
+    └──┬──┘     └─────┘   │
+       ▲                  │
+       └──────────────────┘
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">INSERTAR AL INICIO (dato = "B")</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Crear nodo:</span>      Q = new Nodo("B")
+<span class="separador">Enlazar:</span>         Q.sig = P.sig  →  Q.sig = <span class="nuevo">A</span>
+<span class="separador">Actualizar P:</span>    P.sig = Q      →  P.sig = <span class="nuevo">Q(B)</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  B  │ ──► │  A  │ ──┐
+    │ sig │     │ sig │     │ sig │   │
+    └──┬──┘     └─────┘     └─────┘   │
+       ▲                              │
+       └──────────────────────────────┘
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">INSERTAR AL FINAL (dato = "C")</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Buscar último:</span>   Q = P
+   Iteración 1: Q.sig != P? → B != P? → SÍ → Q = B
+   Iteración 2: Q.sig != P? → A != P? → SÍ → Q = A
+   Iteración 3: Q.sig != P? → P != P? → NO → Q = <span class="nuevo">A</span> (es el último)
+
+<span class="separador">Crear nodo:</span>      nuevo = new Nodo("C")
+<span class="separador">Enlazar:</span>         nuevo.sig = P    →  C apunta a P
+<span class="separador">Conectar:</span>        Q.sig = nuevo    →  A.sig = <span class="nuevo">C</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  B  │ ──► │  A  │ ──► │  C  │ ──┐
+    │ sig │     │ sig │     │ sig │     │ sig │   │
+    └──┬──┘     └─────┘     └─────┘     └─────┘   │
+       ▲                                          │
+       └──────────────────────────────────────────┘
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">RECORRIDO</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Verificar:</span>  P.sig == P?  →  B != P  →  NO (lista no vacía)
+<span class="separador">Iniciar:</span>    Q = P.sig  →  Q = B
+
+   do {
+     Imprimir: [<span class="nuevo">B</span>]    Q = Q.sig → Q = A    ¿A != P? → SÍ → " --> "
+     Imprimir: [<span class="nuevo">A</span>]    Q = Q.sig → Q = C    ¿C != P? → SÍ → " --> "
+     Imprimir: [<span class="nuevo">C</span>]    Q = Q.sig → Q = P    ¿P != P? → NO
+   } while (Q != P) → P == P → TERMINAR
+
+<span class="separador">Salida:</span>  Lista: [P] --> [B] --> [A] --> [C] --> [P] (circular)
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">INSERTAR DESPUÉS DE "A" (dato = "X")</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Buscar "A":</span>  Q = P.sig → Q = B
+   Iteración 1: Q != P && Q.Dato != "A"? → B != P && "B" != "A" → SÍ → Q = A
+   Iteración 2: Q != P && Q.Dato != "A"? → A != P && "A" != "A" → NO → <span class="nuevo">Encontrado</span>
+
+<span class="separador">Crear nodo:</span>      NuevoNodo = new Nodo("X")
+<span class="separador">Enlazar:</span>         NuevoNodo.sig = Q.sig  →  X.sig = <span class="nuevo">C</span>
+<span class="separador">Conectar:</span>        Q.sig = NuevoNodo      →  A.sig = <span class="nuevo">X</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  B  │ ──► │  A  │ ──► │  X  │ ──► │  C  │ ──┐
+    └──┬──┘     └─────┘     └─────┘     └─────┘     └─────┘   │
+       ▲                                                      │
+       └──────────────────────────────────────────────────────┘
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">BUSCAR "X"</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Verificar vacía:</span>  P.sig == P?  →  B != P  →  NO
+<span class="separador">Iniciar:</span>  Q = P.sig → Q = B    posicion = 1
+
+   Iteración 1: Q.Dato == "X"? → "B" == "X"? → NO → Q = A, posicion = 2
+   Iteración 2: Q.Dato == "X"? → "A" == "X"? → NO → Q = X, posicion = 3
+   Iteración 3: Q.Dato == "X"? → "X" == "X"? → <span class="nuevo">¡SÍ!</span>
+
+<span class="separador">Salida:</span>  "Encontrado en posición <span class="nuevo">3</span>"
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">ELIMINAR PRIMER NODO</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Lista actual:</span>  P → B → A → X → C → P
+<span class="separador">Verificar:</span>  P.sig == P?  →  B != P  →  NO (hay datos)
+
+<span class="separador">Eliminar:</span>  P.sig = P.sig.sig  →  P.sig = <span class="nuevo">A</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  A  │ ──► │  X  │ ──► │  C  │ ──┐
+    └──┬──┘     └─────┘     └─────┘     └─────┘   │
+       ▲                                          │
+       └──────────────────────────────────────────┘
+                (B fue eliminado)
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">ELIMINAR ÚLTIMO NODO</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Lista actual:</span>  P → A → X → C → P
+<span class="separador">Buscar penúltimo:</span>  Q = P
+   Iteración 1: Q.sig.sig != P? → X != P? → SÍ → Q = A
+   Iteración 2: Q.sig.sig != P? → C != P? → SÍ → Q = X
+   Iteración 3: Q.sig.sig != P? → P != P? → NO → Q = <span class="nuevo">X</span> (penúltimo)
+
+<span class="separador">Eliminar:</span>  Q.sig = P  →  X.sig = <span class="nuevo">P</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐     ┌─────┐
+    │  P  │ ──► │  A  │ ──► │  X  │ ──┐
+    └──┬──┘     └─────┘     └─────┘   │
+       ▲                              │
+       └──────────────────────────────┘
+                (C fue eliminado)
+
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="titulo">ELIMINAR POR DATO "A"</span>
+<span class="titulo">═══════════════════════════════════════════════════════════════════════════════</span>
+<span class="separador">Lista actual:</span>  P → A → X → P
+<span class="separador">Buscar anterior:</span>  Q = P
+   Iteración 1: Q.sig != P && Q.sig.Dato != "A"? → A != P && "A" != "A" → NO
+                <span class="nuevo">Encontrado:</span> Q.sig = A
+
+<span class="separador">Eliminar:</span>  Q.sig = Q.sig.sig  →  P.sig = <span class="nuevo">X</span>
+
+<span class="separador">Estado resultante:</span>
+    ┌─────┐     ┌─────┐
+    │  P  │ ──► │  X  │ ──┐
+    └──┬──┘     └─────┘   │
+       ▲                  │
+       └──────────────────┘
+                (A fue eliminado)</code></pre>
+        </div>
+    </div>
+</body>
+</html>

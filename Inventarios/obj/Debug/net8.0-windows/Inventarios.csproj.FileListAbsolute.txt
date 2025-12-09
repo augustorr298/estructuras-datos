@@ -1,0 +1,16 @@
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.Form1.resources
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.csproj.GenerateResource.cache
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.AssemblyInfoInputs.cache
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.AssemblyInfo.cs
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.csproj.CoreCompileInputs.cache
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\bin\Debug\net8.0-windows\Inventarios.exe
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\bin\Debug\net8.0-windows\Inventarios.deps.json
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\bin\Debug\net8.0-windows\Inventarios.runtimeconfig.json
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\bin\Debug\net8.0-windows\Inventarios.dll
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\bin\Debug\net8.0-windows\Inventarios.pdb
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.dll
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\refint\Inventarios.dll
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.pdb
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\Inventarios.genruntimeconfig.cache
+C:\Users\uri\OneDrive\Documentos\edatosuri\Inventarios\obj\Debug\net8.0-windows\ref\Inventarios.dll

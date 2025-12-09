@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Colas Estáticas - Visualizador</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+const { useState } = React;
+
+// Definir los iconos manualmente usando SVG
+const Plus = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <line x1="12" y1="5" x2="12" y2="19"></line>
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+  </svg>
+);
+
+const Minus = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+  </svg>
+);
+
+const Eye = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+    <circle cx="12" cy="12" r="3"></circle>
+  </svg>
+);
+
+const RotateCcw = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <polyline points="1 4 1 10 7 10"></polyline>
+    <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+  </svg>
+);
+
+const Check = ({ size = 16, className = "", ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
+    <polyline points="20 6 9 17 4 12"></polyline>
+  </svg>
+);
+
+const X = ({ size = 16, className = "", ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} {...props}>
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+);
+
+const ArrowRight = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <line x1="5" y1="12" x2="19" y2="12"></line>
+    <polyline points="12 5 19 12 12 19"></polyline>
+  </svg>
+);
+
+const ArrowLeft = ({ size = 20, ...props }) => (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+    <line x1="19" y1="12" x2="5" y2="12"></line>
+    <polyline points="12 19 5 12 12 5"></polyline>
+  </svg>
+);
+
+// Componente principal
+const ColasEstaticas = () => {
+  const [tipoActivo, setTipoActivo] = useState('simple');
+  
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-8">
+      <div className="max-w-7xl mx-auto">
+        <h1 className="text-4xl font-bold text-center text-indigo-900 mb-2">
+          Colas Estáticas (Arreglos)
+        </h1>
+        <p className="text-center text-gray-600 mb-8">
+          Estructuras de datos FIFO - First In, First Out
+        </p>
+        
+        <div className="flex gap-4 mb-6 justify-center flex-wrap">
+          <button
+            onClick={() => setTipoActivo('simple')}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              tipoActivo === 'simple'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-indigo-600 hover:bg-indigo-50'
+            }`}
+          >
+            Cola Simple
+          </button>
+          <button
+            onClick={() => setTipoActivo('circular')}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              tipoActivo === 'circular'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-indigo-600 hover:bg-indigo-50'
+            }`}
+          >
+            Cola Circular
+          </button>
+          <button
+            onClick={() => setTipoActivo('doble')}
+            className={`px-6 py-3 rounded-lg font-semibold transition ${
+              tipoActivo === 'doble'
+                ? 'bg-indigo-600 text-white shadow-lg'
+                : 'bg-white text-indigo-600 hover:bg-indigo-50'
+            }`}
+          >
+            Cola Doble Simple
+          </button>
+        </div>
+        
+        {tipoActivo === 'simple' && <ColaSimple />}
+        {tipoActivo === 'circular' && <ColaCircular />}
+        {tipoActivo === 'doble' && <ColaDobleSimple />}
+      </div>
+    </div>
+  );
+};
+
+const ColaSimple = () => {
+  const TAM = 8;
+  const [cola, setCola] = useState(Array(TAM).fill(null));
+  const [frente, setFrente] = useState(-1);
+  const [final, setFinal] = useState(-1);
+  const [valor, setValor] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [animacion, setAnimacion] = useState(-1);
+  const [pasoAlgoritmo, setPasoAlgoritmo] = useState([]);
+
+  const visualizarEncolar = (val) => {
+    const pasos = [
+      { texto: 'Inicio ENCOLAR', tipo: 'titulo' },
+      { texto: `valor = "${val}"`, tipo: 'info' },
+      { texto: `frente = ${frente}, final = ${final}`, tipo: 'info' },
+      { texto: `¿final == TAM-1? (${final} == ${TAM-1})`, tipo: 'condicion', cumple: final === TAM - 1 }
+    ];
+    
+    if (final === TAM - 1) {
+      pasos.push({ texto: '❌ Cola llena - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '✓ Hay espacio disponible', tipo: 'exito' });
+      pasos.push({ texto: `final = final + 1 = ${final + 1}`, tipo: 'operacion' });
+      pasos.push({ texto: `cola[${final + 1}] = "${val}"`, tipo: 'operacion' });
+      
+      if (frente === -1) {
+        pasos.push({ texto: '¿frente == -1? SÍ', tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'frente = 0', tipo: 'operacion' });
+      }
+      
+      pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const visualizarDesencolar = () => {
+    const pasos = [
+      { texto: 'Inicio DESENCOLAR', tipo: 'titulo' },
+      { texto: `frente = ${frente}, final = ${final}`, tipo: 'info' },
+      { texto: `¿frente == -1 O frente > final?`, tipo: 'condicion', cumple: frente === -1 || frente > final }
+    ];
+    
+    if (frente === -1 || frente > final) {
+      pasos.push({ texto: '❌ Cola vacía - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '✓ Hay elementos en la cola', tipo: 'exito' });
+      pasos.push({ texto: `elemento = cola[${frente}] = "${cola[frente]}"`, tipo: 'operacion' });
+      pasos.push({ texto: `cola[${frente}] = null`, tipo: 'operacion' });
+      
+      if (frente === final) {
+        pasos.push({ texto: `¿frente == final? (${frente} == ${final}) SÍ`, tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'frente = -1, final = -1', tipo: 'operacion' });
+      } else {
+        pasos.push({ texto: `¿frente == final? NO`, tipo: 'condicion', cumple: false });
+        pasos.push({ texto: `frente = frente + 1 = ${frente + 1}`, tipo: 'operacion' });
+      }
+      
+      pasos.push({ texto: '✓ Elemento desencolado exitosamente', tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const encolar = () => {
+    if (!valor.trim()) {
+      setMensaje('⚠️ Ingresa un valor');
+      return;
+    }
+    
+    visualizarEncolar(valor);
+    
+    if (final === TAM - 1) {
+      setMensaje('❌ Cola llena - No hay espacio disponible');
+      return;
+    }
+    
+    const nuevaCola = [...cola];
+    const nuevoFinal = final + 1;
+    
+    nuevaCola[nuevoFinal] = valor;
+    setCola(nuevaCola);
+    setFinal(nuevoFinal);
+    
+    if (frente === -1) {
+      setFrente(0);
+    }
+    
+    setAnimacion(nuevoFinal);
+    setTimeout(() => setAnimacion(-1), 600);
+    
+    setMensaje(`✅ Elemento "${valor}" encolado en posición ${nuevoFinal}`);
+    setValor('');
+  };
+
+  const desencolar = () => {
+    visualizarDesencolar();
+    
+    if (frente === -1 || frente > final) {
+      setMensaje('❌ Cola vacía - No hay elementos para desencolar');
+      return;
+    }
+    
+    const valorDesencolado = cola[frente];
+    const nuevaCola = [...cola];
+    nuevaCola[frente] = null;
+    
+    setAnimacion(frente);
+    
+    setTimeout(() => {
+      setCola(nuevaCola);
+      
+      if (frente === final) {
+        setFrente(-1);
+        setFinal(-1);
+      } else {
+        setFrente(frente + 1);
+      }
+      
+      setAnimacion(-1);
+      setMensaje(`✅ Elemento "${valorDesencolado}" desencolado`);
+    }, 600);
+  };
+
+  const mostrarCola = () => {
+    if (frente === -1) {
+      setMensaje('ℹ️ La cola está vacía');
+      return;
+    }
+    
+    const elementos = cola.slice(frente, final + 1).filter(e => e !== null);
+    setMensaje(`📋 Cola actual: [${elementos.join(', ')}]`);
+  };
+
+  const reiniciar = () => {
+    setCola(Array(TAM).fill(null));
+    setFrente(-1);
+    setFinal(-1);
+    setValor('');
+    setMensaje('🔄 Cola reiniciada');
+    setPasoAlgoritmo([]);
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-indigo-900 mb-6">Cola Simple Estática</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={valor}
+              onChange={(e) => setValor(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && encolar()}
+              placeholder="Valor a encolar"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+            <button
+              onClick={encolar}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+            >
+              <Plus size={20} /> Encolar
+            </button>
+          </div>
+          
+          <button
+            onClick={desencolar}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+          >
+            <Minus size={20} /> Desencolar
+          </button>
+          
+          <div className="flex gap-2">
+            <button
+              onClick={mostrarCola}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+            >
+              <Eye size={20} /> Mostrar
+            </button>
+            <button
+              onClick={reiniciar}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+            >
+              <RotateCcw size={20} />
+            </button>
+          </div>
+        </div>
+
+        {mensaje && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-6 text-sm">
+            {mensaje}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <div className="flex gap-4 mb-2 text-sm font-semibold">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded"></div>
+              <span>Frente: {frente === -1 ? 'N/A' : frente}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-purple-500 rounded"></div>
+              <span>Final: {final === -1 ? 'N/A' : final}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-gray-600">Tamaño: {TAM}</span>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {cola.map((elemento, idx) => (
+              <div key={idx} className="flex flex-col items-center">
+                <div className="text-xs text-gray-500 mb-1">{idx}</div>
+                <div
+                  className={`w-20 h-20 border-2 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-500 ${
+                    animacion === idx ? 'scale-110 shadow-lg' : ''
+                  } ${
+                    elemento === null
+                      ? 'bg-gray-100 border-gray-300 text-gray-400'
+                      : 'bg-indigo-100 border-indigo-400 text-indigo-900'
+                  } ${
+                    idx === frente ? 'ring-4 ring-green-400' : ''
+                  } ${
+                    idx === final ? 'ring-4 ring-purple-400' : ''
+                  }`}
+                >
+                  {elemento || '—'}
+                </div>
+                {idx === frente && (
+                  <div className="text-xs text-green-600 font-semibold mt-1">FRENTE</div>
+                )}
+                {idx === final && (
+                  <div className="text-xs text-purple-600 font-semibold mt-1">FINAL</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      <AlgoritmoPanel pasos={pasoAlgoritmo} />
+    </div>
+  );
+};
+
+const ColaCircular = () => {
+  const TAM = 8;
+  const [cola, setCola] = useState(Array(TAM).fill(null));
+  const [frente, setFrente] = useState(-1);
+  const [final, setFinal] = useState(-1);
+  const [valor, setValor] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [animacion, setAnimacion] = useState(-1);
+  const [pasoAlgoritmo, setPasoAlgoritmo] = useState([]);
+
+  const estaLlena = () => {
+    return (frente === 0 && final === TAM - 1) || (final === frente - 1);
+  };
+
+  const estaVacia = () => {
+    return frente === -1;
+  };
+
+  const visualizarEncolar = (val) => {
+    const condicion1 = frente === 0 && final === TAM - 1;
+    const condicion2 = final === frente - 1;
+    
+    const pasos = [
+      { texto: 'Inicio ENCOLAR (Circular)', tipo: 'titulo' },
+      { texto: `valor = "${val}"`, tipo: 'info' },
+      { texto: `frente = ${frente}, final = ${final}`, tipo: 'info' },
+      { texto: `¿(frente==0 && final==TAM-1) || (final==frente-1)?`, tipo: 'condicion', cumple: estaLlena() },
+      { texto: `  (${frente}==0 && ${final}==${TAM-1}) = ${condicion1}`, tipo: 'info' },
+      { texto: `  (${final}==${frente}-1) = ${condicion2}`, tipo: 'info' }
+    ];
+    
+    if (estaLlena()) {
+      pasos.push({ texto: '❌ Cola llena - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '✓ Hay espacio disponible', tipo: 'exito' });
+      
+      if (estaVacia()) {
+        pasos.push({ texto: '¿frente == -1? SÍ (Cola vacía)', tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'frente = 0, final = 0', tipo: 'operacion' });
+      } else {
+        pasos.push({ texto: '¿frente == -1? NO', tipo: 'condicion', cumple: false });
+        if (final === TAM - 1) {
+          pasos.push({ texto: `¿final == TAM-1? SÍ (${final} == ${TAM-1})`, tipo: 'condicion', cumple: true });
+          pasos.push({ texto: `final = 0 (reinicia al inicio)`, tipo: 'operacion' });
+        } else {
+          pasos.push({ texto: `¿final == TAM-1? NO`, tipo: 'condicion', cumple: false });
+          pasos.push({ texto: `final = final + 1 = ${final + 1}`, tipo: 'operacion' });
+        }
+      }
+      
+      const nuevoFinal = estaVacia() ? 0 : (final === TAM - 1 ? 0 : final + 1);
+      pasos.push({ texto: `cola[${nuevoFinal}] = "${val}"`, tipo: 'operacion' });
+      pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const visualizarDesencolar = () => {
+    const pasos = [
+      { texto: 'Inicio DESENCOLAR (Circular)', tipo: 'titulo' },
+      { texto: `frente = ${frente}, final = ${final}`, tipo: 'info' },
+      { texto: `¿frente == -1?`, tipo: 'condicion', cumple: frente === -1 }
+    ];
+    
+    if (estaVacia()) {
+      pasos.push({ texto: '❌ Cola vacía - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '✓ Hay elementos en la cola', tipo: 'exito' });
+      pasos.push({ texto: `elemento = cola[${frente}] = "${cola[frente]}"`, tipo: 'operacion' });
+      pasos.push({ texto: `cola[${frente}] = null`, tipo: 'operacion' });
+      
+      if (frente === final) {
+        pasos.push({ texto: `¿frente == final? (${frente} == ${final}) SÍ`, tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'frente = -1, final = -1 (cola vacía)', tipo: 'operacion' });
+      } else if (frente === TAM - 1) {
+        pasos.push({ texto: `¿frente == TAM-1? (${frente} == ${TAM-1}) SÍ`, tipo: 'condicion', cumple: true });
+        pasos.push({ texto: `frente = 0 (reinicia al inicio)`, tipo: 'operacion' });
+      } else {
+        pasos.push({ texto: `¿frente == TAM-1? NO`, tipo: 'condicion', cumple: false });
+        pasos.push({ texto: `frente = frente + 1 = ${frente + 1}`, tipo: 'operacion' });
+      }
+      
+      pasos.push({ texto: '✓ Elemento desencolado exitosamente', tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const encolar = () => {
+    if (!valor.trim()) {
+      setMensaje('⚠️ Ingresa un valor');
+      return;
+    }
+    
+    visualizarEncolar(valor);
+    
+    if (estaLlena()) {
+      setMensaje('❌ Cola circular llena - No hay espacio disponible');
+      return;
+    }
+    
+    const nuevaCola = [...cola];
+    let nuevoFinal;
+    
+    if (estaVacia()) {
+      setFrente(0);
+      nuevoFinal = 0;
+    } else {
+      nuevoFinal = final === TAM - 1 ? 0 : final + 1;
+    }
+    
+    nuevaCola[nuevoFinal] = valor;
+    setCola(nuevaCola);
+    setFinal(nuevoFinal);
+    
+    setAnimacion(nuevoFinal);
+    setTimeout(() => setAnimacion(-1), 600);
+    
+    setMensaje(`✅ Elemento "${valor}" encolado en posición ${nuevoFinal}`);
+    setValor('');
+  };
+
+  const desencolar = () => {
+    visualizarDesencolar();
+    
+    if (estaVacia()) {
+      setMensaje('❌ Cola vacía - No hay elementos para desencolar');
+      return;
+    }
+    
+    const valorDesencolado = cola[frente];
+    const nuevaCola = [...cola];
+    nuevaCola[frente] = null;
+    
+    setAnimacion(frente);
+    
+    setTimeout(() => {
+      setCola(nuevaCola);
+      
+      if (frente === final) {
+        setFrente(-1);
+        setFinal(-1);
+      } else {
+        setFrente(frente === TAM - 1 ? 0 : frente + 1);
+      }
+      
+      setAnimacion(-1);
+      setMensaje(`✅ Elemento "${valorDesencolado}" desencolado`);
+    }, 600);
+  };
+
+  const mostrarCola = () => {
+    if (estaVacia()) {
+      setMensaje('ℹ️ La cola está vacía');
+      return;
+    }
+    
+    const elementos = [];
+    let i = frente;
+    
+    while (true) {
+      if (cola[i] !== null) {
+        elementos.push(cola[i]);
+      }
+      if (i === final) break;
+      i = i === TAM - 1 ? 0 : i + 1;
+    }
+    
+    setMensaje(`📋 Cola circular actual: [${elementos.join(', ')}]`);
+  };
+
+  const reiniciar = () => {
+    setCola(Array(TAM).fill(null));
+    setFrente(-1);
+    setFinal(-1);
+    setValor('');
+    setMensaje('🔄 Cola circular reiniciada');
+    setPasoAlgoritmo([]);
+  };
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-indigo-900 mb-6">Cola Circular Estática</h2>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={valor}
+              onChange={(e) => setValor(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && encolar()}
+              placeholder="Valor a encolar"
+              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            />
+            <button
+              onClick={encolar}
+              className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition"
+            >
+              <Plus size={20} /> Encolar
+            </button>
+          </div>
+          
+          <button
+            onClick={desencolar}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+          >
+            <Minus size={20} /> Desencolar
+          </button>
+          
+          <div className="flex gap-2">
+            <button
+              onClick={mostrarCola}
+              className="flex-1 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+            >
+              <Eye size={20} /> Mostrar
+            </button>
+            <button
+              onClick={reiniciar}
+              className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg flex items-center justify-center gap-2 transition"
+            >
+              <RotateCcw size={20} />
+            </button>
+          </div>
+        </div>
+
+        {mensaje && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-6 text-sm">
+            {mensaje}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <div className="flex gap-4 mb-2 text-sm font-semibold">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-green-500 rounded"></div>
+              <span>Frente: {frente === -1 ? 'N/A' : frente}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 bg-purple-500 rounded"></div>
+              <span>Final: {final === -1 ? 'N/A' : final}</span>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {cola.map((elemento, idx) => (
+              <div key={idx} className="flex flex-col items-center">
+                <div className="text-xs text-gray-500 mb-1">{idx}</div>
+                <div
+                  className={`w-20 h-20 border-2 rounded-lg flex items-center justify-center font-bold text-lg transition-all duration-500 ${
+                    animacion === idx ? 'scale-110 shadow-lg' : ''
+                  } ${
+                    elemento === null
+                      ? 'bg-gray-100 border-gray-300 text-gray-400'
+                      : 'bg-green-100 border-green-400 text-green-900'
+                  } ${
+                    idx === frente ? 'ring-4 ring-green-400' : ''
+                  } ${
+                    idx === final ? 'ring-4 ring-purple-400' : ''
+                  }`}
+                >
+                  {elemento || '—'}
+                </div>
+                {idx === frente && (
+                  <div className="text-xs text-green-600 font-semibold mt-1">FRENTE</div>
+                )}
+                {idx === final && (
+                  <div className="text-xs text-purple-600 font-semibold mt-1">FINAL</div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      
+      <AlgoritmoPanel pasos={pasoAlgoritmo} />
+    </div>
+  );
+};
+
+const ColaDobleSimple = () => {
+  const TAM = 10;
+  const [cola, setCola] = useState(Array(TAM).fill(null));
+  const [frente1, setFrente1] = useState(-1);
+  const [final1, setFinal1] = useState(-1);
+  const [frente2, setFrente2] = useState(-1);
+  const [final2, setFinal2] = useState(-1);
+  const [valor, setValor] = useState('');
+  const [mensaje, setMensaje] = useState('');
+  const [animacion, setAnimacion] = useState(-1);
+  const [pasoAlgoritmo, setPasoAlgoritmo] = useState([]);
+
+  const estaLlena = () => {
+    // La cola doble está llena si no hay espacio entre las dos colas
+    // Cola 1 crece hacia la derecha, Cola 2 crece hacia la izquierda
+    if (frente1 === -1 && frente2 === -1) return false;
+    
+    // Si ambas colas están activas y se tocan
+    if (frente1 !== -1 && frente2 !== -1) {
+      return final1 + 1 > final2;
+    }
+    
+    // Si solo una está activa
+    if (frente1 !== -1) {
+      return final1 === TAM - 1;
+    }
+    if (frente2 !== -1) {
+      return final2 === 0;
+    }
+    
+    return false;
+  };
+
+  const hayColision1 = (posicion) => {
+    // En cola simple, verificar si la posición está ocupada por Cola 2
+    if (frente2 === -1) return false;
+    return posicion >= final2 && posicion <= frente2;
+  };
+
+  const hayColision2 = (posicion) => {
+    // En cola simple, verificar si la posición está ocupada por Cola 1
+    if (frente1 === -1) return false;
+    return posicion >= frente1 && posicion <= final1;
+  };
+
+  const visualizarEncolarFrente = (val) => {
+    const pasos = [
+      { texto: 'Inicio ENCOLAR por FRENTE (Cola 1)', tipo: 'titulo' },
+      { texto: `valor = "${val}"`, tipo: 'info' },
+      { texto: `frente1 = ${frente1}, final1 = ${final1}`, tipo: 'info' },
+      { texto: `frente2 = ${frente2}, final2 = ${final2}`, tipo: 'info' }
+    ];
+    
+    if (frente1 === -1) {
+      pasos.push({ texto: '¿frente1 == -1? SÍ (Cola1 vacía)', tipo: 'condicion', cumple: true });
+      pasos.push({ texto: 'frente1 = 0, final1 = 0', tipo: 'operacion' });
+      pasos.push({ texto: `cola[0] = "${val}"`, tipo: 'operacion' });
+      pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+    } else {
+      pasos.push({ texto: '¿frente1 == -1? NO', tipo: 'condicion', cumple: false });
+      
+      const nuevoFinal = final1 + 1;
+      pasos.push({ texto: `Calcular nueva posición: final1 + 1 = ${nuevoFinal}`, tipo: 'operacion' });
+      
+      // Verificar contra final2
+      pasos.push({ texto: `VERIFICACIÓN: ¿Colisión con Cola 2?`, tipo: 'titulo' });
+      
+      if (frente2 === -1) {
+        pasos.push({ texto: `frente2 = -1 (Cola 2 vacía)`, tipo: 'info' });
+        pasos.push({ texto: `✓ No hay colisión`, tipo: 'exito' });
+      } else {
+        pasos.push({ texto: `final2 = ${final2}`, tipo: 'info' });
+        pasos.push({ texto: `¿${nuevoFinal} >= ${final2}?`, tipo: 'condicion', cumple: nuevoFinal >= final2 });
+        
+        if (nuevoFinal >= final2) {
+          pasos.push({ texto: `SÍ: ${nuevoFinal} >= ${final2}`, tipo: 'info' });
+          pasos.push({ texto: '❌ Colisión: Cola 1 invade espacio de Cola 2', tipo: 'error' });
+        } else {
+          pasos.push({ texto: `NO: ${nuevoFinal} < ${final2}`, tipo: 'info' });
+          pasos.push({ texto: `✓ Posición ${nuevoFinal} está libre`, tipo: 'exito' });
+          pasos.push({ texto: `cola[${nuevoFinal}] = "${val}"`, tipo: 'operacion' });
+          pasos.push({ texto: `final1 = ${nuevoFinal}`, tipo: 'operacion' });
+          pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+        }
+      }
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const visualizarEncolarAtras = (val) => {
+    const pasos = [
+      { texto: 'Inicio ENCOLAR por ATRÁS (Cola 2)', tipo: 'titulo' },
+      { texto: `valor = "${val}"`, tipo: 'info' },
+      { texto: `frente2 = ${frente2}, final2 = ${final2}`, tipo: 'info' },
+      { texto: `frente1 = ${frente1}, final1 = ${final1}`, tipo: 'info' }
+    ];
+    
+    if (frente2 === -1) {
+      pasos.push({ texto: '¿frente2 == -1? SÍ (Cola2 vacía)', tipo: 'condicion', cumple: true });
+      pasos.push({ texto: `frente2 = ${TAM-1}, final2 = ${TAM-1}`, tipo: 'operacion' });
+      pasos.push({ texto: `cola[${TAM-1}] = "${val}"`, tipo: 'operacion' });
+      pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+    } else {
+      pasos.push({ texto: '¿frente2 == -1? NO', tipo: 'condicion', cumple: false });
+      
+      const nuevoFinal = final2 - 1;
+      pasos.push({ texto: `Calcular nueva posición: final2 - 1 = ${nuevoFinal}`, tipo: 'operacion' });
+      
+      // Verificar contra final1
+      pasos.push({ texto: `VERIFICACIÓN: ¿Colisión con Cola 1?`, tipo: 'titulo' });
+      
+      if (frente1 === -1) {
+        pasos.push({ texto: `frente1 = -1 (Cola 1 vacía)`, tipo: 'info' });
+        pasos.push({ texto: `✓ No hay colisión`, tipo: 'exito' });
+      } else {
+        pasos.push({ texto: `final1 = ${final1}`, tipo: 'info' });
+        pasos.push({ texto: `¿${nuevoFinal} <= ${final1}?`, tipo: 'condicion', cumple: nuevoFinal <= final1 });
+        
+        if (nuevoFinal <= final1) {
+          pasos.push({ texto: `SÍ: ${nuevoFinal} <= ${final1}`, tipo: 'info' });
+          pasos.push({ texto: '❌ Colisión: Cola 2 invade espacio de Cola 1', tipo: 'error' });
+        } else {
+          pasos.push({ texto: `NO: ${nuevoFinal} > ${final1}`, tipo: 'info' });
+          pasos.push({ texto: `✓ Posición ${nuevoFinal} está libre`, tipo: 'exito' });
+          pasos.push({ texto: `cola[${nuevoFinal}] = "${val}"`, tipo: 'operacion' });
+          pasos.push({ texto: `final2 = ${nuevoFinal}`, tipo: 'operacion' });
+          pasos.push({ texto: '✓ Elemento encolado exitosamente', tipo: 'exito' });
+        }
+      }
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const visualizarDesencolarFrente = () => {
+    const pasos = [
+      { texto: 'Inicio DESENCOLAR por FRENTE (Cola 1)', tipo: 'titulo' },
+      { texto: `frente1 = ${frente1}, final1 = ${final1}`, tipo: 'info' }
+    ];
+    
+    if (frente1 === -1) {
+      pasos.push({ texto: '¿frente1 == -1? SÍ', tipo: 'condicion', cumple: true });
+      pasos.push({ texto: '❌ Cola 1 vacía - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '¿frente1 == -1? NO', tipo: 'condicion', cumple: false });
+      pasos.push({ texto: `valor = cola[${frente1}] = "${cola[frente1]}"`, tipo: 'info' });
+      pasos.push({ texto: `cola[${frente1}] = null`, tipo: 'operacion' });
+      
+      if (frente1 === final1) {
+        pasos.push({ texto: `¿frente1 == final1? SÍ (${frente1} == ${final1})`, tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'Cola 1 queda vacía', tipo: 'info' });
+        pasos.push({ texto: 'frente1 = -1, final1 = -1', tipo: 'operacion' });
+      } else {
+        pasos.push({ texto: `¿frente1 == final1? NO (${frente1} != ${final1})`, tipo: 'condicion', cumple: false });
+        pasos.push({ texto: `frente1 = frente1 + 1 = ${frente1 + 1}`, tipo: 'operacion' });
+      }
+      
+      pasos.push({ texto: `✓ "${cola[frente1]}" desencolado exitosamente`, tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const visualizarDesencolarAtras = () => {
+    const pasos = [
+      { texto: 'Inicio DESENCOLAR por ATRÁS (Cola 2)', tipo: 'titulo' },
+      { texto: `frente2 = ${frente2}, final2 = ${final2}`, tipo: 'info' }
+    ];
+    
+    if (frente2 === -1) {
+      pasos.push({ texto: '¿frente2 == -1? SÍ', tipo: 'condicion', cumple: true });
+      pasos.push({ texto: '❌ Cola 2 vacía - SALIR', tipo: 'error' });
+    } else {
+      pasos.push({ texto: '¿frente2 == -1? NO', tipo: 'condicion', cumple: false });
+      pasos.push({ texto: `valor = cola[${frente2}] = "${cola[frente2]}"`, tipo: 'info' });
+      pasos.push({ texto: `cola[${frente2}] = null`, tipo: 'operacion' });
+      
+      if (frente2 === final2) {
+        pasos.push({ texto: `¿frente2 == final2? SÍ (${frente2} == ${final2})`, tipo: 'condicion', cumple: true });
+        pasos.push({ texto: 'Cola 2 queda vacía', tipo: 'info' });
+        pasos.push({ texto: 'frente2 = -1, final2 = -1', tipo: 'operacion' });
+      } else {
+        pasos.push({ texto: `¿frente2 == final2? NO (${frente2} != ${final2})`, tipo: 'condicion', cumple: false });
+        pasos.push({ texto: `frente2 = frente2 - 1 = ${frente2 - 1}`, tipo: 'operacion' });
+      }
+      
+      pasos.push({ texto: `✓ "${cola[frente2]}" desencolado exitosamente`, tipo: 'exito' });
+    }
+    
+    setPasoAlgoritmo(pasos);
+  };
+
+  const encolarFrente = () => {
+    if (!valor.trim()) {
+      setMensaje('⚠️ Ingresa un valor');
+      return;
+    }
+    
+    const nuevaCola = [...cola];
+    let nuevoFinal1;
+    
+    if (frente1 === -1) {
+      nuevoFinal1 = 0;
+      visualizarEncolarFrente(valor);
+      setFrente1(0);
+      setFinal1(0);
+    } else {
+      nuevoFinal1 = final1 + 1;
+      
+      // Verificar colisión con Cola 2
+      if (frente2 !== -1 && nuevoFinal1 >= final2) {
+        visualizarEncolarFrente(valor);
+        setMensaje('❌ Colisión con Cola 2');
+        return;
+      }
+      
+      visualizarEncolarFrente(valor);
+      setFinal1(nuevoFinal1);
+    }
+    
+    nuevaCola[nuevoFinal1] = valor;
+    setCola(nuevaCola);
+    
+    setAnimacion(nuevoFinal1);
+    setTimeout(() => setAnimacion(-1), 600);
+    
+    setMensaje(`✅ "${valor}" encolado en Cola 1 (posición ${nuevoFinal1})`);
+    setValor('');
+  };
+
+  const encolarAtras = () => {
+    if (!valor.trim()) {
+      setMensaje('⚠️ Ingresa un valor');
+      return;
+    }
+    
+    const nuevaCola = [...cola];
+    let nuevoFinal2;
+    
+    if (frente2 === -1) {
+      nuevoFinal2 = TAM - 1;
+      visualizarEncolarAtras(valor);
+      setFrente2(TAM - 1);
+      setFinal2(TAM - 1);
+    } else {
+      nuevoFinal2 = final2 - 1;
+      
+      // Verificar colisión con Cola 1
+      if (frente1 !== -1 && nuevoFinal2 <= final1) {
+        visualizarEncolarAtras(valor);
+        setMensaje('❌ Colisión con Cola 1');
+        return;
+      }
+      
+      visualizarEncolarAtras(valor);
+      setFinal2(nuevoFinal2);
+    }
+    
+    nuevaCola[nuevoFinal2] = valor;
+    setCola(nuevaCola);
+    
+    setAnimacion(nuevoFinal2);
+    setTimeout(() => setAnimacion(-1), 600);
+    
+    setMensaje(`✅ "${valor}" encolado en Cola 2 (posición ${nuevoFinal2})`);
+    setValor('');
+  };
+
+  const desencolarFrente = () => {
+    visualizarDesencolarFrente();
+    
+    if (frente1 === -1) {
+      setMensaje('❌ Cola 1 vacía');
+      return;
+    }
+    
+    const valorDesencolado = cola[frente1];
+    const nuevaCola = [...cola];
+    nuevaCola[frente1] = null;
+    
+    setAnimacion(frente1);
+    
+    setTimeout(() => {
+      setCola(nuevaCola);
+      
+      if (frente1 === final1) {
+        setFrente1(-1);
+        setFinal1(-1);
+      } else {
+        setFrente1(frente1 + 1);
+      }
+      
+      setAnimacion(-1);
+      setMensaje(`✅ "${valorDesencolado}" desencolado de Cola 1`);
+    }, 600);
+  };
+
+  const desencolarAtras = () => {
+    visualizarDesencolarAtras();
+    
+    if (frente2 === -1) {
+      setMensaje('❌ Cola 2 vacía');
+      return;
+    }
+    
+    const valorDesencolado = cola[frente2];
+    const nuevaCola = [...cola];
+    nuevaCola[frente2] = null;
+    
+    setAnimacion(frente2);
+    
+    setTimeout(() => {
+      setCola(nuevaCola);
+      
+      if (frente2 === final2) {
+        setFrente2(-1);
+        setFinal2(-1);
+      } else {
+        setFrente2(frente2 - 1);
+      }
+      
+      setAnimacion(-1);
+      setMensaje(`✅ "${valorDesencolado}" desencolado de Cola 2`);
+    }, 600);
+  };
+
+  const mostrarFrente = () => {
+    if (frente1 === -1) {
+      setMensaje('ℹ️ Cola 1 está vacía');
+      return;
+    }
+    const elementos = [];
+    for (let i = frente1; i <= final1; i++) {
+      if (cola[i] !== null) elementos.push(cola[i]);
+    }
+    setMensaje(`📋 Cola 1: [${elementos.join(', ')}]`);
+  };
+
+  const mostrarAtras = () => {
+    if (frente2 === -1) {
+      setMensaje('ℹ️ Cola 2 está vacía');
+      return;
+    }
+    const elementos = [];
+    for (let i = frente2; i >= final2; i--) {
+      if (cola[i] !== null) elementos.push(cola[i]);
+    }
+    setMensaje(`📋 Cola 2: [${elementos.join(', ')}]`);
+  };
+
+  const reiniciar = () => {
+    setCola(Array(TAM).fill(null));
+    setFrente1(-1);
+    setFinal1(-1);
+    setFrente2(-1);
+    setFinal2(-1);
+    setValor('');
+    setMensaje('🔄 Cola doble simple reiniciada');
+    setPasoAlgoritmo([]);
+  };
+
+  // Calcular información para visualización
+  const getInfoColas = () => {
+    let count1 = 0, count2 = 0;
+    
+    if (frente1 !== -1) {
+      count1 = final1 - frente1 + 1;
+    }
+    
+    if (frente2 !== -1) {
+      count2 = frente2 - final2 + 1;
+    }
+    
+    return { count1, count2 };
+  };
+
+  const { count1, count2 } = getInfoColas();
+
+  return (
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="lg:col-span-2 bg-white rounded-2xl shadow-xl p-8">
+        <h2 className="text-2xl font-bold text-indigo-900 mb-4">Cola Doble Simple</h2>
+        <p className="text-sm text-gray-600 mb-6">Dos colas simples independientes compartiendo el mismo arreglo (Cola 1 crece hacia la derecha, Cola 2 hacia la izquierda)</p>
+
+        <div className="grid grid-cols-1 gap-4 mb-6">
+          <div className="border-2 border-blue-200 rounded-lg p-4 bg-blue-50">
+            <h3 className="font-bold text-blue-900 mb-3 flex items-center gap-2">
+              <ArrowRight size={20} /> Cola 1 (Frente - crece a la derecha)
+            </h3>
+            <div className="grid grid-cols-3 gap-2">
+              <input
+                type="text"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && encolarFrente()}
+                placeholder="Valor"
+                className="px-3 py-2 border rounded-lg text-sm"
+              />
+              <button onClick={encolarFrente} className="bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+                <Plus size={16} /> Encolar
+              </button>
+              <button onClick={desencolarFrente} className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+                <Minus size={16} /> Desencolar
+              </button>
+            </div>
+          </div>
+
+          <div className="border-2 border-orange-200 rounded-lg p-4 bg-orange-50">
+            <h3 className="font-bold text-orange-900 mb-3 flex items-center gap-2">
+              <ArrowLeft size={20} /> Cola 2 (Atrás - crece a la izquierda)
+            </h3>
+            <div className="grid grid-cols-3 gap-2">
+              <input
+                type="text"
+                value={valor}
+                onChange={(e) => setValor(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && encolarAtras()}
+                placeholder="Valor"
+                className="px-3 py-2 border rounded-lg text-sm"
+              />
+              <button onClick={encolarAtras} className="bg-orange-500 hover:bg-orange-600 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+                <Plus size={16} /> Encolar
+              </button>
+              <button onClick={desencolarAtras} className="bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+                <Minus size={16} /> Desencolar
+              </button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <button onClick={mostrarFrente} className="bg-blue-400 hover:bg-blue-500 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+              <Eye size={16} /> Mostrar Cola 1
+            </button>
+            <button onClick={mostrarAtras} className="bg-orange-400 hover:bg-orange-500 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+              <Eye size={16} /> Mostrar Cola 2
+            </button>
+            <button onClick={reiniciar} className="bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded-lg text-sm flex items-center justify-center gap-1">
+              <RotateCcw size={16} /> Reiniciar
+            </button>
+          </div>
+        </div>
+
+        {mensaje && (
+          <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-3 mb-6 text-sm">
+            {mensaje}
+          </div>
+        )}
+
+        <div className="mb-4">
+          <div className="grid grid-cols-2 gap-4 mb-3 text-sm font-semibold">
+            <div className="bg-blue-50 p-2 rounded">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 bg-blue-600 rounded"></div>
+                <span>Cola 1: frente1={frente1 === -1 ? 'N/A' : frente1}, final1={final1 === -1 ? 'N/A' : final1}</span>
+              </div>
+              <div className="text-xs text-gray-600">Elementos: {count1}</div>
+            </div>
+            <div className="bg-orange-50 p-2 rounded">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-3 h-3 bg-orange-600 rounded"></div>
+                <span>Cola 2: frente2={frente2 === -1 ? 'N/A' : frente2}, final2={final2 === -1 ? 'N/A' : final2}</span>
+              </div>
+              <div className="text-xs text-gray-600">Elementos: {count2}</div>
+            </div>
+          </div>
+          
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {cola.map((elemento, idx) => {
+              const esCola1 = elemento !== null && frente1 !== -1 && idx >= frente1 && idx <= final1;
+              const esCola2 = elemento !== null && frente2 !== -1 && idx >= final2 && idx <= frente2;
+              
+              return (
+                <div key={idx} className="flex flex-col items-center">
+                  <div className="text-xs text-gray-500 mb-1">{idx}</div>
+                  <div
+                    className={`w-16 h-16 border-2 rounded-lg flex items-center justify-center font-bold text-sm transition-all duration-500 ${
+                      animacion === idx ? 'scale-110 shadow-lg' : ''
+                    } ${
+                      elemento === null
+                        ? 'bg-gray-100 border-gray-300 text-gray-400'
+                        : esCola1
+                        ? 'bg-blue-100 border-blue-400 text-blue-900'
+                        : 'bg-orange-100 border-orange-400 text-orange-900'
+                    } ${
+                      idx === frente1 || idx === final1 ? 'ring-2 ring-blue-500' : ''
+                    } ${
+                      idx === frente2 || idx === final2 ? 'ring-2 ring-orange-500' : ''
+                    }`}
+                  >
+                    {elemento || '—'}
+                  </div>
+                  <div className="text-xs font-semibold mt-1 h-4">
+                    {idx === frente1 && <span className="text-blue-600">frente1</span>}
+                    {idx === final1 && idx !== frente1 && <span className="text-blue-600"> final1</span>}
+                    {idx === frente1 && idx === final1 && <span className="text-blue-600"> frente1/final1</span>}
+                    {idx === frente2 && <span className="text-orange-600">frente2</span>}
+                    {idx === final2 && idx !== frente2 && <span className="text-orange-600"> final2</span>}
+                    {idx === frente2 && idx === final2 && <span className="text-orange-600"> frente2/final2</span>}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      
+      <AlgoritmoPanel pasos={pasoAlgoritmo} />
+    </div>
+  );
+};
+
+const AlgoritmoPanel = ({ pasos }) => {
+  return (
+    <div className="bg-white rounded-2xl shadow-xl p-6">
+      <h3 className="text-xl font-bold text-indigo-900 mb-4">📊 Algoritmo en Ejecución</h3>
+      {pasos.length === 0 ? (
+        <div className="text-gray-400 text-center py-8">
+          Ejecuta una operación para ver el algoritmo
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {pasos.map((paso, idx) => (
+            <div
+              key={idx}
+              className={`p-3 rounded-lg text-sm transition-all duration-300 ${
+                paso.tipo === 'titulo'
+                  ? 'bg-indigo-100 text-indigo-900 font-bold text-center'
+                  : paso.tipo === 'info'
+                  ? 'bg-blue-50 text-blue-900 border-l-4 border-blue-400'
+                  : paso.tipo === 'condicion'
+                  ? paso.cumple
+                    ? 'bg-orange-50 text-orange-900 border-l-4 border-orange-400 flex items-center gap-2'
+                    : 'bg-gray-50 text-gray-700 border-l-4 border-gray-400 flex items-center gap-2'
+                  : paso.tipo === 'operacion'
+                  ? 'bg-purple-50 text-purple-900 border-l-4 border-purple-400 font-mono'
+                  : paso.tipo === 'exito'
+                  ? 'bg-green-50 text-green-900 border-l-4 border-green-400 font-semibold'
+                  : 'bg-red-50 text-red-900 border-l-4 border-red-400 font-semibold'
+              }`}
+              style={{ animationDelay: `${idx * 100}ms` }}
+            >
+              {paso.tipo === 'condicion' && (
+                paso.cumple ? <Check size={16} className="text-orange-600" /> : <X size={16} className="text-gray-500" />
+              )}
+              {paso.texto}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// export default ColasEstaticas;
+
+const { createRoot } = ReactDOM;
+const root = createRoot(document.getElementById("root"));
+root.render(<ColasEstaticas />);
+  </script>
+</body>
+</html>

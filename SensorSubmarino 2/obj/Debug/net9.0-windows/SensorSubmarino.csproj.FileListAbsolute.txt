@@ -1,0 +1,17 @@
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\bin\Debug\net9.0-windows\SensorSubmarino.exe
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\bin\Debug\net9.0-windows\SensorSubmarino.deps.json
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\bin\Debug\net9.0-windows\SensorSubmarino.runtimeconfig.json
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\bin\Debug\net9.0-windows\SensorSubmarino.dll
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\bin\Debug\net9.0-windows\SensorSubmarino.pdb
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.AssemblyInfoInputs.cache
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.AssemblyInfo.cs
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.csproj.CoreCompileInputs.cache
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.dll
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\refint\SensorSubmarino.dll
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.pdb
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.genruntimeconfig.cache
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\ref\SensorSubmarino.dll
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.frmAcceso.resources
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.frmOperaciones.resources
+C:\Users\ALUMNOS\Documents\edatosuri\submarino\SensorSubmarino\obj\Debug\net9.0-windows\SensorSubmarino.csproj.GenerateResource.cache

@@ -1,0 +1,8 @@
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\bin\Debug\ListaLineal.exe.config
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\bin\Debug\ListaLineal.exe
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\bin\Debug\ListaLineal.pdb
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\obj\Debug\ListaLineal.csproj.AssemblyReference.cache
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\obj\Debug\ListaLineal.csproj.CoreCompileInputs.cache
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\obj\Debug\ListaLineal.exe
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\obj\Debug\ListaLineal.pdb
+C:\Users\carlo\OneDrive\Documentos\uni\Estructura de datos\programas\ListaLineal\obj\Debug\ListaLineal.exe.config

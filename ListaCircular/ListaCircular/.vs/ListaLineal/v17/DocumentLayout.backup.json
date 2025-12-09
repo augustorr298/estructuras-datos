@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|c:\\users\\janet\\downloads\\luz\\listacircular\\listalineal\\listaenlazada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|solutionrelative:listaenlazada.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\nodo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E94A5739-D596-4C5A-83F0-56DBF3CBDCAD}|ListaLineal.csproj|solutionrelative:nodo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAGsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T13:17:58.554Z",
+              "IsPinned": true,
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ListaEnlazada.cs",
+              "DocumentMoniker": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\ListaEnlazada.cs",
+              "RelativeDocumentMoniker": "ListaEnlazada.cs",
+              "ToolTip": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\ListaEnlazada.cs",
+              "RelativeToolTip": "ListaEnlazada.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAAuwH0AAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T14:01:50.272Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "nodo.cs",
+              "DocumentMoniker": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\nodo.cs",
+              "RelativeDocumentMoniker": "nodo.cs",
+              "ToolTip": "C:\\Users\\janet\\Downloads\\luz\\ListaCircular\\ListaLineal\\nodo.cs",
+              "RelativeToolTip": "nodo.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-11-19T13:45:36.954Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

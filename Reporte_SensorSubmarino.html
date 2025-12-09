@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte - Sensor Submarino</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 2.5cm;
+        }
+        
+        body {
+            font-family: 'Times New Roman', serif;
+            font-size: 12pt;
+            line-height: 1.6;
+            color: #333;
+            max-width: 21cm;
+            margin: 0 auto;
+            padding: 20px;
+            background: white;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 18pt;
+            font-weight: bold;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            color: #000;
+            text-transform: uppercase;
+        }
+        
+        h2 {
+            font-size: 14pt;
+            font-weight: bold;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #000;
+            border-bottom: 2px solid #333;
+            padding-bottom: 5px;
+        }
+        
+        h3 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #000;
+        }
+        
+        p {
+            text-align: justify;
+            margin-bottom: 12px;
+        }
+        
+        .portada {
+            text-align: center;
+            margin-top: 100px;
+            page-break-after: always;
+        }
+        
+        .portada h1 {
+            font-size: 24pt;
+            margin-top: 50px;
+        }
+        
+        .portada .subtitulo {
+            font-size: 16pt;
+            margin-top: 20px;
+            font-weight: normal;
+        }
+        
+        .portada .info {
+            margin-top: 100px;
+            font-size: 14pt;
+        }
+        
+        pre {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            overflow-x: auto;
+            font-size: 10pt;
+            line-height: 1.4;
+            font-family: 'Courier New', monospace;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            background-color: #f5f5f5;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 11pt;
+        }
+        
+        .figura {
+            text-align: center;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .figura img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .figura-caption {
+            font-style: italic;
+            margin-top: 8px;
+            font-size: 11pt;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        th, td {
+            border: 1px solid #333;
+            padding: 10px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #e0e0e0;
+            font-weight: bold;
+        }
+        
+        .lista-numerada {
+            margin-left: 20px;
+        }
+        
+        .lista-numerada li {
+            margin-bottom: 10px;
+        }
+        
+        .nota {
+            background-color: #fff8dc;
+            border-left: 4px solid #ffa500;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .memoria-estatica {
+            background-color: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .memoria-dinamica {
+            background-color: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 15px;
+            margin: 20px 0;
+            page-break-inside: avoid;
+        }
+        
+        .seccion {
+            page-break-before: always;
+        }
+        
+        ul {
+            margin-left: 30px;
+        }
+        
+        ul li {
+            margin-bottom: 8px;
+        }
+        
+        .ecuacion {
+            text-align: center;
+            font-style: italic;
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px dashed #999;
+        }
+    </style>
+</head>
+<body>
+
+<!-- PORTADA -->
+<div class="portada">
+    <h1>SENSOR SUBMARINO</h1>
+    <p class="subtitulo">Sistema de Gestión de Lecturas de Temperatura</p>
+    <p class="subtitulo">Usando Memoria Estática</p>
+    
+    <div class="info">
+        <p><strong>Materia:</strong> Estructura de Datos</p>
+        <p><strong>Fecha:</strong> Diciembre 2025</p>
+    </div>
+</div>
+
+<!-- ÍNDICE -->
+<div class="seccion">
+    <h1>ÍNDICE</h1>
+    <ol class="lista-numerada">
+        <li><strong>Introducción</strong>
+            <ul>
+                <li>Descripción de la aplicación</li>
+                <li>Memoria estática vs dinámica</li>
+                <li>Justificación del uso de memoria estática</li>
+            </ul>
+        </li>
+        <li><strong>Desarrollo de la Aplicación</strong>
+            <ul>
+                <li>Estructura de datos utilizada</li>
+                <li>Interfaz de usuario</li>
+                <li>Funcionalidades implementadas</li>
+                <li>Explicación del código</li>
+            </ul>
+        </li>
+        <li><strong>Conclusiones</strong>
+            <ul>
+                <li>Ventajas de la memoria estática</li>
+                <li>Limitaciones encontradas</li>
+                <li>Aprendizajes obtenidos</li>
+            </ul>
+        </li>
+    </ol>
+</div>
+
+<!-- 1. INTRODUCCIÓN -->
+<div class="seccion">
+    <h1>1. INTRODUCCIÓN</h1>
+    
+    <h2>1.1 Descripción de la Aplicación</h2>
+    
+    <p>
+        La aplicación <strong>Sensor Submarino</strong> ha sido desarrollada para gestionar de manera eficiente 
+        y predecible el almacenamiento de lecturas de temperatura tomadas por un sensor instalado frente a la 
+        costa de Guerrero. El sensor registra la temperatura del agua en grados centígrados cada hora durante 
+        los siete días de la semana, generando un total de 168 lecturas semanales (24 horas × 7 días).
+    </p>
+    
+    <p>
+        El objetivo principal de la aplicación es permitir el análisis estadístico de estos datos, calculando 
+        valores promedios, mínimos y máximos tanto por día como por semana completa. Además, la aplicación 
+        proporciona una visualización gráfica de los datos mediante un gráfico de barras que representa las 
+        temperaturas promedio diarias.
+    </p>
+    
+    <h2>1.2 Memoria Estática vs Memoria Dinámica</h2>
+    
+    <p>
+        En programación, existen dos tipos fundamentales de asignación de memoria:
+    </p>
+    
+    <div class="memoria-estatica">
+        <h3>Memoria Estática</h3>
+        <p>
+            La memoria estática se asigna en <strong>tiempo de compilación</strong>. Las estructuras de datos 
+            tienen un tamaño fijo que se define antes de ejecutar el programa y permanece constante durante 
+            toda la ejecución.
+        </p>
+        <p><strong>Características:</strong></p>
+        <ul>
+            <li>Tamaño fijo y predefinido</li>
+            <li>Se almacena en el segmento de datos o en la pila (stack)</li>
+            <li>Asignación y liberación automática</li>
+            <li>Acceso más rápido</li>
+            <li>Menor overhead de gestión</li>
+            <li>No requiere desasignación manual</li>
+        </ul>
+        <p><strong>Ejemplo en C#:</strong></p>
+        <pre>int[,] temperaturas = new int[24, 7];  // Tamaño fijo: 168 elementos</pre>
+    </div>
+    
+    <div class="memoria-dinamica">
+        <h3>Memoria Dinámica</h3>
+        <p>
+            La memoria dinámica se asigna en <strong>tiempo de ejecución</strong> según las necesidades del 
+            programa. Permite crear estructuras de datos cuyo tamaño puede variar durante la ejecución.
+        </p>
+        <p><strong>Características:</strong></p>
+        <ul>
+            <li>Tamaño variable y flexible</li>
+            <li>Se almacena en el heap (montículo)</li>
+            <li>Requiere gestión manual o automática (garbage collector)</li>
+            <li>Mayor flexibilidad</li>
+            <li>Permite crecimiento y reducción según necesidad</li>
+            <li>Mayor overhead de gestión</li>
+        </ul>
+        <p><strong>Ejemplo en C#:</strong></p>
+        <pre>List&lt;double&gt; temperaturas = new List&lt;double&gt;();  // Tamaño variable
+temperaturas.Add(25.5);  // Puede crecer dinámicamente</pre>
+    </div>
+    
+    <h2>1.3 Justificación del Uso de Memoria Estática</h2>
+    
+    <p>
+        Para esta aplicación se decidió utilizar <strong>memoria estática</strong> mediante un arreglo 
+        bidimensional por las siguientes razones:
+    </p>
+    
+    <ol class="lista-numerada">
+        <li><strong>Requisitos Predecibles:</strong> Sabemos que siempre necesitaremos exactamente 24 × 7 = 168 
+        espacios para almacenar las lecturas de temperatura (una por hora, durante una semana).</li>
+        
+        <li><strong>Eficiencia de Acceso:</strong> Los arreglos ofrecen acceso O(1) a cualquier elemento 
+        mediante índices, lo cual es fundamental para cálculos estadísticos repetitivos.</li>
+        
+        <li><strong>Simplicidad:</strong> No requiere gestión compleja de memoria ni operaciones de 
+        redimensionamiento.</li>
+        
+        <li><strong>Rendimiento:</strong> La asignación estática es más rápida que la dinámica, ya que 
+        no involucra llamadas al sistema para reservar memoria en el heap.</li>
+        
+        <li><strong>Organización Lógica:</strong> Un arreglo bidimensional [horas, días] representa 
+        naturalmente la estructura de los datos: filas para horas (0-23) y columnas para días (0-6).</li>
+        
+        <li><strong>Menor Consumo de Recursos:</strong> No hay overhead adicional por gestión de memoria 
+        dinámica, punteros o estructuras de datos complejas.</li>
+    </ol>
+    
+    <div class="nota">
+        <strong>Nota Importante:</strong> La elección entre memoria estática y dinámica depende del contexto. 
+        En este caso, dado que el tamaño de los datos es conocido y fijo, la memoria estática es la opción 
+        más apropiada y eficiente.
+    </div>
+</div>
+
+<!-- 2. DESARROLLO -->
+<div class="seccion">
+    <h1>2. DESARROLLO DE LA APLICACIÓN</h1>
+    
+    <h2>2.1 Estructura de Datos Utilizada</h2>
+    
+    <p>
+        La estructura principal de la aplicación es un <strong>arreglo bidimensional</strong> de tipo entero:
+    </p>
+    
+    <pre>int[,] temp = new int[24, 7];</pre>
+    
+    <p><strong>Organización del arreglo:</strong></p>
+    <ul>
+        <li><strong>Primera dimensión (24):</strong> Representa las 24 horas del día (índices 0-23)</li>
+        <li><strong>Segunda dimensión (7):</strong> Representa los 7 días de la semana (índices 0-6)</li>
+    </ul>
+    
+    <table>
+        <tr>
+            <th>Índice</th>
+            <th>Día de la Semana</th>
+        </tr>
+        <tr><td>0</td><td>Lunes</td></tr>
+        <tr><td>1</td><td>Martes</td></tr>
+        <tr><td>2</td><td>Miércoles</td></tr>
+        <tr><td>3</td><td>Jueves</td></tr>
+        <tr><td>4</td><td>Viernes</td></tr>
+        <tr><td>5</td><td>Sábado</td></tr>
+        <tr><td>6</td><td>Domingo</td></tr>
+    </table>
+    
+    <p>
+        <strong>Ejemplo de acceso:</strong> <code>temp[10, 3]</code> representa la temperatura registrada 
+        a las 10:00 AM del jueves.
+    </p>
+    
+    <h3>Cálculo de Memoria Utilizada</h3>
+    <div class="ecuacion">
+        Memoria total = 24 filas × 7 columnas × 4 bytes (int32) = 672 bytes
+    </div>
+    
+    <p>
+        Esta pequeña cantidad de memoria hace que el uso de memoria estática sea ideal para esta aplicación.
+    </p>
+    
+    <h2>2.2 Interfaz de Usuario</h2>
+    
+    <p>
+        La interfaz gráfica de la aplicación está diseñada con Windows Forms y contiene los siguientes 
+        componentes principales:
+    </p>
+    
+    <h3>2.2.1 Componentes Visuales</h3>
+    
+    <table>
+        <tr>
+            <th>Componente</th>
+            <th>Nombre</th>
+            <th>Descripción</th>
+        </tr>
+        <tr>
+            <td>DataGridView</td>
+            <td>dtgTemp</td>
+            <td>Muestra la matriz completa de temperaturas (24 filas × 7 columnas)</td>
+        </tr>
+        <tr>
+            <td>ComboBox</td>
+            <td>cmbTemp</td>
+            <td>Lista desplegable con todas las temperaturas generadas</td>
+        </tr>
+        <tr>
+            <td>PictureBox</td>
+            <td>pictureBox1</td>
+            <td>Área para mostrar el gráfico de barras</td>
+        </tr>
+        <tr>
+            <td>Panel 1</td>
+            <td>panel1</td>
+            <td>Contiene 21 TextBox con resultados por día (máximo, mínimo, promedio × 7 días)</td>
+        </tr>
+        <tr>
+            <td>Panel 2</td>
+            <td>panel2</td>
+            <td>Contiene 3 TextBox con resultados semanales (máximo, mínimo, promedio)</td>
+        </tr>
+        <tr>
+            <td>Button</td>
+            <td>btnGenerar</td>
+            <td>Genera temperaturas aleatorias</td>
+        </tr>
+        <tr>
+            <td>Button</td>
+            <td>btnCalcular</td>
+            <td>Realiza los cálculos estadísticos y genera el gráfico</td>
+        </tr>
+        <tr>
+            <td>Button</td>
+            <td>btnLimpiar</td>
+            <td>Limpia todos los datos y reinicia la aplicación</td>
+        </tr>
+        <tr>
+            <td>Button</td>
+            <td>btnRegresar</td>
+            <td>Oculta el formulario</td>
+        </tr>
+        <tr>
+            <td>Button</td>
+            <td>btnSalir</td>
+            <td>Cierra la aplicación</td>
+        </tr>
+    </table>
+    
+    <h2>2.3 Funcionalidades Implementadas</h2>
+    
+    <h3>2.3.1 Generación de Datos (btnGenerar_Click)</h3>
+    
+    <p>
+        Esta función genera temperaturas aleatorias entre -2°C y 40°C para simular lecturas reales del 
+        sensor submarino. El rango fue seleccionado considerando las temperaturas típicas del océano 
+        frente a la costa de Guerrero.
+    </p>
+    
+    <pre>private void btnGenerar_Click(object sender, EventArgs e)
+{
+    Random r = new Random();
+    DataTable dt = new DataTable();
+    
+    // Crear columnas para cada día de la semana
+    dt.Columns.Add("Lunes");
+    dt.Columns.Add("Martes");
+    dt.Columns.Add("Miércoles");
+    dt.Columns.Add("Jueves");
+    dt.Columns.Add("Viernes");
+    dt.Columns.Add("Sabado");
+    dt.Columns.Add("Domingo");
+
+    // Generar 24 filas (una por cada hora del día)
+    for (int i = 0; i < 24; i++)
+    {
+        DataRow fila = dt.NewRow();
+        
+        for (j = 0; j < 7; j++)
+        {
+            // Generar temperatura aleatoria entre -2 y 40 grados
+            temp[i,j] = r.Next(-2, 40);
+            
+            // Agregar a la lista desplegable
+            cmbTemp.Items.Add(temp[i,j]);
+            
+            // Asignar a la celda correspondiente
+            fila[j] = temp[i,j];
+        }
+        
+        dt.Rows.Add(fila);
+    }
+    
+    // Mostrar en el DataGridView
+    dtgTemp.DataSource = dt;
+}</pre>
+    
+    <p><strong>Proceso:</strong></p>
+    <ol class="lista-numerada">
+        <li>Se crea un objeto Random para generar números aleatorios</li>
+        <li>Se crea un DataTable con 7 columnas (una por día)</li>
+        <li>Se generan 24 filas (una por hora)</li>
+        <li>Para cada celda se genera un número aleatorio entre -2 y 40</li>
+        <li>Se almacena en la matriz <code>temp[hora, dia]</code></li>
+        <li>Se agrega al ComboBox para referencia</li>
+        <li>Se muestra visualmente en el DataGridView</li>
+    </ol>
+    
+    <h3>2.3.2 Cálculo de Estadísticas (btnCalcular_Click)</h3>
+    
+    <p>
+        Esta función realiza los cálculos estadísticos para cada día y para la semana completa.
+    </p>
+    
+    <pre>private void btnCalcular_Click(object sender, EventArgs e)
+{
+    int maxDia, minDia;
+    double promDia = 0;
+    string dia = "";
+    
+    maxSem = temp[0, 0];
+    minSem = temp[0, 0];
+    
+    // Procesar cada día de la semana
+    for (int columnas = 0; columnas < 7; columnas++)
+    {
+        promDia = 0;
+        maxDia = temp[0, columnas];
+        minDia = temp[0, columnas];
+        
+        // Recorrer las 24 horas del día
+        for (int filas = 0; filas < 24; filas++)
+        {
+            // Actualizar máximo del día
+            if (temp[filas, columnas] > maxDia)
+                maxDia = temp[filas, columnas];
+            
+            // Actualizar mínimo del día
+            if (temp[filas, columnas] < minDia)
+                minDia = temp[filas, columnas];
+            
+            // Acumular para promedio diario
+            promDia += temp[filas, columnas];
+            
+            // Acumular para promedio semanal
+            promSem += temp[filas, columnas];
+            
+            // Actualizar máximo semanal
+            if (temp[filas, columnas] > maxSem)
+                maxSem = temp[filas, columnas];
+            
+            // Actualizar mínimo semanal
+            if (temp[filas, columnas] < minSem)
+                minSem = temp[filas, columnas];
+        }
+        
+        // Calcular promedio del día
+        promDia = promDia / 24;
+        
+        // Mostrar resultados en los TextBox correspondientes
+        // (código de asignación a TextBox...)
+    }
+    
+    // Calcular promedio semanal
+    promSem = promSem / 168;  // 24 horas × 7 días = 168 lecturas
+    
+    // Mostrar resultados semanales
+    tprSem.Text = promSem.ToString();
+    tmaxSem.Text = maxSem.ToString();
+    tminSem.Text = minSem.ToString();
+    
+    // Generar gráfico de barras
+    GenerarGrafico();
+}</pre>
+    
+    <p><strong>Algoritmo de cálculo:</strong></p>
+    <ul>
+        <li><strong>Por día:</strong> Se recorren las 24 horas, comparando cada temperatura con el máximo 
+        y mínimo actuales, y acumulando para el promedio.</li>
+        <li><strong>Por semana:</strong> Se mantienen variables globales que se actualizan con cada lectura 
+        de todos los días.</li>
+        <li><strong>Complejidad:</strong> O(n×m) donde n=24 horas y m=7 días = O(168) = O(1) constante</li>
+    </ul>
+    
+    <h3>2.3.3 Generación del Gráfico de Barras (GenerarGrafico)</h3>
+    
+    <p>
+        El gráfico de barras visualiza las temperaturas promedio de cada día de la semana. A continuación 
+        se explica el proceso de generación del gráfico paso a paso:
+    </p>
+    
+    <h4>Paso 1: Preparación de Datos</h4>
+    <pre>// Arreglo para almacenar los 7 promedios (uno por día de la semana)
+double[] promediosDiarios = new double[7];
+string[] diasSemana = { "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom" };
+
+// Calcular el promedio de temperatura para cada día
+for (int dia = 0; dia < 7; dia++)
+{
+    double suma = 0;
+    // Sumar las 24 temperaturas del día
+    for (int hora = 0; hora < 24; hora++)
+    {
+        suma += temp[hora, dia];
+    }
+    // Dividir entre 24 para obtener el promedio diario
+    promediosDiarios[dia] = suma / 24;
+}</pre>
+    
+    <h4>Paso 2: Creación del Lienzo</h4>
+    <pre>// Crear un bitmap del mismo tamaño que el PictureBox (274x336 píxeles)
+Bitmap bmp = new Bitmap(pictureBox1.Width, pictureBox1.Height);
+Graphics g = Graphics.FromImage(bmp);
+g.Clear(Color.White); // Fondo blanco</pre>
+    
+    <h4>Paso 3: Definición de Márgenes</h4>
+    <pre>// Espacios para dejar lugar a las etiquetas y el título
+int margenIzq = 50;   // Espacio para etiquetas del eje Y (valores de temperatura)
+int margenDer = 20;   // Espacio derecho
+int margenSup = 30;   // Espacio para el título
+int margenInf = 50;   // Espacio para etiquetas del eje X (días de la semana)
+int anchoGrafico = bmp.Width - margenIzq - margenDer;   // Área útil para barras
+int altoGrafico = bmp.Height - margenSup - margenInf;   // Altura útil para barras</pre>
+    
+    <h4>Paso 4: Cálculo de Escala</h4>
+    <p>
+        Este paso es crucial para que todas las barras se ajusten proporcionalmente al espacio disponible:
+    </p>
+    <pre>// Encontrar valores máximo y mínimo para escalar las barras proporcionalmente
+double maxTemp = promediosDiarios.Max();
+double minTemp = promediosDiarios.Min();
+double rangoTemp = maxTemp - minTemp;
+if (rangoTemp == 0) rangoTemp = 1; // Evitar división por cero</pre>
+    
+    <div class="ecuacion">
+        Altura de barra = [(Valor - Mínimo) / Rango] × Altura disponible
+    </div>
+    
+    <h4>Paso 5: Dibujo de Ejes y Título</h4>
+    <pre>// Eje X (horizontal, en la parte inferior)
+g.DrawLine(penEjes, margenIzq, margenSup + altoGrafico, 
+           margenIzq + anchoGrafico, margenSup + altoGrafico);
+
+// Eje Y (vertical, en el lado izquierdo)
+g.DrawLine(penEjes, margenIzq, margenSup, margenIzq, margenSup + altoGrafico);
+
+// Título del gráfico
+g.DrawString("Temperatura Promedio por Día (°C)", 
+             new Font("Arial", 10, FontStyle.Bold), Brushes.Black, margenIzq, 5);</pre>
+    
+    <h4>Paso 6: Dibujo de Barras</h4>
+    <pre>// Colores del arcoíris para cada día de la semana
+Color[] colores = { Color.Red, Color.Orange, Color.Yellow, 
+                    Color.Green, Color.Blue, Color.Indigo, Color.Violet };
+
+for (int i = 0; i < 7; i++)
+{
+    // Calcular altura de la barra proporcionalmente al promedio
+    int alturaBarra = (int)((promediosDiarios[i] - minTemp) / rangoTemp * altoGrafico);
+    
+    // Calcular posición y dimensiones de la barra
+    int x = margenIzq + (i * anchoBarra) + 5;
+    int y = margenSup + altoGrafico - alturaBarra;
+    int ancho = anchoBarra - 10;
+    
+    // Dibujar la barra con color
+    g.FillRectangle(new SolidBrush(colores[i]), x, y, ancho, alturaBarra);
+    g.DrawRectangle(Pens.Black, x, y, ancho, alturaBarra);
+    
+    // Mostrar valor numérico arriba de la barra
+    string valorTexto = promediosDiarios[i].ToString("F1");
+    g.DrawString(valorTexto, font, Brushes.Black, 
+                 x + (ancho - tamTexto.Width) / 2, y - 15);
+    
+    // Mostrar nombre del día debajo del eje X
+    g.DrawString(diasSemana[i], font, Brushes.Black, 
+                 x + (ancho - tamDia.Width) / 2, margenSup + altoGrafico + 5);
+}</pre>
+    
+    <h4>Paso 7: Escala del Eje Y</h4>
+    <pre>// Dibujar 6 líneas de referencia horizontales con sus valores
+for (int i = 0; i <= 5; i++)
+{
+    double valor = minTemp + (rangoTemp * i / 5);
+    int y = margenSup + altoGrafico - (i * altoGrafico / 5);
+    
+    // Dibujar el valor numérico a la izquierda
+    g.DrawString(valor.ToString("F1"), font, Brushes.Black, 5, y - 7);
+    
+    // Dibujar línea de referencia horizontal en gris claro
+    g.DrawLine(Pens.LightGray, margenIzq, y, margenIzq + anchoGrafico, y);
+}</pre>
+    
+    <h4>Paso 8: Finalización</h4>
+    <pre>pictureBox1.Image = bmp;  // Asignar el gráfico al PictureBox
+g.Dispose();  // Liberar recursos del objeto Graphics</pre>
+    
+    <h3>2.3.4 Función Limpiar (btnLimpiar_Click)</h3>
+    
+    <p>
+        Reinicia todos los componentes de la aplicación a su estado inicial:
+    </p>
+    
+    <pre>private void btnLimpiar_Click(object sender, EventArgs e)
+{
+    // Limpiar DataGridView
+    dtgTemp.DataSource = null;
+    
+    // Vaciar ComboBox
+    cmbTemp.Items.Clear();
+    
+    // Limpiar todos los TextBox de resultados diarios
+    foreach (Control control in panel1.Controls)
+    {
+        if (control is TextBox)
+            control.Text = "";
+    }
+    
+    // Limpiar resultados semanales
+    tprSem.Text = "";
+    tmaxSem.Text = "";
+    tminSem.Text = "";
+    
+    // Eliminar gráfico
+    pictureBox1.Image = null;
+    
+    // Reiniciar matriz de temperaturas
+    for (int i = 0; i < 24; i++)
+    {
+        for (int j = 0; j < 7; j++)
+        {
+            temp[i, j] = 0;
+        }
+    }
+}</pre>
+    
+    <p>
+        <strong>Nota:</strong> Aunque la matriz usa memoria estática, es necesario reinicializar 
+        manualmente los valores a cero para evitar que datos anteriores interfieran con nuevas generaciones.
+    </p>
+    
+    <h2>2.4 Ventajas del Diseño Implementado</h2>
+    
+    <ol class="lista-numerada">
+        <li><strong>Eficiencia:</strong> El uso de arreglo bidimensional permite acceso directo O(1) 
+        a cualquier lectura específica.</li>
+        
+        <li><strong>Claridad:</strong> La estructura [hora, día] es intuitiva y refleja naturalmente 
+        la organización temporal de los datos.</li>
+        
+        <li><strong>Predictibilidad:</strong> Al usar memoria estática, el consumo de recursos es 
+        constante y conocido de antemano (672 bytes).</li>
+        
+        <li><strong>Simplicidad:</strong> No requiere gestión compleja de memoria ni estructuras 
+        de datos dinámicas.</li>
+        
+        <li><strong>Visualización:</strong> El gráfico de barras proporciona una representación 
+        visual inmediata de las tendencias de temperatura.</li>
+    </ol>
+</div>
+
+<!-- 3. CONCLUSIONES -->
+<div class="seccion">
+    <h1>3. CONCLUSIONES</h1>
+    
+    <h2>3.1 Sobre el Uso de Memoria Estática</h2>
+    
+    <p>
+        La implementación de esta aplicación ha demostrado que <strong>la memoria estática es la opción 
+        ideal cuando se conocen de antemano los requisitos de almacenamiento</strong>. En el caso del 
+        sensor submarino, sabemos exactamente que necesitamos 168 espacios (24 × 7), lo que hace 
+        innecesaria la flexibilidad de la memoria dinámica.
+    </p>
+    
+    <h3>Ventajas Observadas:</h3>
+    
+    <ol class="lista-numerada">
+        <li><strong>Rendimiento Superior:</strong> El acceso a los elementos del arreglo es 
+        extremadamente rápido (O(1)), lo cual es crucial cuando se realizan múltiples iteraciones 
+        para calcular estadísticas.</li>
+        
+        <li><strong>Consumo de Recursos Predecible:</strong> La aplicación siempre consume exactamente 
+        672 bytes para el arreglo principal, sin overhead adicional de punteros o estructuras dinámicas.</li>
+        
+        <li><strong>Simplicidad del Código:</strong> No fue necesario implementar lógica compleja de 
+        gestión de memoria, redimensionamiento o manejo de referencias.</li>
+        
+        <li><strong>Ausencia de Fragmentación:</strong> Al no usar memoria dinámica, se evita el 
+        problema de fragmentación de memoria que puede ocurrir con múltiples asignaciones y liberaciones.</li>
+        
+        <li><strong>Seguridad:</strong> No hay riesgo de memory leaks (fugas de memoria) ya que la 
+        desasignación es automática al finalizar el programa.</li>
+        
+        <li><strong>Compatibilidad con Algoritmos:</strong> Los arreglos bidimensionales son ideales 
+        para algoritmos matemáticos y estadísticos que requieren acceso aleatorio a los datos.</li>
+    </ol>
+    
+    <h3>Limitaciones Identificadas:</h3>
+    
+    <ol class="lista-numerada">
+        <li><strong>Falta de Flexibilidad:</strong> Si en el futuro se requiere almacenar datos de más 
+        de una semana, sería necesario modificar y recompilar el código.</li>
+        
+        <li><strong>Desperdicio de Memoria:</strong> Si no se utilizan todas las 168 posiciones, 
+        la memoria sigue reservada (aunque en este caso específico siempre se utilizan todas).</li>
+        
+        <li><strong>Escalabilidad Limitada:</strong> No es posible agregar días u horas adicionales 
+        sin modificar la declaración del arreglo.</li>
+    </ol>
+    
+    <p>
+        Sin embargo, estas limitaciones son <strong>irrelevantes para el caso de uso actual</strong>, 
+        ya que las especificaciones del sensor son fijas: siempre son 24 horas y 7 días.
+    </p>
+    
+    <h2>3.2 Sobre la Aplicación</h2>
+    
+    <p>
+        La aplicación cumple satisfactoriamente con todos los objetivos planteados:
+    </p>
+    
+    <ul>
+        <li>✓ Almacena eficientemente las 168 lecturas semanales del sensor</li>
+        <li>✓ Calcula correctamente máximos, mínimos y promedios por día</li>
+        <li>✓ Calcula correctamente máximos, mínimos y promedios por semana</li>
+        <li>✓ Proporciona visualización gráfica de las tendencias</li>
+        <li>✓ Ofrece una interfaz intuitiva y fácil de usar</li>
+        <li>✓ Permite limpiar y regenerar datos múltiples veces</li>
+    </ul>
+    
+    <h3>Características Destacadas:</h3>
+    
+    <ol class="lista-numerada">
+        <li><strong>Organización de Datos:</strong> La matriz bidimensional representa naturalmente 
+        la estructura temporal (horas × días).</li>
+        
+        <li><strong>Cálculos Eficientes:</strong> Los algoritmos implementados recorren los datos 
+        una sola vez para calcular todas las estadísticas simultáneamente.</li>
+        
+        <li><strong>Visualización Efectiva:</strong> El gráfico de barras con colores diferenciados 
+        facilita la interpretación rápida de las tendencias de temperatura.</li>
+        
+        <li><strong>Escalabilidad Visual:</strong> El gráfico ajusta automáticamente su escala según 
+        los valores máximos y mínimos, asegurando una visualización óptima independientemente del 
+        rango de temperaturas.</li>
+    </ol>
+    
+    <h2>3.3 Aprendizajes Obtenidos</h2>
+    
+    <p>
+        El desarrollo de esta aplicación ha proporcionado valiosas lecciones sobre estructuras de datos 
+        y gestión de memoria:
+    </p>
+    
+    <ol class="lista-numerada">
+        <li><strong>La importancia del análisis previo:</strong> Antes de elegir una estructura de 
+        datos, es fundamental analizar los requisitos del problema. En este caso, el análisis reveló 
+        que los datos tienen un tamaño fijo y conocido, lo que justifica el uso de memoria estática.</li>
+        
+        <li><strong>Simplicidad vs Flexibilidad:</strong> No siempre es necesario usar las estructuras 
+        más flexibles o complejas. A veces, una solución simple y directa (como un arreglo) es la 
+        más apropiada.</li>
+        
+        <li><strong>Eficiencia en cálculos:</strong> Las operaciones sobre arreglos son fundamentalmente 
+        más rápidas que sobre estructuras dinámicas, especialmente cuando se realizan múltiples accesos.</li>
+        
+        <li><strong>Visualización de datos:</strong> La representación gráfica de los datos es tan 
+        importante como los cálculos numéricos, ya que permite interpretar tendencias de forma inmediata.</li>
+        
+        <li><strong>Gestión de recursos:</strong> Aunque C# tiene garbage collection, es buena práctica 
+        liberar recursos gráficos explícitamente (como <code>g.Dispose()</code>) para evitar problemas 
+        de rendimiento.</li>
+    </ol>
+    
+    <h2>3.4 Aplicaciones Prácticas</h2>
+    
+    <p>
+        Este tipo de sistema tiene aplicaciones reales importantes:
+    </p>
+    
+    <ul>
+        <li><strong>Monitoreo Ambiental:</strong> Seguimiento de temperatura oceánica para estudios 
+        de cambio climático</li>
+        <li><strong>Acuicultura:</strong> Control de temperatura en granjas marinas</li>
+        <li><strong>Predicción Meteorológica:</strong> Análisis de patrones térmicos para pronósticos</li>
+        <li><strong>Investigación Científica:</strong> Estudio de ecosistemas marinos y comportamiento 
+        de especies</li>
+        <li><strong>Seguridad Marítima:</strong> Detección de anomalías térmicas que puedan indicar 
+        fenómenos peligrosos</li>
+    </ul>
+    
+    <h2>3.5 Conclusión Final</h2>
+    
+    <p>
+        La aplicación <strong>Sensor Submarino</strong> demuestra que la elección correcta de estructuras 
+        de datos es fundamental para el éxito de un proyecto de software. Al utilizar memoria estática 
+        mediante un arreglo bidimensional, se logró:
+    </p>
+    
+    <ul>
+        <li>Máxima eficiencia en el acceso y procesamiento de datos</li>
+        <li>Código simple, claro y mantenible</li>
+        <li>Consumo de recursos predecible y mínimo</li>
+        <li>Rendimiento óptimo para las operaciones requeridas</li>
+    </ul>
+    
+    <div class="nota">
+        <strong>Lección Principal:</strong> La memoria estática no es obsoleta ni inferior a la memoria 
+        dinámica. Cuando el problema lo permite, es la opción más eficiente, simple y confiable. El 
+        verdadero arte de la programación no está en usar las herramientas más complejas, sino en 
+        elegir la herramienta correcta para cada situación.
+    </div>
+    
+    <p style="margin-top: 40px; text-align: center; font-style: italic;">
+        "La simplicidad es la máxima sofisticación." - Leonardo da Vinci
+    </p>
+</div>
+
+<!-- PIE DE PÁGINA -->
+<div style="margin-top: 50px; border-top: 2px solid #333; padding-top: 20px; text-align: center;">
+    <p><strong>Sensor Submarino - Sistema de Gestión de Lecturas de Temperatura</strong></p>
+    <p>Estructura de Datos | Diciembre 2025</p>
+</div>
+
+</body>
+</html>
